@@ -1,0 +1,15 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>Tags on 三日坊主。</title>
+		<link>https://sat8bit.github.io/tags/</link>
+		<description>Recent content in Tags </description>
+		<generator>Hugo -- gohugo.io</generator>
+		
+  		<language>ja</language>
+		
+		<managingEditor>Page(/tags) (Satoshi Koizumi)</managingEditor>
+    	
+		<atom:link href="/tags/" rel="self" type="application/rss+xml" />
+		
+	</channel>
+</rss>

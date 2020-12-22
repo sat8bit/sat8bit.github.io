@@ -1,0 +1,15 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>三日坊主。 on 三日坊主。</title>
+		<link>https://sat8bit.github.io/</link>
+		<description>Recent content in 三日坊主。 </description>
+		<generator>Hugo -- gohugo.io</generator>
+		
+  		<language>ja</language>
+		
+		<managingEditor>Page(&#34;三日坊主。&#34;) (Satoshi Koizumi)</managingEditor>
+    	
+		<atom:link href="/" rel="self" type="application/rss+xml" />
+		
+	</channel>
+</rss>
