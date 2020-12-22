@@ -1,3 +1,4 @@
+publishdir = "docs"
 theme = "harbor"
 baseurl = "https://sat8bit.github.io/"
 title = "三日坊主。"
