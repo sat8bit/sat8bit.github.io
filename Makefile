@@ -1,3 +1,6 @@
+edit::
+	vim $$(find content | peco)
+
 serve::
 	hugo serve -D
 
