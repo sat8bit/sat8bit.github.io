@@ -10,7 +10,7 @@ footnoteReturnLinkContents = "^"
 
 # Optional
 # If you use googleAnalytics, you set top-level options in config.toml to the beginning of the config file like other top-level options.
-googleAnalytics = "UA-XXXXXXXX-XX"
+googleAnalytics = "G-62G1T8FBSZ"
 
 [Author]
   name = "Satoshi Koizumi"
@@ -56,9 +56,9 @@ googleAnalytics = "UA-XXXXXXXX-XX"
 # copy paste this block and change for each social media to add how many ever social media
 # acounts/links you want
 [[params.social]]
-  name="name of social media"
-  url="link to social media"
-  icon="A icon from https://fontawesome.com/"
+  name="Twitter"
+  url="https://twitter.com/sat8bit"
+  icon="fab fa-twitter"
 
 [params.logo]
   url = "icon.png" # static/images/icon.png
