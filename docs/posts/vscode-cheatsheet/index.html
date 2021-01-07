@@ -27,10 +27,7 @@
   title="三日坊主。"
 />
 <meta property="og:title" content="Visual Studio Code Cheatsheet" />
-<meta property="og:description" content="ショートカット 何回やっても忘れるのでまとめておく。
-コマンドパレットを開く Shift &#43; Command &#43; P  これが開ければ後のショートカットキーは調べられる。 コマンドパレットは初期状態で &gt; が入力されているが、消すとファイル検索ができる。  Markdown のプレビュー Command &#43; K =&gt; V  Shift &#43; Command &#43; V で開くとタブで開いてしまう。横に開くのが良い  設定を開く Command &#43; ,  Configurations かと思ったけど英名は Settings。  設定 しておきたい設定 共通部分だけ。
-{ &quot;files.autoSave&quot;: &quot;afterDelay&quot;, &quot;editor.detectIndentation&quot;: false, &quot;editor.renderWhitespace&quot;: &quot;boundary&quot;, &quot;editor.formatOnSave&quot;: true, &quot;editor.formatOnPaste&quot;: true, &quot;editor.formatOnType&quot;: true, &quot;editor.defaultFormatter&quot;: &quot;esbenp.prettier-vscode&quot;, } プロジェクト固有の設定 プロジェクト（ワークスペース）の .vscode/settings.json にプロジェクト固有のファイルを置くことができる。
-Project Root/ `- .vscode/ `- settings.json  設定を開くと User / Workspace のタブがあるが、Workspace のほうをいじるとこのファイルが変更されるという仕組み。 もちろんこっちが優先。  言語毎の設定 Go プラグイン    プラグイン名 説明     Go Go Team at Google が提供している。これ入れれば終わり。    設定 { // ここから Go の設定 // LSP を利用する設定 &#34;go." />
+<meta property="og:description" content="ショートカット 何回やっても忘れるのでまとめておく。 コマンドパレットを開く Shift &#43; Command &#43; P これが開ければ後のショートカットキーは調べられる。 コマンド" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://sat8bit.github.io/posts/vscode-cheatsheet/" />
 <meta property="article:published_time" content="2020-12-23T02:12:12+09:00" />
@@ -38,10 +35,7 @@ Project Root/ `- .vscode/ `- settings.json  設定を開くと User / Workspace 
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Visual Studio Code Cheatsheet"/>
-<meta name="twitter:description" content="ショートカット 何回やっても忘れるのでまとめておく。
-コマンドパレットを開く Shift &#43; Command &#43; P  これが開ければ後のショートカットキーは調べられる。 コマンドパレットは初期状態で &gt; が入力されているが、消すとファイル検索ができる。  Markdown のプレビュー Command &#43; K =&gt; V  Shift &#43; Command &#43; V で開くとタブで開いてしまう。横に開くのが良い  設定を開く Command &#43; ,  Configurations かと思ったけど英名は Settings。  設定 しておきたい設定 共通部分だけ。
-{ &quot;files.autoSave&quot;: &quot;afterDelay&quot;, &quot;editor.detectIndentation&quot;: false, &quot;editor.renderWhitespace&quot;: &quot;boundary&quot;, &quot;editor.formatOnSave&quot;: true, &quot;editor.formatOnPaste&quot;: true, &quot;editor.formatOnType&quot;: true, &quot;editor.defaultFormatter&quot;: &quot;esbenp.prettier-vscode&quot;, } プロジェクト固有の設定 プロジェクト（ワークスペース）の .vscode/settings.json にプロジェクト固有のファイルを置くことができる。
-Project Root/ `- .vscode/ `- settings.json  設定を開くと User / Workspace のタブがあるが、Workspace のほうをいじるとこのファイルが変更されるという仕組み。 もちろんこっちが優先。  言語毎の設定 Go プラグイン    プラグイン名 説明     Go Go Team at Google が提供している。これ入れれば終わり。    設定 { // ここから Go の設定 // LSP を利用する設定 &#34;go."/>
+<meta name="twitter:description" content="ショートカット 何回やっても忘れるのでまとめておく。 コマンドパレットを開く Shift &#43; Command &#43; P これが開ければ後のショートカットキーは調べられる。 コマンド"/>
 
 
 <link rel="stylesheet" href="https://sat8bit.github.io/fontawesome/css/all.min.css" />
@@ -172,15 +166,41 @@ Project Root/ `- .vscode/ `- settings.json  設定を開くと User / Workspace 
 </ul>
 <h1 id="設定">設定</h1>
 <h2 id="しておきたい設定">しておきたい設定</h2>
-<p>共通部分だけ。</p>
+<p>後述の言語のための設定も含まれる。</p>
 <pre><code>{
+  //------------------
+  // ファイルに関する設定
+  //------------------
+  // ファイルの自動保存
   &quot;files.autoSave&quot;: &quot;afterDelay&quot;,
+
+  //------------------
+  // エディタの設定
+  //------------------
+  // フォント。 1:2 じゃないと生きていけない
+  // https://qiita.com/tawara_/items/374f3ca0a386fab8b305
+  &quot;editor.fontFamily&quot;: &quot;HackGenNerd Console&quot;,
+  // 元のファイルのインデントを気にせず設定を優先する
   &quot;editor.detectIndentation&quot;: false,
+  // ホワイトスペースの可視化
   &quot;editor.renderWhitespace&quot;: &quot;boundary&quot;,
+  // フォーマットするタイミング
   &quot;editor.formatOnSave&quot;: true,
   &quot;editor.formatOnPaste&quot;: true,
   &quot;editor.formatOnType&quot;: true,
+  // デフォルトで使われる Formatter
   &quot;editor.defaultFormatter&quot;: &quot;esbenp.prettier-vscode&quot;,
+
+  // ここから Go の設定
+  &quot;go.useLanguageServer&quot;: true,
+  &quot;go.languageServerExperimentalFeatures&quot;: {
+    &quot;diagnostics&quot;: true,
+    &quot;documentLink&quot;: true
+  },
+  &quot;[go]&quot;: {
+    // Go のときの default formatter は golang.go に変更する
+    &quot;editor.defaultFormatter&quot;: &quot;golang.go&quot;
+  },
 }
 </code></pre><h2 id="プロジェクト固有の設定">プロジェクト固有の設定</h2>
 <p>プロジェクト（ワークスペース）の <code>.vscode/settings.json</code> にプロジェクト固有のファイルを置くことができる。</p>
@@ -191,9 +211,7 @@ Project Root/ `- .vscode/ `- settings.json  設定を開くと User / Workspace 
 <li>設定を開くと User / Workspace のタブがあるが、Workspace のほうをいじるとこのファイルが変更されるという仕組み。</li>
 <li>もちろんこっちが優先。</li>
 </ul>
-<h1 id="言語毎の設定">言語毎の設定</h1>
-<h2 id="go">Go</h2>
-<h3 id="プラグイン">プラグイン</h3>
+<h1 id="プラグイン">プラグイン</h1>
 <table>
 <thead>
 <tr>
@@ -204,25 +222,10 @@ Project Root/ `- .vscode/ `- settings.json  設定を開くと User / Workspace 
 <tbody>
 <tr>
 <td>Go</td>
-<td>Go Team at Google が提供している。これ入れれば終わり。</td>
+<td>Go の公式プラグイン。</td>
 </tr>
 </tbody>
 </table>
-<h3 id="設定-1">設定</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
-  <span style="color:#960050;background-color:#1e0010">//</span> <span style="color:#960050;background-color:#1e0010">ここから</span> <span style="color:#960050;background-color:#1e0010">Go</span> <span style="color:#960050;background-color:#1e0010">の設定</span>
-  <span style="color:#960050;background-color:#1e0010">//</span> <span style="color:#960050;background-color:#1e0010">LSP</span> <span style="color:#960050;background-color:#1e0010">を利用する設定</span>
-  <span style="color:#f92672">&#34;go.useLanguageServer&#34;</span>: <span style="color:#66d9ef">true</span>,
-  <span style="color:#f92672">&#34;go.languageServerExperimentalFeatures&#34;</span>: {
-    <span style="color:#f92672">&#34;diagnostics&#34;</span>: <span style="color:#66d9ef">true</span>,
-    <span style="color:#f92672">&#34;documentLink&#34;</span>: <span style="color:#66d9ef">true</span>
-  },
-  <span style="color:#960050;background-color:#1e0010">//</span> <span style="color:#960050;background-color:#1e0010">Go</span> <span style="color:#960050;background-color:#1e0010">のときの</span> <span style="color:#960050;background-color:#1e0010">Formatter</span> <span style="color:#960050;background-color:#1e0010">は</span> <span style="color:#960050;background-color:#1e0010">golang.go</span> <span style="color:#960050;background-color:#1e0010">に変更する</span>
-  <span style="color:#f92672">&#34;[go]&#34;</span>: {
-    <span style="color:#f92672">&#34;editor.defaultFormatter&#34;</span>: <span style="color:#e6db74">&#34;golang.go&#34;</span>
-  }
-}
-</code></pre></div><h2 id="typescript">TypeScript</h2>
 
 
 

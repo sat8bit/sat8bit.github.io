@@ -37,17 +37,43 @@ Command + ,
 
 ## しておきたい設定
 
-共通部分だけ。
+後述の言語のための設定も含まれる。
 
 ```
 {
+  //------------------
+  // ファイルに関する設定
+  //------------------
+  // ファイルの自動保存
   "files.autoSave": "afterDelay",
+
+  //------------------
+  // エディタの設定
+  //------------------
+  // フォント。 1:2 じゃないと生きていけない
+  // https://qiita.com/tawara_/items/374f3ca0a386fab8b305
+  "editor.fontFamily": "HackGenNerd Console",
+  // 元のファイルのインデントを気にせず設定を優先する
   "editor.detectIndentation": false,
+  // ホワイトスペースの可視化
   "editor.renderWhitespace": "boundary",
+  // フォーマットするタイミング
   "editor.formatOnSave": true,
   "editor.formatOnPaste": true,
   "editor.formatOnType": true,
+  // デフォルトで使われる Formatter
   "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+  // ここから Go の設定
+  "go.useLanguageServer": true,
+  "go.languageServerExperimentalFeatures": {
+    "diagnostics": true,
+    "documentLink": true
+  },
+  "[go]": {
+    // Go のときの default formatter は golang.go に変更する
+    "editor.defaultFormatter": "golang.go"
+  },
 }
 ```
 
@@ -64,32 +90,8 @@ Project Root/
 - 設定を開くと User / Workspace のタブがあるが、Workspace のほうをいじるとこのファイルが変更されるという仕組み。
 - もちろんこっちが優先。
 
-# 言語毎の設定
+# プラグイン
 
-## Go
-
-### プラグイン
-
-| プラグイン名 | 説明                                                   |
-| ------------ | ------------------------------------------------------ |
-| Go           | Go Team at Google が提供している。これ入れれば終わり。 |
-
-### 設定
-
-```json
-{
-  // ここから Go の設定
-  // LSP を利用する設定
-  "go.useLanguageServer": true,
-  "go.languageServerExperimentalFeatures": {
-    "diagnostics": true,
-    "documentLink": true
-  },
-  // Go のときの Formatter は golang.go に変更する
-  "[go]": {
-    "editor.defaultFormatter": "golang.go"
-  }
-}
-```
-
-## TypeScript
+| プラグイン名 | 説明                  |
+| ------------ | --------------------- |
+| Go           | Go の公式プラグイン。 |

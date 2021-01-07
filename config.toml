@@ -7,6 +7,7 @@ languageCode = "ja"
 DefaultContentLanguage = "ja"
 enableInlineShortcodes = true
 footnoteReturnLinkContents = "^"
+hasCJKLanguage = true
 
 # Optional
 # If you use googleAnalytics, you set top-level options in config.toml to the beginning of the config file like other top-level options.
