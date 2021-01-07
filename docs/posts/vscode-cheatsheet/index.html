@@ -164,9 +164,39 @@
 </code></pre><ul>
 <li>Configurations かと思ったけど英名は Settings。</li>
 </ul>
-<h1 id="設定">設定</h1>
-<h2 id="しておきたい設定">しておきたい設定</h2>
-<p>後述の言語のための設定も含まれる。</p>
+<h1 id="設定について">設定について</h1>
+<h2 id="プロジェクト固有の設定">プロジェクト固有の設定</h2>
+<p>プロジェクト（ワークスペース）の <code>.vscode/settings.json</code> にプロジェクト固有のファイルを置くことができる。</p>
+<pre><code>Project Root/
+`- .vscode/
+   `- settings.json
+</code></pre><ul>
+<li>設定を開くと User / Workspace のタブがあるが、Workspace のほうをいじるとこのファイルが変更されるという仕組み。</li>
+<li>もちろんこっちが優先。</li>
+</ul>
+<h1 id="環境構築">環境構築</h1>
+<h2 id="目的">目的</h2>
+<ul>
+<li>Go</li>
+<li>TypeScript</li>
+<li>UML(Plantuml)</li>
+</ul>
+<h2 id="プラグイン">プラグイン</h2>
+<table>
+<thead>
+<tr>
+<th>プラグイン名</th>
+<th>説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Go</td>
+<td>Go の公式プラグイン。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="settingsjson">settings.json</h2>
 <pre><code>{
   //------------------
   // ファイルに関する設定
@@ -202,31 +232,7 @@
     &quot;editor.defaultFormatter&quot;: &quot;golang.go&quot;
   },
 }
-</code></pre><h2 id="プロジェクト固有の設定">プロジェクト固有の設定</h2>
-<p>プロジェクト（ワークスペース）の <code>.vscode/settings.json</code> にプロジェクト固有のファイルを置くことができる。</p>
-<pre><code>Project Root/
-`- .vscode/
-   `- settings.json
-</code></pre><ul>
-<li>設定を開くと User / Workspace のタブがあるが、Workspace のほうをいじるとこのファイルが変更されるという仕組み。</li>
-<li>もちろんこっちが優先。</li>
-</ul>
-<h1 id="プラグイン">プラグイン</h1>
-<table>
-<thead>
-<tr>
-<th>プラグイン名</th>
-<th>説明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Go</td>
-<td>Go の公式プラグイン。</td>
-</tr>
-</tbody>
-</table>
-
+</code></pre>
 
 
 
