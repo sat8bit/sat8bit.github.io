@@ -25,13 +25,71 @@ Command + K => V
 
 - `Shift + Command + V` で開くとタブで開いてしまう。横に開くのが良い
 
-# 設定ファイル
+## 設定を開く
 
-# プラグイン
+```
+Command + ,
+```
+
+- Configurations かと思ったけど英名は Settings。
+
+# 設定
+
+## しておきたい設定
+
+共通部分だけ。
+
+```
+{
+  "files.autoSave": "afterDelay",
+  "editor.detectIndentation": false,
+  "editor.renderWhitespace": "boundary",
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "editor.formatOnType": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+}
+```
+
+## プロジェクト固有の設定
+
+プロジェクト（ワークスペース）の `.vscode/settings.json` にプロジェクト固有のファイルを置くことができる。
+
+```
+Project Root/
+`- .vscode/
+   `- settings.json
+```
+
+- 設定を開くと User / Workspace のタブがあるが、Workspace のほうをいじるとこのファイルが変更されるという仕組み。
+- もちろんこっちが優先。
 
 # 言語毎の設定
 
 ## Go
 
-## TypeScript
+### プラグイン
 
+| プラグイン名 | 説明                                                   |
+| ------------ | ------------------------------------------------------ |
+| Go           | Go Team at Google が提供している。これ入れれば終わり。 |
+
+### 設定
+
+```json
+{
+  // ここから Go の設定
+  // LSP を利用する設定
+  "go.useLanguageServer": true,
+  "go.languageServerExperimentalFeatures": {
+    "diagnostics": true,
+    "documentLink": true
+  },
+  // Go のときの Formatter は golang.go に変更する
+  "[go]": {
+    "editor.defaultFormatter": "golang.go"
+  }
+}
+```
+
+## TypeScript
