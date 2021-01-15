@@ -2,7 +2,7 @@ publishdir = "docs"
 theme = "harbor"
 baseurl = "https://sat8bit.github.io/"
 title = "三日坊主。"
-paginate = 3
+paginate = 10
 languageCode = "ja"
 DefaultContentLanguage = "ja"
 enableInlineShortcodes = true
@@ -18,6 +18,9 @@ googleAnalytics = "G-62G1T8FBSZ"
 
 [outputs]
   section = ["JSON", "HTML"]
+
+[params]
+  mainSections = ["posts", "logs"]
 
 [[params.nav]]
   identifier = "about"

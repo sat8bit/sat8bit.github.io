@@ -194,6 +194,22 @@
 <td>Go</td>
 <td>Go の公式プラグイン。</td>
 </tr>
+<tr>
+<td>Draw.io Integration</td>
+<td>Draw.io を VSCode 内で動かすプラグイン。</td>
+</tr>
+<tr>
+<td>Paste Image</td>
+<td>画像を Paste すると 指定したディレクトリに画像を保存しつつ Markdown 形式 で入力をしてくれる。まだ使いこなせてない</td>
+</tr>
+<tr>
+<td>Prettier - Code formatter</td>
+<td>いくつかの言語に対応している Prettier.</td>
+</tr>
+<tr>
+<td>vscode-proto3</td>
+<td>Protocol Buffer のプラグイン。色々な機能があるけど単純に Formatter として使っている。</td>
+</tr>
 </tbody>
 </table>
 <h2 id="settingsjson">settings.json</h2>
@@ -230,6 +246,11 @@
   &quot;[go]&quot;: {
     // Go のときの default formatter は golang.go に変更する
     &quot;editor.defaultFormatter&quot;: &quot;golang.go&quot;
+  },
+
+  // ここから Protocol Buffer の設定
+  &quot;[proto3]&quot;: {
+    &quot;editor.defaultFormatter&quot;: &quot;zxh404.vscode-proto3&quot;
   },
 }
 </code></pre>

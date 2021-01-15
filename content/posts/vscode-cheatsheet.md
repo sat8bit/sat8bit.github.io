@@ -58,9 +58,13 @@ Project Root/
 
 ## プラグイン
 
-| プラグイン名 | 説明                  |
-| ------------ | --------------------- |
-| Go           | Go の公式プラグイン。 |
+| プラグイン名              | 説明                                                                                                              |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| Go                        | Go の公式プラグイン。                                                                                             |
+| Draw.io Integration       | Draw.io を VSCode 内で動かすプラグイン。                                                                          |
+| Paste Image               | 画像を Paste すると 指定したディレクトリに画像を保存しつつ Markdown 形式 で入力をしてくれる。まだ使いこなせてない |
+| Prettier - Code formatter | いくつかの言語に対応している Prettier.                                                                            |
+| vscode-proto3             | Protocol Buffer のプラグイン。色々な機能があるけど単純に Formatter として使っている。                             |
 
 ## settings.json
 
@@ -98,6 +102,11 @@ Project Root/
   "[go]": {
     // Go のときの default formatter は golang.go に変更する
     "editor.defaultFormatter": "golang.go"
+  },
+
+  // ここから Protocol Buffer の設定
+  "[proto3]": {
+    "editor.defaultFormatter": "zxh404.vscode-proto3"
   },
 }
 ```
