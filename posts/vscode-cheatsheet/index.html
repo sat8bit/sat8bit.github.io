@@ -1,0 +1,61 @@
+<!doctype html><html lang=ja><head><meta charset=utf-8><title>Visual Studio Code Cheatsheet</title><script async src="https://www.googletagmanager.com/gtag/js?id=G-62G1T8FBSZ"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());gtag('config','G-62G1T8FBSZ');</script><meta http-equiv=x-ua-compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1"><link rel=alternate type=application/rss+xml href=https://sat8bit.github.io/index.xml title=三日坊主。><meta property="og:title" content="Visual Studio Code Cheatsheet"><meta property="og:description" content="ショートカット 何回やっても忘れるのでまとめておく。 コマンドパレットを開く Shift + Command + P これが開ければ後のショートカットキーは調べられる。 コマンド"><meta property="og:type" content="article"><meta property="og:url" content="https://sat8bit.github.io/posts/vscode-cheatsheet/"><meta property="article:published_time" content="2020-12-23T02:12:12+09:00"><meta property="article:modified_time" content="2020-12-23T02:12:12+09:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="Visual Studio Code Cheatsheet"><meta name=twitter:description content="ショートカット 何回やっても忘れるのでまとめておく。 コマンドパレットを開く Shift + Command + P これが開ければ後のショートカットキーは調べられる。 コマンド"><link rel=stylesheet href=https://sat8bit.github.io/fontawesome/css/all.min.css><link id=dark-mode-theme rel=stylesheet href=https://sat8bit.github.io/css/dark.css><script>var darkTheme=document.getElementById('dark-mode-theme')
+var storedTheme=localStorage.getItem('dark-mode-storage')
+if(storedTheme==='dark'){darkTheme.disabled=false}else if(storedTheme==='light'){darkTheme.disabled=true}</script><script src=https://sat8bit.github.io/js/bundle.js></script><script src=https://sat8bit.github.io/js/instantpage.min.js type=module defer></script><meta name=generator content="Hugo 0.79.1"></head><body><header><nav class=navbar><div class=nav><a href=https://sat8bit.github.io/ class=nav-logo><img src=https://sat8bit.github.io/images/icon.png width=50 height=50 alt=Logo></a><ul class=nav-links><li><a href=/about/ id=About><em class="fas fa-user fa-lg"></em></a></li><li><a href=/tags id=Tags><em class="fas fa-tag fa-lg"></em></a></li><li><a href=/categories id=Category><em class="fas fa-folder-open fa-lg"></em></a></li><li><a href=/search id=Search><em class="fas fa-search fa-lg"></em></a></li><li><a href=/archives id=Archives><em class="fas fa-archive fa-lg"></em></a></li></ul></div></nav><div class=intro-header><div class=container><div class=posts-heading><h1>Visual Studio Code Cheatsheet</h1></div></div></div></header><div class=container role=main><article class=article class=blog-post><h1 id=ショートカット>ショートカット</h1><p>何回やっても忘れるのでまとめておく。</p><h2 id=コマンドパレットを開く>コマンドパレットを開く</h2><pre><code>Shift + Command + P
+</code></pre><ul><li>これが開ければ後のショートカットキーは調べられる。</li><li>コマンドパレットは初期状態で <code>></code> が入力されているが、消すとファイル検索ができる。</li></ul><h2 id=markdown-のプレビュー>Markdown のプレビュー</h2><pre><code>Command + K =&gt; V
+</code></pre><ul><li><code>Shift + Command + V</code> で開くとタブで開いてしまう。横に開くのが良い</li></ul><h2 id=設定を開く>設定を開く</h2><pre><code>Command + ,
+</code></pre><ul><li>Configurations かと思ったけど英名は Settings。</li></ul><h1 id=設定について>設定について</h1><h2 id=プロジェクト固有の設定>プロジェクト固有の設定</h2><p>プロジェクト（ワークスペース）の <code>.vscode/settings.json</code> にプロジェクト固有のファイルを置くことができる。</p><pre><code>Project Root/
+`- .vscode/
+   `- settings.json
+</code></pre><ul><li>設定を開くと User / Workspace のタブがあるが、Workspace のほうをいじるとこのファイルが変更されるという仕組み。</li><li>もちろんこっちが優先。</li></ul><h1 id=環境構築>環境構築</h1><h2 id=目的>目的</h2><ul><li>Go</li><li>TypeScript</li><li>UML(Plantuml)</li></ul><h2 id=プラグイン>プラグイン</h2><table><thead><tr><th>プラグイン名</th><th>説明</th></tr></thead><tbody><tr><td>Go</td><td>Go の公式プラグイン。</td></tr><tr><td>Draw.io Integration</td><td>Draw.io を VSCode 内で動かすプラグイン。</td></tr><tr><td>Paste Image</td><td>画像を Paste すると 指定したディレクトリに画像を保存しつつ Markdown 形式 で入力をしてくれる。まだ使いこなせてない</td></tr><tr><td>Prettier - Code formatter</td><td>いくつかの言語に対応している Prettier.</td></tr><tr><td>vscode-proto3</td><td>Protocol Buffer のプラグイン。色々な機能があるけど単純に Formatter として使っている。</td></tr></tbody></table><h2 id=settingsjson>settings.json</h2><pre><code>{
+  //------------------
+  // ファイルに関する設定
+  //------------------
+  // ファイルの自動保存
+  &quot;files.autoSave&quot;: &quot;afterDelay&quot;,
+
+  //------------------
+  // エディタの設定
+  //------------------
+  // フォント。 1:2 じゃないと生きていけない
+  // https://qiita.com/tawara_/items/374f3ca0a386fab8b305
+  &quot;editor.fontFamily&quot;: &quot;HackGenNerd Console&quot;,
+  // 元のファイルのインデントを気にせず設定を優先する
+  &quot;editor.detectIndentation&quot;: false,
+  // ホワイトスペースの可視化
+  &quot;editor.renderWhitespace&quot;: &quot;boundary&quot;,
+  // フォーマットするタイミング
+  &quot;editor.formatOnSave&quot;: true,
+  &quot;editor.formatOnPaste&quot;: true,
+  &quot;editor.formatOnType&quot;: true,
+  // デフォルトで使われる Formatter
+  &quot;editor.defaultFormatter&quot;: &quot;esbenp.prettier-vscode&quot;,
+
+  // ここから Go の設定
+  &quot;go.useLanguageServer&quot;: true,
+  &quot;go.languageServerExperimentalFeatures&quot;: {
+    &quot;diagnostics&quot;: true,
+    &quot;documentLink&quot;: true
+  },
+  &quot;[go]&quot;: {
+    // Go のときの default formatter は golang.go に変更する
+    &quot;editor.defaultFormatter&quot;: &quot;golang.go&quot;
+  },
+
+  // ここから Protocol Buffer の設定
+  &quot;[proto3]&quot;: {
+    &quot;editor.defaultFormatter&quot;: &quot;zxh404.vscode-proto3&quot;
+  },
+}
+</code></pre><div class=blog-tags><a href=https://sat8bit.github.io/tags/vscode/>vscode</a>&nbsp;
+<a href=https://sat8bit.github.io/tags/shortcut/>shortcut</a>&nbsp;
+<a href=https://sat8bit.github.io/tags/cheetsheet/>cheetsheet</a>&nbsp;
+<a href=https://sat8bit.github.io/tags/typescript/>typescript</a>&nbsp;
+<a href=https://sat8bit.github.io/tags/go/>go</a>&nbsp;</div></article></div><footer><div><a href=https://twitter.com/sat8bit name=Twitter><em class="fab fa-twitter"></em></a><div class=container><p class="credits copyright"><a href=https://sat8bit.github.io/about>Satoshi Koizumi</a>
+&nbsp;&copy;
+2021
+&nbsp;/&nbsp;
+<a href=https://sat8bit.github.io/>三日坊主。</a>
+&nbsp;&ndash;&nbsp;
+<em class="fas fa-moon" id=dark-mode-toggle></em></p><p class="credits theme-by"><a href=https://gohugo.io>Hugo</a>&nbsp;
+<a href=https://github.com/matsuyoshi30/harbor>Harbor</a></p></div></footer></body></html>
