@@ -1,6 +1,7 @@
 ---
 title: "{{ replace .Name "-" "/" | title }}"
 date: {{ .Date }}
+tags: ["logs"]
 ---
 
 # Todo
@@ -15,6 +16,6 @@ date: {{ .Date }}
 
 ## [Todo]
 
-## Next
+## その他作業中に発生したこと
 
-## 参考
+## Next
