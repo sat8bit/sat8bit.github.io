@@ -1,1 +1,17 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>logs on 三日坊主。</title><link>https://sat8bit.github.io/tags/logs/</link><description>Recent content in logs</description><generator>Hugo -- gohugo.io</generator><language>ja</language><managingEditor>Page(/tags/logs) (Satoshi Koizumi)</managingEditor><lastBuildDate>Sun, 17 Jan 2021 22:49:47 +0900</lastBuildDate><atom:link href="/tags/logs/" rel="self" type="application/rss+xml"/></channel></rss>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>logs on 三日坊主。</title>
+		<link>https://sat8bit.github.io/tags/logs/</link>
+		<description>Recent content in logs </description>
+		<generator>Hugo -- gohugo.io</generator>
+		
+  		<language>ja</language>
+		
+		<managingEditor>Page(/tags/logs) (Satoshi Koizumi)</managingEditor>
+    	
+  		<lastBuildDate>Tue, 19 Jan 2021 22:53:01 +0900</lastBuildDate>
+		
+		<atom:link href="/tags/logs/" rel="self" type="application/rss+xml" />
+		
+	</channel>
+</rss>

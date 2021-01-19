@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+<title>Protocol Buffer の import におけるファイルの取扱いについて</title>
+
+
+  
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-62G1T8FBSZ"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-62G1T8FBSZ');
+  </script>
+  
+
+
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link
+  rel="alternate"
+  type="application/rss+xml"
+  href="https://sat8bit.github.io/index.xml"
+  title="三日坊主。"
+/>
+<meta property="og:title" content="Protocol Buffer の import におけるファイルの取扱いについて" />
+<meta property="og:description" content="Protocol Buffer の import について import 周りで躓いたので、検証結果をまとめておく。 $ protoc --version libprotoc 3.6.0 import 時の同一ファイル判定について サンプルのディレクトリ構成は以下とする。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://sat8bit.github.io/posts/import-of-protocol-buffer/" />
+<meta property="article:published_time" content="2021-01-20T00:25:28+09:00" />
+<meta property="article:modified_time" content="2021-01-20T00:25:28+09:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Protocol Buffer の import におけるファイルの取扱いについて"/>
+<meta name="twitter:description" content="Protocol Buffer の import について import 周りで躓いたので、検証結果をまとめておく。 $ protoc --version libprotoc 3.6.0 import 時の同一ファイル判定について サンプルのディレクトリ構成は以下とする。"/>
+
+
+<link rel="stylesheet" href="https://sat8bit.github.io/fontawesome/css/all.min.css" />
+
+<link
+  id="dark-mode-theme"
+  rel="stylesheet"
+  href="https://sat8bit.github.io/css/dark.css"
+/>
+
+<script>
+  var darkTheme = document.getElementById('dark-mode-theme')
+  var storedTheme = localStorage.getItem('dark-mode-storage')
+  if (storedTheme === 'dark') {
+    darkTheme.disabled = false
+  } else if (storedTheme === 'light') {
+    darkTheme.disabled = true
+  }
+</script>
+
+<script src="https://sat8bit.github.io/js/bundle.js"></script>
+<script src="https://sat8bit.github.io/js/instantpage.min.js" type="module" defer></script>
+<meta name="generator" content="Hugo 0.79.1" />
+  </head>
+  <body>
+    
+  
+
+
+
+
+  <header>
+    <nav class="navbar">
+  <div class="nav">
+    
+        <a href="https://sat8bit.github.io/" class="nav-logo">
+        <img
+          src="https://sat8bit.github.io/images/icon.png"
+          width="50"
+          height="50"
+          alt="Logo"
+        />
+        </a>
+    
+
+    <ul class="nav-links">
+      
+        
+          <li>
+            <a href="/about/" id="About"
+              ><em class="fas fa-user fa-lg"></em
+            ></a>
+          </li>
+          
+      
+        
+          <li>
+            <a href="/tags" id="Tags"
+              ><em class="fas fa-tag fa-lg"></em
+            ></a>
+          </li>
+          
+      
+        
+          <li>
+            <a href="/categories" id="Category"
+              ><em class="fas fa-folder-open fa-lg"></em
+            ></a>
+          </li>
+          
+      
+        
+          <li>
+            <a href="/search" id="Search"
+              ><em class="fas fa-search fa-lg"></em
+            ></a>
+          </li>
+          
+      
+        
+          <li>
+            <a href="/archives" id="Archives"
+              ><em class="fas fa-archive fa-lg"></em
+            ></a>
+          </li>
+          
+      
+    </ul>
+  </div>
+</nav>
+
+    <div class="intro-header">
+      <div class="container">
+        <div class="posts-heading">
+          
+            <h1>
+              Protocol Buffer の import におけるファイルの取扱いについて
+            </h1>
+          
+          
+        </div>
+      </div>
+    </div>
+  </header>
+  
+
+    
+  <div class="container" role="main">
+    <article class="article" class="blog-post">
+      
+  <h1 id="protocol-buffer-の-import-について">Protocol Buffer の import について</h1>
+<p>import 周りで躓いたので、検証結果をまとめておく。</p>
+<pre><code>$ protoc --version
+libprotoc 3.6.0
+</code></pre><h2 id="import-時の同一ファイル判定について">import 時の同一ファイル判定について</h2>
+<p>サンプルのディレクトリ構成は以下とする。</p>
+<pre><code>~/
+└── src/
+    └── github.com
+        └── sat8bit
+            └── protoc
+                ├── models
+                │   └── user.proto
+                └── service.proto
+</code></pre><p><code>service.proto</code> の内容は次の通り。</p>
+<pre><code class="language-proto3" data-lang="proto3">syntax = &quot;proto3&quot;;
+
+package io.github.sat8bit;
+
+import &quot;models/user.proto&quot;;
+
+option go_package = &quot;github.com/sat8bit/protobuf&quot;;
+
+service UserService {
+    rpc GetUser(GetUserMessage) returns (GetUserResponse) {}
+}
+
+message GetUserMessage {
+    string id = 1;
+}
+
+message GetUserResponse {
+    models.User user = 1;
+}
+</code></pre><p><code>user.proto</code> の内容は次の通り。</p>
+<pre><code class="language-proto3" data-lang="proto3">syntax = &quot;proto3&quot;;
+
+package io.github.sat8bit.models;
+
+option go_package = &quot;github.com/sat8bit/protobuf/models&quot;;
+
+message User {
+    string id = 1;
+    string name = 2;
+}
+</code></pre><p>この状態で go_outでgrpcを吐き出すと、以下の構造になる。</p>
+<pre><code>$ protoc --go_out=plugins=grpc:./go service.proto
+$ tree go
+go
+└── github.com
+    └── sat8bit
+        └── protobuf
+            └── service.pb.go
+</code></pre><p>ただ、実際は <code>grpc-gateway</code> などの <code>grpc-ecosystem</code> や、<code>validator</code> などを src 配下に展開していたので、それを再現するために <code>-I</code> を追加する。</p>
+<pre><code>$ protoc -I . -I ~/src --go_out=plugins=grpc:./go service.proto
+</code></pre><p>この状態では、models/user.proto を import するパスは２種類ある。</p>
+<pre><code class="language-proto3" data-lang="proto3">// . から見た相対パス
+import &quot;models/user.proto&quot;;
+// ~/src から見た相対パス
+import &quot;github.com/sat8bit/protobuf/models/user.proto&quot;;
+</code></pre><p>試しに import を２種類書いてみる。（実際はこんなことしないが）</p>
+<pre><code class="language-proto3" data-lang="proto3">syntax = &quot;proto3&quot;;
+
+package io.github.sat8bit;
+
+import &quot;models/user.proto&quot;;
+import &quot;github.com/sat8bit/protobuf/models/user.proto&quot;;
+
+option go_package = &quot;github.com/sat8bit/protobuf&quot;;
+
+service UserService {
+    rpc GetUser(GetUserMessage) returns (GetUserResponse) {}
+}
+
+message GetUserMessage {
+    string id = 1;
+}
+
+message GetUserResponse {
+    models.User user = 1;
+}
+</code></pre><p>すると、以下のエラーになる。</p>
+<pre><code>github.com/sat8bit/protobuf/models/user.proto:8:12: &quot;io.github.sat8bit.models.User.id&quot; is already defined in file &quot;models/user.proto&quot;.
+github.com/sat8bit/protobuf/models/user.proto:9:12: &quot;io.github.sat8bit.models.User.name&quot; is already defined in file &quot;models/user.proto&quot;.
+github.com/sat8bit/protobuf/models/user.proto:7:9: &quot;io.github.sat8bit.models.User&quot; is already defined in file &quot;models/user.proto&quot;.
+service.proto: Import &quot;github.com/sat8bit/protobuf/models/user.proto&quot; was not found or had errors.
+</code></pre><p>既に定義済みエラーである。一方、<code>import &quot;models/user.proto&quot;;</code> を 2 個書いた場合はこんなエラーになる。</p>
+<pre><code>service.proto: Import &quot;models/user.proto&quot; was listed twice.
+</code></pre><p>import を ２回しているエラーである。</p>
+<p>以上から、<strong>protoc では、相対パスの完全一致によって、同一ファイルかどうかを判断することがわかる。</strong></p>
+<h2 id="別のファイルを経由した-import-の場合">別のファイルを経由した import の場合</h2>
+<p>enum 定義のあるファイルを追加で作成する。</p>
+<pre><code>~/
+└── src/
+    └── github.com
+        └── sat8bit
+            └── protoc
+                ├── models
+                │   ├── user.proto
+                │   └── role.proto
+                └── service.proto
+</code></pre><p><code>models/role.proto</code> の内容は次の通り。</p>
+<pre><code>syntax = &quot;proto3&quot;;
+
+package io.github.sat8bit.models;
+
+option go_package = &quot;github.com/sat8bit/protobuf/models&quot;;
+
+enum Role {
+  UNKNOWN = 0;
+  ADMIN = 1;
+  READ = 2;
+}
+</code></pre><p><code>models/user.proto</code> からこれを import する。</p>
+<pre><code class="language-proto3" data-lang="proto3">syntax = &quot;proto3&quot;;
+
+package io.github.sat8bit.models;
+
+option go_package = &quot;github.com/sat8bit/protobuf/models&quot;;
+
+import &quot;models/role.proto&quot;;
+
+message User {
+    string id = 1;
+    string name = 2;
+    Role role = 3;
+}
+</code></pre><p>このとき、import で指定するファイルパスは インクルードパスからの相対パスになる。<code>models/user.proto</code> から見た相対パスではない。</p>
+<p>この状態で、<code>model/user.proto</code> を protoc してみる。</p>
+<pre><code>$ protoc -I . -I ~/src --go_out=plugins=grpc:./go models/user.proto
+</code></pre><p>エラーにはならない。</p>
+<p>更に、<code>service.proto</code> でも role が必要になったので import する。</p>
+<pre><code class="language-proto3" data-lang="proto3">syntax = &quot;proto3&quot;;
+
+package io.github.sat8bit;
+
+import &quot;models/user.proto&quot;;
+import &quot;models/role.proto&quot;;
+
+option go_package = &quot;github.com/sat8bit/protobuf&quot;;
+
+service UserService {
+    rpc GetUser(GetUserMessage) returns (GetUserResponse) {}
+}
+
+message GetUserMessage {
+    string id = 1;
+    models.Role role = 2;
+}
+
+message GetUserResponse {
+    models.User user = 1;
+}
+</code></pre><p>このときの依存関係は、以下の通り。</p>
+<pre><code>service.proto -------&gt; models/user.proto
+     |                         |
+     |                         V
+     `---------------&gt; models/role.proto
+</code></pre><p><code>service.proto</code> から見ると、<code>models/role.proto</code> は 2 系統から import されてることになる。</p>
+<p>この状態で、<code>service.proto</code> を protoc してみる。</p>
+<pre><code>protoc -I . -I ~/src --go_out=plugins=grpc:./go service.proto
+</code></pre><p>エラーにはならない。</p>
+<p>以上のことから、<strong>違うファイル経由で同じファイルを import した場合、<code>Import &quot;XXXXX&quot; was listed twice.</code> のエラーにはならずに正常に処理されるということがわかる。</strong></p>
+<h2 id="別のファイルを経由した-import-の場合別ファイル扱いの場合">別のファイルを経由した import の場合（別ファイル扱いの場合）</h2>
+<p>ここで、試しに <code>service.proto</code> の方だけ <code>~/src</code> からの相対パス指定に変更してみる。</p>
+<pre><code class="language-proto3" data-lang="proto3">syntax = &quot;proto3&quot;;
+
+package io.github.sat8bit;
+
+import &quot;github.com/sat8bit/protobuf/models/user.proto&quot;;
+import &quot;github.com/sat8bit/protobuf/models/role.proto&quot;;
+
+option go_package = &quot;github.com/sat8bit/protobuf&quot;;
+
+service UserService {
+    rpc GetUser(GetUserMessage) returns (GetUserResponse) {}
+}
+
+message GetUserMessage {
+    string id = 1;
+    models.Role role = 2;
+}
+
+message GetUserResponse {
+    models.User user = 1;
+}
+</code></pre><p><code>service.proto</code> を protoc すると、以下のエラーになる。</p>
+<pre><code>$ protoc -I . -I ~/src --go_out=plugins=grpc:./go service.proto
+github.com/sat8bit/protobuf/models/role.proto:8:3: &quot;io.github.sat8bit.models.UNKNOWN&quot; is already defined in file &quot;models/role.proto&quot;.
+github.com/sat8bit/protobuf/models/role.proto:8:3: Note that enum values use C++ scoping rules, meaning that enum values are siblings of their type, not children of it.  Therefore, &quot;UNKNOWN&quot; must be unique within &quot;io.github.sat8bit.models&quot;, not just within &quot;Role&quot;.
+github.com/sat8bit/protobuf/models/role.proto:9:3: &quot;io.github.sat8bit.models.ADMIN&quot; is already defined in file &quot;models/role.proto&quot;.
+github.com/sat8bit/protobuf/models/role.proto:9:3: Note that enum values use C++ scoping rules, meaning that enum values are siblings of their type, not children of it.  Therefore, &quot;ADMIN&quot; must be unique within &quot;io.github.sat8bit.models&quot;, not just within &quot;Role&quot;.
+github.com/sat8bit/protobuf/models/role.proto:10:3: &quot;io.github.sat8bit.models.READ&quot; is already defined in file &quot;models/role.proto&quot;.
+github.com/sat8bit/protobuf/models/role.proto:10:3: Note that enum values use C++ scoping rules, meaning that enum values are siblings of their type, not children of it.  Therefore, &quot;READ&quot; must be unique within &quot;io.github.sat8bit.models&quot;, not just within &quot;Role&quot;.
+github.com/sat8bit/protobuf/models/role.proto:7:6: &quot;io.github.sat8bit.models.Role&quot; is already defined in file &quot;models/role.proto&quot;.
+service.proto: Import &quot;github.com/sat8bit/protobuf/models/role.proto&quot; was not found or had errors.
+service.proto:16:5: &quot;io.github.sat8bit.models.Role&quot; seems to be defined in &quot;models/role.proto&quot;, which is not imported by &quot;service.proto&quot;.  To use it here, please add the necessary import.
+service.proto:16:5: &quot;models.Role&quot; is resolved to &quot;io.github.sat8bit.models.Role&quot;, which is not defined. The innermost scope is searched first in name resolution. Consider using a leading '.'(i.e., &quot;.models.Role&quot;) to start from the outermost scope.
+</code></pre><p>既に定義済みエラーとなった。</p>
+<p>これは、<strong><code>service.proto</code> から見てる <code>role.proto</code> と、 <code>user.proto</code> から見てる <code>role.proto</code> が違うファイルと認識されたためである。</strong></p>
+<h2 id="パス指定で発生する差分についてgo_out--grpc-に限る">パス指定で発生する差分について（go_out / grpc に限る）</h2>
+<p>ここまでの検証で <code>models/user.proto</code> と <code>service.proto</code> の import が揃っていればよいことがわかったが、何に揃えればいいのかを考える。</p>
+<p>ここで、enum が含まれるファイルを import した場合の生成されるファイルの差分を見てみる。</p>
+<pre><code>$ diff user.pb.go._models_role.proto user.pb.go.github.com_sat8bit_protobuf_models_role.proto 
+91,103c91,101
+(rawDesc の差分は省略)
+137c135
+&lt;       file_github_com_sat8bit_protobuf_models_role_proto_init()
+---
+&gt;       file_models_role_proto_init()
+</code></pre><p>enum を含む場合は、initが呼び出されるが、その呼び出すメソッド名が違うことがわかる。</p>
+<p>ちなみに、このままの流れで以下のコマンドで role.proto を protoc すると、生成される init は <code>file_models_role_proto_init</code> になる。</p>
+<pre><code>$ protoc -I . -I ~/src --go_out=plugins=grpc:./go models/role.proto
+$ grep init go/github.com/sat8bit/protobuf/models/role.pb.go    
+func init() { file_models_role_proto_init() }
+func file_models_role_proto_init() {
+</code></pre><p>ちなみに前者の init を生成したい場合は、もう一方のインクルードパスからのパスを指定してあげれば良い。</p>
+<pre><code>$ protoc -I ~/src --go_out=plugins=grpc:./go ~/src/github.com/sat8bit/protobuf/models/role.proto
+$ grep init go/github.com/sat8bit/protobuf/models/role.pb.go
+func init() { file_github_com_sat8bit_protobuf_models_role_proto_init() }
+func file_github_com_sat8bit_protobuf_models_role_proto_init() {
+</code></pre><p><code>find . -name *.proto | protoc -I XXXX</code> でドバーッと protoc したいので、前者のほうが都合が良いことが多い気がした。</p>
+<p>一旦自前の分については、統一的な指定を守りつつ引き続きベストな構成を模索する。</p>
+
+
+
+
+      
+        <div class="blog-tags">
+          
+            <a href="https://sat8bit.github.io/tags/protobuf/">protobuf</a
+            >&nbsp;
+          
+        </div>
+      
+    </article>
+    
+    
+      
+
+    
+  </div>
+
+    <footer>
+  
+  <div>
+    
+      <a href="https://twitter.com/sat8bit" name="Twitter"
+        ><em class="fab fa-twitter"></em
+      ></a>
+    
+
+
+
+
+  
+  <div class="container">
+    <p class="credits copyright">
+      <a href="https://sat8bit.github.io/about">Satoshi Koizumi</a>
+      &nbsp;&copy;
+      2021
+      
+        &nbsp;/&nbsp;
+        <a href="https://sat8bit.github.io/">三日坊主。</a>
+      
+      &nbsp;&ndash;&nbsp;
+      <em class="fas fa-moon" id="dark-mode-toggle"></em>
+    </p>
+
+    <p class="credits theme-by">
+       <a href="https://gohugo.io">Hugo</a>&nbsp;
+      
+      <a href="https://github.com/matsuyoshi30/harbor">Harbor</a>
+    </p>
+  </div>
+</footer>
+
+  </body>
+</html>

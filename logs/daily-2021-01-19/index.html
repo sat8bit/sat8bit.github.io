@@ -2,7 +2,7 @@
 <html lang="ja">
   <head>
     <meta charset="utf-8" />
-<title>vscode</title>
+<title>Daily/2021/01/19</title>
 
 
   
@@ -26,15 +26,16 @@
   href="https://sat8bit.github.io/index.xml"
   title="三日坊主。"
 />
-<meta property="og:title" content="vscode" />
-<meta property="og:description" content="" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://sat8bit.github.io/tags/vscode/" />
-<meta property="og:updated_time" content="2020-12-23T02:12:12+09:00" />
+<meta property="og:title" content="Daily/2021/01/19" />
+<meta property="og:description" content="Todo Todo Done protoc の壊れを治す o Logs protoc の壊れを治す 真面目に検証したら結構大きくなっちゃったので posts に切り出す。 Protocol Buffer の import におけるファイルの取扱いについて その" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://sat8bit.github.io/logs/daily-2021-01-19/" />
+<meta property="article:published_time" content="2021-01-19T22:53:01+09:00" />
+<meta property="article:modified_time" content="2021-01-19T22:53:01+09:00" />
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="vscode"/>
-<meta name="twitter:description" content=""/>
+<meta name="twitter:title" content="Daily/2021/01/19"/>
+<meta name="twitter:description" content="Todo Todo Done protoc の壊れを治す o Logs protoc の壊れを治す 真面目に検証したら結構大きくなっちゃったので posts に切り出す。 Protocol Buffer の import におけるファイルの取扱いについて その"/>
 
 
 <link rel="stylesheet" href="https://sat8bit.github.io/fontawesome/css/all.min.css" />
@@ -128,10 +129,10 @@
 
     <div class="intro-header">
       <div class="container">
-        <div class="tags-heading">
+        <div class="logs-heading">
           
             <h1>
-              vscode
+              Daily/2021/01/19
             </h1>
           
           
@@ -143,37 +144,64 @@
 
     
   <div class="container" role="main">
-    <div class="posts-list">
+    <article class="article" class="blog-post">
       
-        
-      
+  <h1 id="todo">Todo</h1>
+<table>
+<thead>
+<tr>
+<th>Todo</th>
+<th>Done</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>protoc の壊れを治す</td>
+<td>o</td>
+</tr>
+</tbody>
+</table>
+<h1 id="logs">Logs</h1>
+<h2 id="protoc-の壊れを治す">protoc の壊れを治す</h2>
+<p>真面目に検証したら結構大きくなっちゃったので posts に切り出す。</p>
+<p><a href="/posts/import-of-protocol-buffer/">Protocol Buffer の import におけるファイルの取扱いについて</a></p>
+<h1 id="その他作業中に発生したこと">その他作業中に発生したこと</h1>
+<h2 id="ハーゲンダッツ食べる">ハーゲンダッツ食べる</h2>
+<p>遠い昔誰かが「ハーゲンダッツは結局ラムレーズン」みたいなこと言ってた。</p>
+<p>誰だか思い出せないけど。</p>
+<p>その後暫くは気にしてなかったけど、ここ２年位ラムレーズンばっか食べてる。</p>
+<p>ラムレーズンほんとおいしい。ただよく見たら酒が入ってた。</p>
+<h2 id="xargs-で実行したコマンドを出力したい">xargs で実行したコマンドを出力したい</h2>
+<p>以下のようなコマンド形式で実行してるコマンドでエラーが出たが、どのファイルかわからない。</p>
+<pre><code>find . -name XXXX | xargs command
+</code></pre><p>実行したコマンドを出力するオプションを調べた。</p>
+<p>Linux 版のオプションは以下のサイトで確認。</p>
+<p><a href="https://www.atmarkit.co.jp/ait/articles/1801/19/news014.html">https://www.atmarkit.co.jp/ait/articles/1801/19/news014.html</a></p>
+<pre><code>xargs [-t|--verbose]
+</code></pre><p>macOS で <code>--verbose</code> を実行したところ、オプション無いエラーだったので man を確認。</p>
+<pre><code>     -t      Echo the command to be executed to standard error immediately before it is executed.
+</code></pre><p>macOS(BSD 版)では、ロングのほうがないよう。</p>
+<h2 id="next">Next</h2>
+<ul>
+<li>protobuf の見直し</li>
+</ul>
+
+
+
 
       
-        <article class="post-preview">
-  <a href="https://sat8bit.github.io/posts/vscode-cheatsheet/">
-    <h2 class="post-title">Visual Studio Code Cheatsheet</h2>
-  </a>
-  <div class="post-entry">
+        <div class="blog-tags">
+          
+            <a href="https://sat8bit.github.io/tags/logs/">logs</a
+            >&nbsp;
+          
+        </div>
+      
+    </article>
     
-      <p>ショートカット 何回やっても忘れるのでまとめておく。 コマンドパレットを開く Shift + Command + P これが開ければ後のショートカットキーは調べられる。 コマンド</p>
-      <a href="https://sat8bit.github.io/posts/vscode-cheatsheet/" class="post-read-more"
-        ></a
-      >
     
-  </div>
-
-  <div class="postmeta">
-    <span class="meta-post">
-  <em class="fa fa-calendar-alt"></em
-  >&nbsp;Dec 23, 2020
-  
-</span>
-
-  </div>
-</article>
-
       
-    </div>
+
     
   </div>
 

@@ -1,0 +1,17 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>protobuf on 三日坊主。</title>
+		<link>https://sat8bit.github.io/tags/protobuf/</link>
+		<description>Recent content in protobuf </description>
+		<generator>Hugo -- gohugo.io</generator>
+		
+  		<language>ja</language>
+		
+		<managingEditor>Page(/tags/protobuf) (Satoshi Koizumi)</managingEditor>
+    	
+  		<lastBuildDate>Wed, 20 Jan 2021 00:25:28 +0900</lastBuildDate>
+		
+		<atom:link href="/tags/protobuf/" rel="self" type="application/rss+xml" />
+		
+	</channel>
+</rss>
