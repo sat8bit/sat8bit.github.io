@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+<title>Daily/2021/01/20</title>
+
+
+  
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-62G1T8FBSZ"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-62G1T8FBSZ');
+  </script>
+  
+
+
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link
+  rel="alternate"
+  type="application/rss+xml"
+  href="https://sat8bit.github.io/index.xml"
+  title="三日坊主。"
+/>
+<meta property="og:title" content="Daily/2021/01/20" />
+<meta property="og:description" content="Todo Todo Done protobuf で go mod vendor 使えばいいんじゃないか？を見てみる Log protobuf で go mod vendor 使えばいいんじゃないか？を見てみる 何も考えずに $GOROOT/src をインクルードパスに指定してた" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://sat8bit.github.io/logs/daily-2021-01-20/" />
+<meta property="article:published_time" content="2021-01-20T22:44:56+09:00" />
+<meta property="article:modified_time" content="2021-01-20T22:44:56+09:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Daily/2021/01/20"/>
+<meta name="twitter:description" content="Todo Todo Done protobuf で go mod vendor 使えばいいんじゃないか？を見てみる Log protobuf で go mod vendor 使えばいいんじゃないか？を見てみる 何も考えずに $GOROOT/src をインクルードパスに指定してた"/>
+
+
+<link rel="stylesheet" href="https://sat8bit.github.io/fontawesome/css/all.min.css" />
+
+<link
+  id="dark-mode-theme"
+  rel="stylesheet"
+  href="https://sat8bit.github.io/css/dark.css"
+/>
+
+<script>
+  var darkTheme = document.getElementById('dark-mode-theme')
+  var storedTheme = localStorage.getItem('dark-mode-storage')
+  if (storedTheme === 'dark') {
+    darkTheme.disabled = false
+  } else if (storedTheme === 'light') {
+    darkTheme.disabled = true
+  }
+</script>
+
+<script src="https://sat8bit.github.io/js/bundle.js"></script>
+<script src="https://sat8bit.github.io/js/instantpage.min.js" type="module" defer></script>
+<meta name="generator" content="Hugo 0.79.1" />
+  </head>
+  <body>
+    
+  
+
+
+
+
+  <header>
+    <nav class="navbar">
+  <div class="nav">
+    
+        <a href="https://sat8bit.github.io/" class="nav-logo">
+        <img
+          src="https://sat8bit.github.io/images/icon.png"
+          width="50"
+          height="50"
+          alt="Logo"
+        />
+        </a>
+    
+
+    <ul class="nav-links">
+      
+        
+          <li>
+            <a href="/about/" id="About"
+              ><em class="fas fa-user fa-lg"></em
+            ></a>
+          </li>
+          
+      
+        
+          <li>
+            <a href="/tags" id="Tags"
+              ><em class="fas fa-tag fa-lg"></em
+            ></a>
+          </li>
+          
+      
+        
+          <li>
+            <a href="/categories" id="Category"
+              ><em class="fas fa-folder-open fa-lg"></em
+            ></a>
+          </li>
+          
+      
+        
+          <li>
+            <a href="/search" id="Search"
+              ><em class="fas fa-search fa-lg"></em
+            ></a>
+          </li>
+          
+      
+        
+          <li>
+            <a href="/archives" id="Archives"
+              ><em class="fas fa-archive fa-lg"></em
+            ></a>
+          </li>
+          
+      
+    </ul>
+  </div>
+</nav>
+
+    <div class="intro-header">
+      <div class="container">
+        <div class="logs-heading">
+          
+            <h1>
+              Daily/2021/01/20
+            </h1>
+          
+          
+        </div>
+      </div>
+    </div>
+  </header>
+  
+
+    
+  <div class="container" role="main">
+    <article class="article" class="blog-post">
+      
+  <h1 id="todo">Todo</h1>
+<table>
+<thead>
+<tr>
+<th>Todo</th>
+<th>Done</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>protobuf で go mod vendor 使えばいいんじゃないか？を見てみる</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h1 id="log">Log</h1>
+<h2 id="protobuf-で-go-mod-vendor-使えばいいんじゃないかを見てみる">protobuf で go mod vendor 使えばいいんじゃないか？を見てみる</h2>
+<p>何も考えずに <code>$GOROOT/src</code> をインクルードパスに指定してたけど、どのバージョンに依存してるかよくわからない状態だったので <code>Go Module</code> 使って管理したほうが良さそう。</p>
+<p>そして <code>go mod vendor</code> を使えば、インクルードパスも <code>vendor</code> にできるんじゃないか、ということでやってみる。</p>
+<p>まず import を github.com から書くのをやめる。
+外部の import が github.com から指定だったから揃えてみたけど結果的に全然良くなかった。</p>
+<p>ここみるのが良さそう。</p>
+<p><a href="https://github.com/grpc-ecosystem/grpc-gateway">https://github.com/grpc-ecosystem/grpc-gateway</a></p>
+<p>protoc のプラグインを <code>go.mod</code> に追加するために <code>tools/dependencies.go</code> を作る。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+        <span style="color:#a6e22e">_</span> <span style="color:#e6db74">&#34;github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway&#34;</span>
+        <span style="color:#a6e22e">_</span> <span style="color:#e6db74">&#34;github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2&#34;</span>
+        <span style="color:#a6e22e">_</span> <span style="color:#e6db74">&#34;github.com/mwitkow/go-proto-validators&#34;</span>
+        <span style="color:#a6e22e">_</span> <span style="color:#e6db74">&#34;google.golang.org/grpc/cmd/protoc-gen-go-grpc&#34;</span>
+        <span style="color:#a6e22e">_</span> <span style="color:#e6db74">&#34;google.golang.org/protobuf/cmd/protoc-gen-go&#34;</span>
+)
+</code></pre></div><p><code>go mod init &amp;&amp; go mod tidy</code> をすると、<code>go.mod</code> <code>go.sum</code> ができる。</p>
+<p>そして <code>go mod vendor</code> を実行すると、必要なファイルが vendor 配下に落ちてくる。</p>
+<p><code>grpc-gateway</code> の README によると、以下の import を proto ファイルに追加するらしいが</p>
+<pre><code>import &quot;google/api/annotations.proto&quot;;
+</code></pre><p>何度やってもこうなる。</p>
+<pre><code>Import &quot;googleapis/google/api/annotations.proto&quot; was not found or had errors.
+</code></pre><p>インクルードパスにないからね、そりゃそうだよねって思ってたら、ちゃんと書いてあった。</p>
+<blockquote>
+<p>You will need to provide the required third party protobuf files to the protoc compiler. They are included in this repo under the third_party/googleapis folder, and we recommend copying them into your protoc generation file structure. If you&rsquo;ve structured your proto files according to something like the Buf style guide, you could copy the files into a top-level ./google folder.</p>
+</blockquote>
+<p>英語パッと読めないから気づくまで時間かかってしまったよ。。</p>
+<p>現在 protobuf リポジトリは以下のような構造になっているので、<code>proto</code> 配下にコピーする。</p>
+<pre><code>repo
+├── proto
+│   ├── google &lt;- ここに置く
+│   ├── pkgA
+│   │   ├── a_service1.proto
+│   │   └── a_service2.proto
+│   ├── pkgB
+│   │   ├── b_service1.proto
+│   │   └── b_service2.proto
+│   └── pkgC
+│       ├── c_service1.proto
+│       └── c_service2.proto
+└── go/
+    └── &lt;生成されるファイル&gt;
+</code></pre><p>ので vendorからコピーしようとしたら vendor 配下の grpc-gateway に third_party ディレクトリがない・・・</p>
+<p><a href="https://github.com/golang/go/issues/26366">https://github.com/golang/go/issues/26366</a></p>
+<p>vendor では全てのファイルをとってくるわけではないそう。</p>
+<p>上記Issueもまだ結論出ておらず、とりあえず全コピーするコマンド vend を作ってくれたそうなのでこれを使う。</p>
+<p><a href="https://github.com/nomad-software/vend">https://github.com/nomad-software/vend</a></p>
+<pre><code>vend
+cp -R vendor/github.com/grpc-ecosystem/grpc-gateway/v2/third_party/googleapis/google proto
+</code></pre><p>これで一旦通せるようになったので、vendor を構築するコマンド達を Makefile にまとめておく。</p>
+<pre><code>prepare::
+    go get github.com/nomad-software/vend
+    vend
+    cp -R vendor/github.com/grpc-ecosystem/grpc-gateway/v2/third_party/googleapis/google proto
+</code></pre><p>が、openapiv2 を吐き出してるところでエラー。</p>
+<p>protoc-gen-openapiv2 の annotation を使ってたんだけど、この行で import が protoc-gen-openapiv2 から指定になってる。</p>
+<p><a href="https://github.com/grpc-ecosystem/grpc-gateway/blob/master/protoc-gen-openapiv2/options/annotations.proto#L8">https://github.com/grpc-ecosystem/grpc-gateway/blob/master/protoc-gen-openapiv2/options/annotations.proto#L8</a></p>
+<p>この場合は、上の googleapis と同様コピーするか、<code>github.com/grpc-ecosystem/grpc-gateway</code> をインクルードパスに追加するしかないことになる。</p>
+<p>そろそろ眠いのでここは一旦要検討。</p>
+<h2 id="その他作業中に発生したこと">その他作業中に発生したこと</h2>
+<h2 id="next">Next</h2>
+<ul>
+<li>openapiv2 の問題解決</li>
+</ul>
+
+
+
+
+      
+        <div class="blog-tags">
+          
+            <a href="https://sat8bit.github.io/tags/logs/">logs</a
+            >&nbsp;
+          
+        </div>
+      
+    </article>
+    
+    
+      
+
+    
+  </div>
+
+    <footer>
+  
+  <div>
+    
+      <a href="https://twitter.com/sat8bit" name="Twitter"
+        ><em class="fab fa-twitter"></em
+      ></a>
+    
+
+
+
+
+  
+  <div class="container">
+    <p class="credits copyright">
+      <a href="https://sat8bit.github.io/about">Satoshi Koizumi</a>
+      &nbsp;&copy;
+      2021
+      
+        &nbsp;/&nbsp;
+        <a href="https://sat8bit.github.io/">三日坊主。</a>
+      
+      &nbsp;&ndash;&nbsp;
+      <em class="fas fa-moon" id="dark-mode-toggle"></em>
+    </p>
+
+    <p class="credits theme-by">
+       <a href="https://gohugo.io">Hugo</a>&nbsp;
+      
+      <a href="https://github.com/matsuyoshi30/harbor">Harbor</a>
+    </p>
+  </div>
+</footer>
+
+  </body>
+</html>
