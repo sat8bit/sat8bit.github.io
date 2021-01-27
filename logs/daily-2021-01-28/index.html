@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+<title>Daily/2021/01/28</title>
+
+
+  
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-62G1T8FBSZ"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-62G1T8FBSZ');
+  </script>
+  
+
+
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link
+  rel="alternate"
+  type="application/rss+xml"
+  href="https://sat8bit.github.io/index.xml"
+  title="三日坊主。"
+/>
+<meta property="og:title" content="Daily/2021/01/28" />
+<meta property="og:description" content="Todo Todo Done React で text input を扱うときの実装を考える protoc が何故か go を吐き出さない問題 Log React で text input を扱うときの実装を考える input の Component を作ろうとしたときにどう作ればい" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://sat8bit.github.io/logs/daily-2021-01-28/" />
+<meta property="article:published_time" content="2021-01-28T00:27:48+09:00" />
+<meta property="article:modified_time" content="2021-01-28T00:27:48+09:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Daily/2021/01/28"/>
+<meta name="twitter:description" content="Todo Todo Done React で text input を扱うときの実装を考える protoc が何故か go を吐き出さない問題 Log React で text input を扱うときの実装を考える input の Component を作ろうとしたときにどう作ればい"/>
+
+
+<link rel="stylesheet" href="https://sat8bit.github.io/fontawesome/css/all.min.css" />
+
+<link
+  id="dark-mode-theme"
+  rel="stylesheet"
+  href="https://sat8bit.github.io/css/dark.css"
+/>
+
+<script>
+  var darkTheme = document.getElementById('dark-mode-theme')
+  var storedTheme = localStorage.getItem('dark-mode-storage')
+  if (storedTheme === 'dark') {
+    darkTheme.disabled = false
+  } else if (storedTheme === 'light') {
+    darkTheme.disabled = true
+  }
+</script>
+
+<script src="https://sat8bit.github.io/js/bundle.js"></script>
+<script src="https://sat8bit.github.io/js/instantpage.min.js" type="module" defer></script>
+<meta name="generator" content="Hugo 0.79.1" />
+  </head>
+  <body>
+    
+  
+
+
+
+
+  <header>
+    <nav class="navbar">
+  <div class="nav">
+    
+        <a href="https://sat8bit.github.io/" class="nav-logo">
+        <img
+          src="https://sat8bit.github.io/images/icon.png"
+          width="50"
+          height="50"
+          alt="Logo"
+        />
+        </a>
+    
+
+    <ul class="nav-links">
+      
+        
+          <li>
+            <a href="/about/" id="About"
+              ><em class="fas fa-user fa-lg"></em
+            ></a>
+          </li>
+          
+      
+        
+          <li>
+            <a href="/tags" id="Tags"
+              ><em class="fas fa-tag fa-lg"></em
+            ></a>
+          </li>
+          
+      
+        
+          <li>
+            <a href="/categories" id="Category"
+              ><em class="fas fa-folder-open fa-lg"></em
+            ></a>
+          </li>
+          
+      
+        
+          <li>
+            <a href="/search" id="Search"
+              ><em class="fas fa-search fa-lg"></em
+            ></a>
+          </li>
+          
+      
+        
+          <li>
+            <a href="/archives" id="Archives"
+              ><em class="fas fa-archive fa-lg"></em
+            ></a>
+          </li>
+          
+      
+    </ul>
+  </div>
+</nav>
+
+    <div class="intro-header">
+      <div class="container">
+        <div class="logs-heading">
+          
+            <h1>
+              Daily/2021/01/28
+            </h1>
+          
+          
+        </div>
+      </div>
+    </div>
+  </header>
+  
+
+    
+  <div class="container" role="main">
+    <article class="article" class="blog-post">
+      
+  <h1 id="todo">Todo</h1>
+<table>
+<thead>
+<tr>
+<th>Todo</th>
+<th>Done</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>React で text input を扱うときの実装を考える</td>
+<td></td>
+</tr>
+<tr>
+<td>protoc が何故か go を吐き出さない問題</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h1 id="log">Log</h1>
+<h2 id="react-で-text-input-を扱うときの実装を考える">React で text input を扱うときの実装を考える</h2>
+<p>input の Component を作ろうとしたときにどう作ればいいんだ問題。</p>
+<p>イメージ的には、外から使う分にはこんな感じにするのが良いかなって。CreateUserForm が form の中の入力内容を state で持つ感じ。
+Submit したときの動作を上から渡す。API 叩くのか、上流で値を受け取るのかなど。</p>
+<pre><code>&lt;CreateUserForm onSubmit={(values: FormComponentValues) =&gt; result} /&gt;
+</code></pre><p>で、CreateUserForm の Component がこう。あくまでイメージ</p>
+<pre><code>&lt;form onSubmit={() =&gt; props.onSubmit(formState)}&gt;
+  &lt;CustomInput /&gt;
+  &lt;CustomInput /&gt;
+  &lt;CustomInput /&gt;
+  &lt;Submit /&gt;
+&lt;/form&gt;
+</code></pre><p>ただこれだと入力したイベントとかは外から渡せないが・・・Form の値を管理する責務を Form で Wrap するならこうなのかしら。。</p>
+<p>まず React の form に関する記載はここ。</p>
+<p><a href="https://ja.reactjs.org/docs/forms.html">https://ja.reactjs.org/docs/forms.html</a></p>
+<p>onChange を渡しておいて、 event.target.value を取れば良いみたい。</p>
+<p>change event はここ。</p>
+<p><a href="https://developer.mozilla.org/ja/docs/Web/API/HTMLElement/change_event">https://developer.mozilla.org/ja/docs/Web/API/HTMLElement/change_event</a></p>
+<p>ここだけ気になる。</p>
+<blockquote>
+<p><!-- raw HTML omitted --> など一部の要素では、コントロールがフォーカスを失うまで change イベントが発生しません。以下のフィールドに何かを入力してから、他の部分をクリックするとイベントが発生します。</p>
+</blockquote>
+<p>フォーカスを失うまで change イベントが発生しないなら、なんで onChange で <code>value={props.value}</code> が機能するんだろうか。</p>
+<p>React の form のページにはこう。</p>
+<blockquote>
+<p>handleChange はキーストロークごとに実行されて React の state を更新するので、表示される値はユーザがタイプするたびに更新されます。</p>
+</blockquote>
+<p>試しに実装したところ、キーストローク毎に実行された。React で扱う input は HTML としての input と少し挙動が違うっぽい。</p>
+<p>textarea とかもちょっと違う旨が書いてある。</p>
+<blockquote>
+<p>React では、<!-- raw HTML omitted --> は代わりに value 属性を使用します。こうすることで、<!-- raw HTML omitted --> を使用するフォームは単一行の入力フォームと非常に似た書き方ができるようになります</p>
+</blockquote>
+<p>使いやすいようになってるみたい。</p>
+<h2 id="protoc-が何故か-go-を吐き出さない問題">protoc が何故か go を吐き出さない問題</h2>
+<p>吐き出されないと当然開発に入れないので困っている</p>
+<p>以前書いた <a href="/posts/import-of-protocol-buffer/">ProtocolBuffer の import の記事</a> で動作を確認しようと思ったら、よく見たらなんかおかしい。</p>
+<p>protoc コマンドのオプション <code>--go_out=plugins=grpc:./go</code> が記載してる <code>protoc</code> のバージョン（<code>3.6.0</code>）と一致してない・・・・</p>
+<p>たぶん別のバージョンの protoc で動かしたんだと思うので、再度上から実行して書き直した。</p>
+<p>すると、</p>
+<pre><code>protoc -I . -I ~/src --go-grpc_out ./go models/user.proto 
+</code></pre><p>ここでやっぱり user_grpc.pb.go が生成されない。もしかして service がないと生成されなくなってる？</p>
+<p>試しに service を追加したら生成された。</p>
+<p>というかよく生成されるコード読んでみたら、message に対応する type が生成されてないぞなんだこれ。</p>
+<p>で、解決。そもそも、protoc のバージョンを変えたら以下のエラーが出るようになってた。</p>
+<pre><code>--go_out: protoc-gen-go: plugins are not supported; use 'protoc --go-grpc_out=...' to generate gRPC
+</code></pre><p>ので、<code>--go_out=plugins=grpc:./go</code> をとりあえず以下のようなオプションにした。</p>
+<pre><code>--go-grpc_out &lt;dir&gt;
+</code></pre><p>この書き方をすると <code>protoc-gen-go-grpc</code> が動いているという認識がそもそも足りなかったのだけど、 <code>protoc-gen-go-grpc</code> は <code>message</code> に対応する <code>struct</code> を生成しない。</p>
+<p>その struct の定義自体は grpc じゃないもんね。確かに。</p>
+<p>今までもたぶん <code>message</code> に対応する <code>struct</code> を生成してくれていたのは <code>protoc-gen-go</code> 。</p>
+<p>なので、正しくアウトプットするためには、</p>
+<pre><code>--go_out &lt;dir&gt; --go-grpc_out &lt;dir&gt;
+</code></pre><p>というオプションが必要だった。勉強になった。</p>
+<h2 id="その他作業中に発生したこと">その他作業中に発生したこと</h2>
+<h3 id="protoc-の-plugin-についての記事">protoc の plugin についての記事</h3>
+<p>どっかで読んで作ってみたい</p>
+<p><a href="https://qiita.com/yugui/items/87d00d77dee159e74886">https://qiita.com/yugui/items/87d00d77dee159e74886</a></p>
+<h2 id="next">Next</h2>
+<pre><code></code></pre>
+
+
+
+      
+        <div class="blog-tags">
+          
+            <a href="https://sat8bit.github.io/tags/logs/">logs</a
+            >&nbsp;
+          
+        </div>
+      
+    </article>
+    
+    
+      
+
+    
+  </div>
+
+    <footer>
+  
+  <div>
+    
+      <a href="https://twitter.com/sat8bit" name="Twitter"
+        ><em class="fab fa-twitter"></em
+      ></a>
+    
+
+
+
+
+  
+  <div class="container">
+    <p class="credits copyright">
+      <a href="https://sat8bit.github.io/about">Satoshi Koizumi</a>
+      &nbsp;&copy;
+      2021
+      
+        &nbsp;/&nbsp;
+        <a href="https://sat8bit.github.io/">三日坊主。</a>
+      
+      &nbsp;&ndash;&nbsp;
+      <em class="fas fa-moon" id="dark-mode-toggle"></em>
+    </p>
+
+    <p class="credits theme-by">
+       <a href="https://gohugo.io">Hugo</a>&nbsp;
+      
+      <a href="https://github.com/matsuyoshi30/harbor">Harbor</a>
+    </p>
+  </div>
+</footer>
+
+  </body>
+</html>

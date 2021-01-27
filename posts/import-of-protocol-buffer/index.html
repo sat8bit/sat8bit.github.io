@@ -27,7 +27,7 @@
   title="三日坊主。"
 />
 <meta property="og:title" content="Protocol Buffer の import におけるファイルの取扱いについて" />
-<meta property="og:description" content="Protocol Buffer の import について import 周りで躓いたので、検証結果をまとめておく。 $ protoc --version libprotoc 3.6.0 import 時の同一ファイル判定について サンプルのディレクトリ構成は以下とする。" />
+<meta property="og:description" content="Protocol Buffer の import について import 周りで躓いたので、検証結果をまとめておく。 $ protoc --version libprotoc 3.6.0 $ protoc-gen-go --version protoc-gen-go v1.25.0 $ protoc-gen-go-grpc --version protoc-gen-go-grpc 1.1.0 import 時の同一ファイル判定について サンプルのディレクト" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://sat8bit.github.io/posts/import-of-protocol-buffer/" />
 <meta property="article:published_time" content="2021-01-20T00:25:28+09:00" />
@@ -35,7 +35,7 @@
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Protocol Buffer の import におけるファイルの取扱いについて"/>
-<meta name="twitter:description" content="Protocol Buffer の import について import 周りで躓いたので、検証結果をまとめておく。 $ protoc --version libprotoc 3.6.0 import 時の同一ファイル判定について サンプルのディレクトリ構成は以下とする。"/>
+<meta name="twitter:description" content="Protocol Buffer の import について import 周りで躓いたので、検証結果をまとめておく。 $ protoc --version libprotoc 3.6.0 $ protoc-gen-go --version protoc-gen-go v1.25.0 $ protoc-gen-go-grpc --version protoc-gen-go-grpc 1.1.0 import 時の同一ファイル判定について サンプルのディレクト"/>
 
 
 <link rel="stylesheet" href="https://sat8bit.github.io/fontawesome/css/all.min.css" />
@@ -150,17 +150,22 @@
 <p>import 周りで躓いたので、検証結果をまとめておく。</p>
 <pre><code>$ protoc --version
 libprotoc 3.6.0
+$ protoc-gen-go --version
+protoc-gen-go v1.25.0
+$ protoc-gen-go-grpc --version
+protoc-gen-go-grpc 1.1.0
 </code></pre><h2 id="import-時の同一ファイル判定について">import 時の同一ファイル判定について</h2>
 <p>サンプルのディレクトリ構成は以下とする。</p>
 <pre><code>~/
 └── src/
     └── github.com
         └── sat8bit
-            └── protoc
+            └── protobuf
                 ├── models
                 │   └── user.proto
                 └── service.proto
-</code></pre><p><code>service.proto</code> の内容は次の通り。</p>
+</code></pre><p>この後の <code>protoc</code> コマンドは全て <code>src/github.com/sat8bit/protobuf</code> ディレクトリ配下で実行する。</p>
+<p><code>service.proto</code> の内容は次の通り。</p>
 <pre><code class="language-proto3" data-lang="proto3">syntax = &quot;proto3&quot;;
 
 package io.github.sat8bit;
@@ -191,16 +196,17 @@ message User {
     string id = 1;
     string name = 2;
 }
-</code></pre><p>この状態で go_outでgrpcを吐き出すと、以下の構造になる。</p>
-<pre><code>$ protoc --go_out=plugins=grpc:./go service.proto
+</code></pre><p>この状態で go-grpc_out で grpc を吐き出すと、以下の構造になる。</p>
+<pre><code>$ protoc --go_out ./go --go-grpc_out ./go service.proto
 $ tree go
 go
 └── github.com
     └── sat8bit
         └── protobuf
-            └── service.pb.go
+            ├── service.pb.go
+            └── service_grpc.pb.go
 </code></pre><p>ただ、実際は <code>grpc-gateway</code> などの <code>grpc-ecosystem</code> や、<code>validator</code> などを src 配下に展開していたので、それを再現するために <code>-I</code> を追加する。</p>
-<pre><code>$ protoc -I . -I ~/src --go_out=plugins=grpc:./go service.proto
+<pre><code>$ protoc -I . -I ~/src --go_out ./go --go-grpc_out ./go service.proto
 </code></pre><p>この状態では、models/user.proto を import するパスは２種類ある。</p>
 <pre><code class="language-proto3" data-lang="proto3">// . から見た相対パス
 import &quot;models/user.proto&quot;;
@@ -275,9 +281,18 @@ message User {
 }
 </code></pre><p>このとき、import で指定するファイルパスは インクルードパスからの相対パスになる。<code>models/user.proto</code> から見た相対パスではない。</p>
 <p>この状態で、<code>model/user.proto</code> を protoc してみる。</p>
-<pre><code>$ protoc -I . -I ~/src --go_out=plugins=grpc:./go models/user.proto
-</code></pre><p>エラーにはならない。</p>
-<p>更に、<code>service.proto</code> でも role が必要になったので import する。</p>
+<pre><code>$ protoc -I . -I ~/src --go_out ./go --go-grpc_out ./go models/user.proto models/role.proto
+$ tree go
+go
+└── github.com
+    └── sat8bit
+        └── protobuf
+            ├── models
+            │   ├── role.pb.go
+            │   └── user.pb.go
+            ├── service.pb.go
+            └── service_grpc.pb.go
+</code></pre><p>更に、<code>service.proto</code> でも role が必要になったので import する。</p>
 <pre><code class="language-proto3" data-lang="proto3">syntax = &quot;proto3&quot;;
 
 package io.github.sat8bit;
@@ -306,7 +321,7 @@ message GetUserResponse {
      `---------------&gt; models/role.proto
 </code></pre><p><code>service.proto</code> から見ると、<code>models/role.proto</code> は 2 系統から import されてることになる。</p>
 <p>この状態で、<code>service.proto</code> を protoc してみる。</p>
-<pre><code>protoc -I . -I ~/src --go_out=plugins=grpc:./go service.proto
+<pre><code>protoc -I . -I ~/src --go_out ./go --go-grpc_out ./go service.proto
 </code></pre><p>エラーにはならない。</p>
 <p>以上のことから、<strong>違うファイル経由で同じファイルを import した場合、<code>Import &quot;XXXXX&quot; was listed twice.</code> のエラーにはならずに正常に処理されるということがわかる。</strong></p>
 <h2 id="別のファイルを経由した-import-の場合別ファイル扱いの場合">別のファイルを経由した import の場合（別ファイル扱いの場合）</h2>
@@ -333,7 +348,7 @@ message GetUserResponse {
     models.User user = 1;
 }
 </code></pre><p><code>service.proto</code> を protoc すると、以下のエラーになる。</p>
-<pre><code>$ protoc -I . -I ~/src --go_out=plugins=grpc:./go service.proto
+<pre><code>$ protoc -I . -I ~/src --go_out ./go --go-grpc_out ./go service.proto
 github.com/sat8bit/protobuf/models/role.proto:8:3: &quot;io.github.sat8bit.models.UNKNOWN&quot; is already defined in file &quot;models/role.proto&quot;.
 github.com/sat8bit/protobuf/models/role.proto:8:3: Note that enum values use C++ scoping rules, meaning that enum values are siblings of their type, not children of it.  Therefore, &quot;UNKNOWN&quot; must be unique within &quot;io.github.sat8bit.models&quot;, not just within &quot;Role&quot;.
 github.com/sat8bit/protobuf/models/role.proto:9:3: &quot;io.github.sat8bit.models.ADMIN&quot; is already defined in file &quot;models/role.proto&quot;.
@@ -349,26 +364,27 @@ service.proto:16:5: &quot;models.Role&quot; is resolved to &quot;io.github.sat8b
 <h2 id="パス指定で発生する差分についてgo_out--grpc-に限る">パス指定で発生する差分について（go_out / grpc に限る）</h2>
 <p>ここまでの検証で <code>models/user.proto</code> と <code>service.proto</code> の import が揃っていればよいことがわかったが、何に揃えればいいのかを考える。</p>
 <p>ここで、enum が含まれるファイルを import した場合の生成されるファイルの差分を見てみる。</p>
-<pre><code>$ diff user.pb.go._models_role.proto user.pb.go.github.com_sat8bit_protobuf_models_role.proto 
+<pre><code>$ diff user.pb.go._models_role.proto user.pb.go.github.com_sat8bit_protobuf_models_role.proto
 91,103c91,101
 (rawDesc の差分は省略)
 137c135
 &lt;       file_github_com_sat8bit_protobuf_models_role_proto_init()
 ---
 &gt;       file_models_role_proto_init()
-</code></pre><p>enum を含む場合は、initが呼び出されるが、その呼び出すメソッド名が違うことがわかる。</p>
+</code></pre><p>enum を含むファイルを import した場合は、対象の enum を含むファイルの init function が呼び出されるが、その呼び出すメソッド名が違うことがわかる。</p>
 <p>ちなみに、このままの流れで以下のコマンドで role.proto を protoc すると、生成される init は <code>file_models_role_proto_init</code> になる。</p>
-<pre><code>$ protoc -I . -I ~/src --go_out=plugins=grpc:./go models/role.proto
-$ grep init go/github.com/sat8bit/protobuf/models/role.pb.go    
+<pre><code>$ protoc -I . -I ~/src --go_out ./go --go-grpc_out ./go models/role.proto
+$ grep init go/github.com/sat8bit/protobuf/models/role.pb.go
 func init() { file_models_role_proto_init() }
 func file_models_role_proto_init() {
-</code></pre><p>ちなみに前者の init を生成したい場合は、もう一方のインクルードパスからのパスを指定してあげれば良い。</p>
-<pre><code>$ protoc -I ~/src --go_out=plugins=grpc:./go ~/src/github.com/sat8bit/protobuf/models/role.proto
+</code></pre><p>ちなみに <code>file_github_com_sat8bit_protobuf_models_role_proto_init</code> を生成したい場合は、もう一方のインクルードパスからのパスを指定してあげれば良い。</p>
+<pre><code>$ protoc -I . -I ~/src --go_out ./go --go-grpc_out ./go ~/src/github.com/sat8bit/protobuf/models/role.proto
 $ grep init go/github.com/sat8bit/protobuf/models/role.pb.go
 func init() { file_github_com_sat8bit_protobuf_models_role_proto_init() }
 func file_github_com_sat8bit_protobuf_models_role_proto_init() {
-</code></pre><p><code>find . -name *.proto | protoc -I XXXX</code> でドバーッと protoc したいので、前者のほうが都合が良いことが多い気がした。</p>
-<p>一旦自前の分については、統一的な指定を守りつつ引き続きベストな構成を模索する。</p>
+</code></pre><p>以上のことから、 <strong>protoc を実行したときのパスの指定/インクルードパスの指定で、成果物が変わることがわかる。</strong></p>
+<p>import で指定するパスと、protoc のコマンド実行時のファイルを指定するパスを同じにしておけば良い話だけど、ちょっとわかりづらい。</p>
+<p>個人的には <code>find . -name *.proto | protoc -I XXXX</code> でドバーッと 1 ファイルずつ protoc したいので、前者のほうが都合が良いことが多い気がした。</p>
 
 
 

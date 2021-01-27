@@ -2,7 +2,7 @@
 <html lang="ja">
   <head>
     <meta charset="utf-8" />
-<title>Posts</title>
+<title>Daily/2021/01/24</title>
 
 
   
@@ -26,15 +26,16 @@
   href="https://sat8bit.github.io/index.xml"
   title="三日坊主。"
 />
-<meta property="og:title" content="Posts" />
-<meta property="og:description" content="" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://sat8bit.github.io/posts/" />
-<meta property="og:updated_time" content="2021-01-20T00:25:28+09:00" />
+<meta property="og:title" content="Daily/2021/01/24" />
+<meta property="og:description" content="Todo Todo Done protoc を更新する Log protoc を更新する 前回 protoc-gen-openapiv2 の annotation を使ってたんだけど、この行で import が protoc-gen-openapiv2 から指定になってる。 https://github.com/grpc-ecosystem/grpc-gateway/blob/master/protoc-gen-openapiv2/options/annotations.proto#L8 この場合は、上の googleapis と同様コピーするか、`g" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://sat8bit.github.io/logs/daily-2021-01-24/" />
+<meta property="article:published_time" content="2021-01-24T14:04:59+09:00" />
+<meta property="article:modified_time" content="2021-01-24T14:04:59+09:00" />
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Posts"/>
-<meta name="twitter:description" content=""/>
+<meta name="twitter:title" content="Daily/2021/01/24"/>
+<meta name="twitter:description" content="Todo Todo Done protoc を更新する Log protoc を更新する 前回 protoc-gen-openapiv2 の annotation を使ってたんだけど、この行で import が protoc-gen-openapiv2 から指定になってる。 https://github.com/grpc-ecosystem/grpc-gateway/blob/master/protoc-gen-openapiv2/options/annotations.proto#L8 この場合は、上の googleapis と同様コピーするか、`g"/>
 
 
 <link rel="stylesheet" href="https://sat8bit.github.io/fontawesome/css/all.min.css" />
@@ -128,10 +129,10 @@
 
     <div class="intro-header">
       <div class="container">
-        <div class="posts-heading">
+        <div class="logs-heading">
           
             <h1>
-              Posts
+              Daily/2021/01/24
             </h1>
           
           
@@ -143,61 +144,53 @@
 
     
   <div class="container" role="main">
-    <div class="posts-list">
+    <article class="article" class="blog-post">
       
-        
-      
+  <h1 id="todo">Todo</h1>
+<table>
+<thead>
+<tr>
+<th>Todo</th>
+<th>Done</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>protoc を更新する</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h1 id="log">Log</h1>
+<h2 id="protoc-を更新する">protoc を更新する</h2>
+<p>前回</p>
+<pre><code>protoc-gen-openapiv2 の annotation を使ってたんだけど、この行で import が protoc-gen-openapiv2 から指定になってる。
+
+https://github.com/grpc-ecosystem/grpc-gateway/blob/master/protoc-gen-openapiv2/options/annotations.proto#L8
+
+この場合は、上の googleapis と同様コピーするか、`github.com/grpc-ecosystem/grpc-gateway` をインクルードパスに追加するしかないことになる。
+</code></pre><p>openapiv2 を吐き出すために openapiv2 を include path に追加すること自体は違和感がないので追加する。</p>
+<p>（models 配下の proto が go を吐き出さないところで寝落ちした）</p>
+<h2 id="todo-1">[Todo]</h2>
+<h2 id="その他作業中に発生したこと">その他作業中に発生したこと</h2>
+<h2 id="next">Next</h2>
+
+
+
 
       
-        <article class="post-preview">
-  <a href="https://sat8bit.github.io/posts/import-of-protocol-buffer/">
-    <h2 class="post-title">Protocol Buffer の import におけるファイルの取扱いについて</h2>
-  </a>
-  <div class="post-entry">
+        <div class="blog-tags">
+          
+            <a href="https://sat8bit.github.io/tags/logs/">logs</a
+            >&nbsp;
+          
+        </div>
+      
+    </article>
     
-      <p>Protocol Buffer の import について import 周りで躓いたので、検証結果をまとめておく。 $ protoc --version libprotoc 3.6.0 $ protoc-gen-go --version protoc-gen-go v1.25.0 $ protoc-gen-go-grpc --version protoc-gen-go-grpc 1.1.0 import 時の同一ファイル判定について サンプルのディレクト</p>
-      <a href="https://sat8bit.github.io/posts/import-of-protocol-buffer/" class="post-read-more"
-        ></a
-      >
     
-  </div>
-
-  <div class="postmeta">
-    <span class="meta-post">
-  <em class="fa fa-calendar-alt"></em
-  >&nbsp;Jan 20, 2021
-  
-</span>
-
-  </div>
-</article>
-
       
-        <article class="post-preview">
-  <a href="https://sat8bit.github.io/posts/vscode-cheatsheet/">
-    <h2 class="post-title">Visual Studio Code Cheatsheet</h2>
-  </a>
-  <div class="post-entry">
-    
-      <p>ショートカット 何回やっても忘れるのでまとめておく。 コマンドパレットを開く Shift + Command + P これが開ければ後のショートカットキーは調べられる。 コマンド</p>
-      <a href="https://sat8bit.github.io/posts/vscode-cheatsheet/" class="post-read-more"
-        ></a
-      >
-    
-  </div>
 
-  <div class="postmeta">
-    <span class="meta-post">
-  <em class="fa fa-calendar-alt"></em
-  >&nbsp;Dec 23, 2020
-  
-</span>
-
-  </div>
-</article>
-
-      
-    </div>
     
   </div>
 
