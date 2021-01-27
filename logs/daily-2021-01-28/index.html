@@ -205,7 +205,7 @@ Submit したときの動作を上から渡す。API 叩くのか、上流で値
 <p>protoc コマンドのオプション <code>--go_out=plugins=grpc:./go</code> が記載してる <code>protoc</code> のバージョン（<code>3.6.0</code>）と一致してない・・・・</p>
 <p>たぶん別のバージョンの protoc で動かしたんだと思うので、再度上から実行して書き直した。</p>
 <p>すると、</p>
-<pre><code>protoc -I . -I ~/src --go-grpc_out ./go models/user.proto 
+<pre><code>protoc -I . -I ~/src --go-grpc_out ./go models/user.proto
 </code></pre><p>ここでやっぱり user_grpc.pb.go が生成されない。もしかして service がないと生成されなくなってる？</p>
 <p>試しに service を追加したら生成された。</p>
 <p>というかよく生成されるコード読んでみたら、message に対応する type が生成されてないぞなんだこれ。</p>
@@ -223,8 +223,13 @@ Submit したときの動作を上から渡す。API 叩くのか、上流で値
 <h3 id="protoc-の-plugin-についての記事">protoc の plugin についての記事</h3>
 <p>どっかで読んで作ってみたい</p>
 <p><a href="https://qiita.com/yugui/items/87d00d77dee159e74886">https://qiita.com/yugui/items/87d00d77dee159e74886</a></p>
+<h3 id="新しいバージョンの-protoc-で生成した-protobuf-を元々あったアプリに読み込ませたらエラー">新しいバージョンの protoc で生成した protobuf を元々あったアプリに読み込ませたらエラー</h3>
+<p><code>mustEmbedUnimplemented***</code> という func がないエラーがドバーッと。</p>
+<p>なんぞこれ？という同じ疑問の issue があがってたので、明日以降調べる。</p>
+<p><a href="https://github.com/grpc/grpc-go/issues/3794">https://github.com/grpc/grpc-go/issues/3794</a></p>
 <h2 id="next">Next</h2>
-<pre><code></code></pre>
+<pre><code>
+</code></pre>
 
 
 
