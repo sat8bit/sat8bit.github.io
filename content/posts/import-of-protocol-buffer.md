@@ -11,6 +11,10 @@ import 周りで躓いたので、検証結果をまとめておく。
 ```
 $ protoc --version
 libprotoc 3.6.0
+$ protoc-gen-go --version
+protoc-gen-go v1.25.0
+$ protoc-gen-go-grpc --version
+protoc-gen-go-grpc 1.1.0
 ```
 
 ## import 時の同一ファイル判定について
@@ -22,11 +26,13 @@ libprotoc 3.6.0
 └── src/
     └── github.com
         └── sat8bit
-            └── protoc
+            └── protobuf
                 ├── models
                 │   └── user.proto
                 └── service.proto
 ```
+
+この後の `protoc` コマンドは全て `src/github.com/sat8bit/protobuf` ディレクトリ配下で実行する。
 
 `service.proto` の内容は次の通り。
 
@@ -67,22 +73,23 @@ message User {
 }
 ```
 
-この状態で go_outでgrpcを吐き出すと、以下の構造になる。
+この状態で go-grpc_out で grpc を吐き出すと、以下の構造になる。
 
 ```
-$ protoc --go_out=plugins=grpc:./go service.proto
+$ protoc --go_out ./go --go-grpc_out ./go service.proto
 $ tree go
 go
 └── github.com
     └── sat8bit
         └── protobuf
-            └── service.pb.go
+            ├── service.pb.go
+            └── service_grpc.pb.go
 ```
 
 ただ、実際は `grpc-gateway` などの `grpc-ecosystem` や、`validator` などを src 配下に展開していたので、それを再現するために `-I` を追加する。
 
 ```
-$ protoc -I . -I ~/src --go_out=plugins=grpc:./go service.proto
+$ protoc -I . -I ~/src --go_out ./go --go-grpc_out ./go service.proto
 ```
 
 この状態では、models/user.proto を import するパスは２種類ある。
@@ -193,10 +200,18 @@ message User {
 この状態で、`model/user.proto` を protoc してみる。
 
 ```
-$ protoc -I . -I ~/src --go_out=plugins=grpc:./go models/user.proto
+$ protoc -I . -I ~/src --go_out ./go --go-grpc_out ./go models/user.proto models/role.proto
+$ tree go
+go
+└── github.com
+    └── sat8bit
+        └── protobuf
+            ├── models
+            │   ├── role.pb.go
+            │   └── user.pb.go
+            ├── service.pb.go
+            └── service_grpc.pb.go
 ```
-
-エラーにはならない。
 
 更に、`service.proto` でも role が必要になったので import する。
 
@@ -238,7 +253,7 @@ service.proto -------> models/user.proto
 この状態で、`service.proto` を protoc してみる。
 
 ```
-protoc -I . -I ~/src --go_out=plugins=grpc:./go service.proto
+protoc -I . -I ~/src --go_out ./go --go-grpc_out ./go service.proto
 ```
 
 エラーにはならない。
@@ -276,7 +291,7 @@ message GetUserResponse {
 `service.proto` を protoc すると、以下のエラーになる。
 
 ```
-$ protoc -I . -I ~/src --go_out=plugins=grpc:./go service.proto
+$ protoc -I . -I ~/src --go_out ./go --go-grpc_out ./go service.proto
 github.com/sat8bit/protobuf/models/role.proto:8:3: "io.github.sat8bit.models.UNKNOWN" is already defined in file "models/role.proto".
 github.com/sat8bit/protobuf/models/role.proto:8:3: Note that enum values use C++ scoping rules, meaning that enum values are siblings of their type, not children of it.  Therefore, "UNKNOWN" must be unique within "io.github.sat8bit.models", not just within "Role".
 github.com/sat8bit/protobuf/models/role.proto:9:3: "io.github.sat8bit.models.ADMIN" is already defined in file "models/role.proto".
@@ -300,7 +315,7 @@ service.proto:16:5: "models.Role" is resolved to "io.github.sat8bit.models.Role"
 ここで、enum が含まれるファイルを import した場合の生成されるファイルの差分を見てみる。
 
 ```
-$ diff user.pb.go._models_role.proto user.pb.go.github.com_sat8bit_protobuf_models_role.proto 
+$ diff user.pb.go._models_role.proto user.pb.go.github.com_sat8bit_protobuf_models_role.proto
 91,103c91,101
 (rawDesc の差分は省略)
 137c135
@@ -309,26 +324,28 @@ $ diff user.pb.go._models_role.proto user.pb.go.github.com_sat8bit_protobuf_mode
 >       file_models_role_proto_init()
 ```
 
-enum を含む場合は、initが呼び出されるが、その呼び出すメソッド名が違うことがわかる。
+enum を含むファイルを import した場合は、対象の enum を含むファイルの init function が呼び出されるが、その呼び出すメソッド名が違うことがわかる。
 
 ちなみに、このままの流れで以下のコマンドで role.proto を protoc すると、生成される init は `file_models_role_proto_init` になる。
 
 ```
-$ protoc -I . -I ~/src --go_out=plugins=grpc:./go models/role.proto
-$ grep init go/github.com/sat8bit/protobuf/models/role.pb.go    
+$ protoc -I . -I ~/src --go_out ./go --go-grpc_out ./go models/role.proto
+$ grep init go/github.com/sat8bit/protobuf/models/role.pb.go
 func init() { file_models_role_proto_init() }
 func file_models_role_proto_init() {
 ```
 
-ちなみに前者の init を生成したい場合は、もう一方のインクルードパスからのパスを指定してあげれば良い。
+ちなみに `file_github_com_sat8bit_protobuf_models_role_proto_init` を生成したい場合は、もう一方のインクルードパスからのパスを指定してあげれば良い。
 
 ```
-$ protoc -I ~/src --go_out=plugins=grpc:./go ~/src/github.com/sat8bit/protobuf/models/role.proto
+$ protoc -I . -I ~/src --go_out ./go --go-grpc_out ./go ~/src/github.com/sat8bit/protobuf/models/role.proto
 $ grep init go/github.com/sat8bit/protobuf/models/role.pb.go
 func init() { file_github_com_sat8bit_protobuf_models_role_proto_init() }
 func file_github_com_sat8bit_protobuf_models_role_proto_init() {
 ```
 
-`find . -name *.proto | protoc -I XXXX` でドバーッと protoc したいので、前者のほうが都合が良いことが多い気がした。
+以上のことから、 **protoc を実行したときのパスの指定/インクルードパスの指定で、成果物が変わることがわかる。**
 
-一旦自前の分については、統一的な指定を守りつつ引き続きベストな構成を模索する。
+import で指定するパスと、protoc のコマンド実行時のファイルを指定するパスを同じにしておけば良い話だけど、ちょっとわかりづらい。
+
+個人的には `find . -name *.proto | protoc -I XXXX` でドバーッと 1 ファイルずつ protoc したいので、前者のほうが都合が良いことが多い気がした。
