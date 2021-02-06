@@ -27,7 +27,7 @@
   title="三日坊主。"
 />
 <meta property="og:title" content="Daily/2021/01/28" />
-<meta property="og:description" content="Todo Todo Done React で text input を扱うときの実装を考える protoc が何故か go を吐き出さない問題 Log React で text input を扱うときの実装を考える input の Component を作ろうとしたときにどう作ればい" />
+<meta property="og:description" content="Todo Todo Done React で text input を扱うときの実装を考える o protoc が何故か go を吐き出さない問題 o mustEmbedUnimplemented** について調べる Log React で text input を扱うときの実装を考える input の Component を作ろうとし" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://sat8bit.github.io/logs/daily-2021-01-28/" />
 <meta property="article:published_time" content="2021-01-28T00:27:48+09:00" />
@@ -35,7 +35,7 @@
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Daily/2021/01/28"/>
-<meta name="twitter:description" content="Todo Todo Done React で text input を扱うときの実装を考える protoc が何故か go を吐き出さない問題 Log React で text input を扱うときの実装を考える input の Component を作ろうとしたときにどう作ればい"/>
+<meta name="twitter:description" content="Todo Todo Done React で text input を扱うときの実装を考える o protoc が何故か go を吐き出さない問題 o mustEmbedUnimplemented** について調べる Log React で text input を扱うときの実装を考える input の Component を作ろうとし"/>
 
 
 <link rel="stylesheet" href="https://sat8bit.github.io/fontawesome/css/all.min.css" />
@@ -157,10 +157,14 @@
 <tbody>
 <tr>
 <td>React で text input を扱うときの実装を考える</td>
-<td></td>
+<td>o</td>
 </tr>
 <tr>
 <td>protoc が何故か go を吐き出さない問題</td>
+<td>o</td>
+</tr>
+<tr>
+<td>mustEmbedUnimplemented** について調べる</td>
 <td></td>
 </tr>
 </tbody>
@@ -219,6 +223,44 @@ Submit したときの動作を上から渡す。API 叩くのか、上流で値
 <p>なので、正しくアウトプットするためには、</p>
 <pre><code>--go_out &lt;dir&gt; --go-grpc_out &lt;dir&gt;
 </code></pre><p>というオプションが必要だった。勉強になった。</p>
+<h3 id="mustembedunimplemented">mustEmbedUnimplemented</h3>
+<p>昨日始めた時間がもう今日だったので、続きに書く。</p>
+<p>無事 protoc がバージョンできてよかった、と思ったのもつかの間、 <code>mustEmbedUnimplementedXXXXXServer</code> というメソッドの実装がないよ、というエラーが出た。</p>
+<p>調べたところ、同じような issue がこれ。</p>
+<p><a href="https://github.com/grpc/grpc-go/issues/3794">https://github.com/grpc/grpc-go/issues/3794</a></p>
+<p>そのなかに出てくる長い長い議論がこれ。</p>
+<p><a href="https://github.com/grpc/grpc-go/issues/3669">https://github.com/grpc/grpc-go/issues/3669</a></p>
+<p>ちょっと読めないので、ソースコードなどをかいつまんで見てみると、UnimplementedServer を embeded すれば良いみたい。</p>
+<p>以前書いた <a href="/posts/import-of-protocol-buffer/">ProtocolBuffer の import の記事</a> で生成した Server を例にすると、</p>
+<p>まず、こういう interface が生成される。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#75715e">// UserServiceServer is the server API for UserService service.
+</span><span style="color:#75715e">// All implementations must embed UnimplementedUserServiceServer
+</span><span style="color:#75715e">// for forward compatibility
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">UserServiceServer</span> <span style="color:#66d9ef">interface</span> {
+  <span style="color:#a6e22e">GetUser</span>(<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Context</span>, <span style="color:#f92672">*</span><span style="color:#a6e22e">GetUserMessage</span>) (<span style="color:#f92672">*</span><span style="color:#a6e22e">GetUserResponse</span>, <span style="color:#66d9ef">error</span>)
+  <span style="color:#a6e22e">mustEmbedUnimplementedUserServiceServer</span>()
+}
+</code></pre></div><p>問題になっているのは <code>mustEmbedUnimplementedUserServiceServer</code> で、どうやら <code>UnimplementedUserServiceServer</code> を Embed させるための func っぽい？</p>
+<p><code>UnimplementedUserServiceServer</code> を見てみる。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#75715e">// UnimplementedUserServiceServer must be embedded to have forward compatible implementations.
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">UnimplementedUserServiceServer</span> <span style="color:#66d9ef">struct</span> {
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">UnimplementedUserServiceServer</span>) <span style="color:#a6e22e">GetUser</span>(<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Context</span>, <span style="color:#f92672">*</span><span style="color:#a6e22e">GetUserMessage</span>) (<span style="color:#f92672">*</span><span style="color:#a6e22e">GetUserResponse</span>, <span style="color:#66d9ef">error</span>) {
+  <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">status</span>.<span style="color:#a6e22e">Errorf</span>(<span style="color:#a6e22e">codes</span>.<span style="color:#a6e22e">Unimplemented</span>, <span style="color:#e6db74">&#34;method GetUser not implemented&#34;</span>)
+}
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">UnimplementedUserServiceServer</span>) <span style="color:#a6e22e">mustEmbedUnimplementedUserServiceServer</span>() {}
+</code></pre></div><p>何もしない func が入っている。
+コメントにもある通り、上位互換性を保つために実装に Embed しないといけないらしい。</p>
+<p>つまり、<code>protobuf</code> 側に新しい <code>rpc</code> が生えたときに、<code>UnimplementedUserServiceServer</code> を Embed しておくと、実装をしなくても、自動で <code>codes.Unimplemented</code> を返却するメソッドを生やすよ、ということではないかと思う。</p>
+<p>ちなみに Embed する実装はこう。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">server</span> <span style="color:#66d9ef">struct</span> {
+    <span style="color:#a6e22e">pb</span>.<span style="color:#a6e22e">UnimplementedUserServiceServer</span>
+}
+</code></pre></div><p>そもそもこの func いらないよ！ってときは、go-grpc の option でなくせるらしい。やってない。</p>
+<pre><code>--go-grpc_opt=require_unimplemented_servers=false
+</code></pre><p>上のキーワードで調べたらめっちゃわかりやすい note あった。ありがとうございます。</p>
+<p><a href="https://note.com/dd_techblog/n/nb8b925d21118">https://note.com/dd_techblog/n/nb8b925d21118</a></p>
 <h2 id="その他作業中に発生したこと">その他作業中に発生したこと</h2>
 <h3 id="protoc-の-plugin-についての記事">protoc の plugin についての記事</h3>
 <p>どっかで読んで作ってみたい</p>

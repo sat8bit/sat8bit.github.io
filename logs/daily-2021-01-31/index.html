@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+<title>Daily/2021/01/31</title>
+
+
+  
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-62G1T8FBSZ"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-62G1T8FBSZ');
+  </script>
+  
+
+
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link
+  rel="alternate"
+  type="application/rss+xml"
+  href="https://sat8bit.github.io/index.xml"
+  title="三日坊主。"
+/>
+<meta property="og:title" content="Daily/2021/01/31" />
+<meta property="og:description" content="Todo Todo Done アーキテクチャ見直しの話 o Log アーキテクチャ見直しの話 Frontend &#43; Backend が 1 アプリケーション user-service / cms-service / chat-service みたいな操作する対象っぽいもので区切ってたやつ" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://sat8bit.github.io/logs/daily-2021-01-31/" />
+<meta property="article:published_time" content="2021-01-31T03:25:29+09:00" />
+<meta property="article:modified_time" content="2021-01-31T03:25:29+09:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Daily/2021/01/31"/>
+<meta name="twitter:description" content="Todo Todo Done アーキテクチャ見直しの話 o Log アーキテクチャ見直しの話 Frontend &#43; Backend が 1 アプリケーション user-service / cms-service / chat-service みたいな操作する対象っぽいもので区切ってたやつ"/>
+
+
+<link rel="stylesheet" href="https://sat8bit.github.io/fontawesome/css/all.min.css" />
+
+<link
+  id="dark-mode-theme"
+  rel="stylesheet"
+  href="https://sat8bit.github.io/css/dark.css"
+/>
+
+<script>
+  var darkTheme = document.getElementById('dark-mode-theme')
+  var storedTheme = localStorage.getItem('dark-mode-storage')
+  if (storedTheme === 'dark') {
+    darkTheme.disabled = false
+  } else if (storedTheme === 'light') {
+    darkTheme.disabled = true
+  }
+</script>
+
+<script src="https://sat8bit.github.io/js/bundle.js"></script>
+<script src="https://sat8bit.github.io/js/instantpage.min.js" type="module" defer></script>
+<meta name="generator" content="Hugo 0.79.1" />
+  </head>
+  <body>
+    
+  
+
+
+
+
+  <header>
+    <nav class="navbar">
+  <div class="nav">
+    
+        <a href="https://sat8bit.github.io/" class="nav-logo">
+        <img
+          src="https://sat8bit.github.io/images/icon.png"
+          width="50"
+          height="50"
+          alt="Logo"
+        />
+        </a>
+    
+
+    <ul class="nav-links">
+      
+        
+          <li>
+            <a href="/about/" id="About"
+              ><em class="fas fa-user fa-lg"></em
+            ></a>
+          </li>
+          
+      
+        
+          <li>
+            <a href="/tags" id="Tags"
+              ><em class="fas fa-tag fa-lg"></em
+            ></a>
+          </li>
+          
+      
+        
+          <li>
+            <a href="/categories" id="Category"
+              ><em class="fas fa-folder-open fa-lg"></em
+            ></a>
+          </li>
+          
+      
+        
+          <li>
+            <a href="/search" id="Search"
+              ><em class="fas fa-search fa-lg"></em
+            ></a>
+          </li>
+          
+      
+        
+          <li>
+            <a href="/archives" id="Archives"
+              ><em class="fas fa-archive fa-lg"></em
+            ></a>
+          </li>
+          
+      
+    </ul>
+  </div>
+</nav>
+
+    <div class="intro-header">
+      <div class="container">
+        <div class="logs-heading">
+          
+            <h1>
+              Daily/2021/01/31
+            </h1>
+          
+          
+        </div>
+      </div>
+    </div>
+  </header>
+  
+
+    
+  <div class="container" role="main">
+    <article class="article" class="blog-post">
+      
+  <h1 id="todo">Todo</h1>
+<table>
+<thead>
+<tr>
+<th>Todo</th>
+<th>Done</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>アーキテクチャ見直しの話</td>
+<td>o</td>
+</tr>
+</tbody>
+</table>
+<h1 id="log">Log</h1>
+<h2 id="アーキテクチャ見直しの話">アーキテクチャ見直しの話</h2>
+<h3 id="frontend--backend-が-1-アプリケーション">Frontend + Backend が 1 アプリケーション</h3>
+<p><code>user-service / cms-service / chat-service</code> みたいな操作する対象っぽいもので区切ってたやつ。</p>
+<p>外からのリクエストは <code>Ingress</code> あたりでルーティングするので１ドメインだけど、内部的には入り口から小分けになってる。</p>
+<p>デメリットは、内部だけで使いたい API みたいなのを作り始めると管理がしんどい</p>
+<p>例えば <code>chat-service</code> で内部的にユーザ情報を <code>user-service</code> から引きたいときに <code>userID</code> を識別子として渡したいが、そんな API は外向きには開けたくないみたいな感じ。</p>
+<h3 id="frontend--backend-が-1-グループで内部で更に分ける">Frontend + Backend が 1 グループで内部で更に分ける</h3>
+<p>Frontend + Backend が 1 アプリケーションの、アプリケーションが fe / be とかで別れてるやつ。be は CRUD 操作だけ、それを使って fe でユースケースを作る。</p>
+<p><code>(user-fe / user-be) / (cms-fe / cms-be) / (chat-fe / chat-be)</code> みたいな感じ。</p>
+<p>人数が多いのであればこれでもいいんだと思う。</p>
+<p>人数が少ない場合、共通化とかし始めてそれの反映とかに追われがち。</p>
+<h3 id="frontend-を出面でまとめてbackend-を小分けにする">Frontend を出面でまとめて、Backend を小分けにする</h3>
+<p>今までと違って、出面で Frontend をまとめる。<code>Front(web-api, cms-api) / Backend(user-be / cms-be / chat-be)</code> みたいな感じ。Backend は CRUD 操作だけ。</p>
+<p>フロントの都合で勝手にユースケースを組めるので、比較的やりやすいかなって思った。</p>
+<p>ただ実際やってみてわかったのは、ユースケースは大体似通うので、同じようなコードが生まれがち。こぴぺで横から持ってくる。</p>
+<h3 id="frontend-を出面でまとめてbackend-は概念的に小分けにする">Frontend を出面でまとめて、Backend は概念的に小分けにする</h3>
+<p>Frontend を出面でまとめて、 Backend を小分けにする の Backend が一つのアプリケーションにまとまっているというだけ。</p>
+<p>Backend レイヤで共通で使いたいロジックとかが結構出てくるので、まとまってるほうが都合が良かった。</p>
+<h3 id="認証の-frontend--all-in-one-backend">認証の Frontend + All in One Backend</h3>
+<p>Frontend を出面でまとめて、Backend はひとつにまとめる案。 CRUD 操作だけのものを作っても、結局ユースケースによって前提となる処理があるので、それを 各 Frontend に実装するのが億劫になった。</p>
+<p>ユースケースを全部 Backend で切って、外からのアクセスに対しての認証とか、セッション検証とかだけ Frontend でする。</p>
+<p>Backend を切り出しておくのは、認証を切り離したレイヤを用意しとくことで、バッチ処理とかでユースケース呼びたいときに使えるようにしておく。</p>
+<p>ので、Backend では「誰のアクセスか」みたいな部分は検証しない。（必要に応じてロギングする）</p>
+<h3 id="どうしてこうなった">どうしてこうなった</h3>
+<p>アプリケーション側のクラス設計がちゃんと作れてなかったときに、モノリシックなアプリケーションを作ったら煩雑なものになった。</p>
+<p>内部でぐちゃぐちゃしてシンプルを保てないので、アプリケーションを小分けにすることでシンプルにならないか模索してきた。</p>
+<p>ただ、実際は人がたくさんいる会社だからできていたのであって、人が少ないところでやるものではないなってのがわかってきた。</p>
+<p>また、user とかそんな小さい単位で単純に小分けにするのではなく、もうちょっと大きい概念で分けておくのが正しそう。サービス単位とか。</p>
+<h2 id="その他作業中に発生したこと">その他作業中に発生したこと</h2>
+<h2 id="next">Next</h2>
+
+
+
+
+      
+        <div class="blog-tags">
+          
+            <a href="https://sat8bit.github.io/tags/logs/">logs</a
+            >&nbsp;
+          
+        </div>
+      
+    </article>
+    
+    
+      
+
+    
+  </div>
+
+    <footer>
+  
+  <div>
+    
+      <a href="https://twitter.com/sat8bit" name="Twitter"
+        ><em class="fab fa-twitter"></em
+      ></a>
+    
+
+
+
+
+  
+  <div class="container">
+    <p class="credits copyright">
+      <a href="https://sat8bit.github.io/about">Satoshi Koizumi</a>
+      &nbsp;&copy;
+      2021
+      
+        &nbsp;/&nbsp;
+        <a href="https://sat8bit.github.io/">三日坊主。</a>
+      
+      &nbsp;&ndash;&nbsp;
+      <em class="fas fa-moon" id="dark-mode-toggle"></em>
+    </p>
+
+    <p class="credits theme-by">
+       <a href="https://gohugo.io">Hugo</a>&nbsp;
+      
+      <a href="https://github.com/matsuyoshi30/harbor">Harbor</a>
+    </p>
+  </div>
+</footer>
+
+  </body>
+</html>
