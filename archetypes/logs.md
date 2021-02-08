@@ -4,18 +4,10 @@ date: {{ .Date }}
 tags: ["logs"]
 ---
 
-# Todo
+# [Todo]
 
-| Todo | Done |
-| ---- | ---- |
-|      |      |
+# [Todo]
 
-# Log
+# その他
 
-## [Todo]
-
-## [Todo]
-
-## その他作業中に発生したこと
-
-## Next
+# Next
