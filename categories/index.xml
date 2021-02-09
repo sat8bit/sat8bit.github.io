@@ -1,15 +1,883 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-	<channel>
-		<title>Categories on 三日坊主。</title>
-		<link>https://sat8bit.github.io/categories/</link>
-		<description>Recent content in Categories </description>
-		<generator>Hugo -- gohugo.io</generator>
-		
-  		<language>ja</language>
-		
-		<managingEditor>Page(/categories) (Satoshi Koizumi)</managingEditor>
-    	
-		<atom:link href="/categories/" rel="self" type="application/rss+xml" />
-		
-	</channel>
+  <channel>
+    <title>Categories on 三日坊主。</title>
+    <link>https://sat8bit.github.io/categories/</link>
+    <description>Recent content in Categories on 三日坊主。</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ja</language>
+    
+        <atom:link href="https://sat8bit.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Firebase Tutorial</title>
+      <link>https://sat8bit.github.io/posts/firebase-tutorial/</link>
+      <pubDate>Tue, 09 Feb 2021 22:07:53 +0900</pubDate>
+      
+      <guid>https://sat8bit.github.io/posts/firebase-tutorial/</guid>
+      <description>&lt;h1 id=&#34;概要&#34;&gt;概要&lt;/h1&gt;
+&lt;p&gt;Firebase を使って色々やるチュートリアル。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Firebase は、高品質のアプリを迅速に開発できる Google のモバイル プラットフォームで、ビジネスの成長に役立ちます。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h1 id=&#34;事前準備プロジェクトの作成と開発の準備&#34;&gt;事前準備：プロジェクトの作成と開発の準備&lt;/h1&gt;
+&lt;h2 id=&#34;プロジェクトの作成&#34;&gt;プロジェクトの作成&lt;/h2&gt;
+&lt;p&gt;トップページから、プロジェクトを作る。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;http://console.firebase.google.com/&#34;&gt;http://console.firebase.google.com/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;愛着が湧く名前が良いと思う。今回は &lt;code&gt;matomelien&lt;/code&gt; とした。まとめサイト関連のサービス作るの好き。&lt;/p&gt;
+&lt;h2 id=&#34;リポジトリの整備&#34;&gt;リポジトリの整備&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;git&lt;/code&gt; のリポジトリを整備していく。&lt;/p&gt;
+&lt;p&gt;Firebase では、一つのリポジトリに Firebase の各サービスに対するソースコードをまとめる構成がとれそうなので、まとめる。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;ROOT/
+├── functions  // Firebase Functions
+...
+└── public     // Firebase Hosting
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;プロジェクト名でディレクトリを作って &lt;code&gt;git init .&lt;/code&gt; しておく。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ mkdir matomelien
+$ cd matomelien
+$ git init .
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;以降はこのディレクトリをルートとする。&lt;/p&gt;
+&lt;h2 id=&#34;firebase-cli-のインストール&#34;&gt;Firebase CLI のインストール&lt;/h2&gt;
+&lt;p&gt;node 及び npm のインストール手順はここでは割愛する。&lt;/p&gt;
+&lt;p&gt;Global に firebase-tools をインストールしておく。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ npm install -g firebase-tools
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;以降は以下のバージョンを使って作業をしている。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;$ node --version
+v14.14.0
+$ npm --version
+6.14.8
+$ firebase --version
+9.3.0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;プロジェクトの初期化&#34;&gt;プロジェクトの初期化&lt;/h2&gt;
+&lt;p&gt;チュートリアルに沿って以下のコマンドでログインする。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ firebase login
+&lt;/code&gt;&lt;/pre&gt;&lt;h1 id=&#34;functions-で-api-を作る&#34;&gt;Functions で API を作る&lt;/h1&gt;
+&lt;p&gt;今回は TypeScript を使う前提で進める。&lt;/p&gt;
+&lt;p&gt;ドキュメント：https://firebase.google.com/docs/functions/&lt;/p&gt;
+&lt;h2 id=&#34;functions-の初期化&#34;&gt;Functions の初期化&lt;/h2&gt;
+&lt;p&gt;以下のコマンドを実行する。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;firebase init functions
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;すると、まずどうやってプロジェクトを作成するか聞かれる。今回は既に &lt;code&gt;matomelien&lt;/code&gt; を作成済なので、&lt;code&gt;Use an exists project&lt;/code&gt; を選択。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;? Please select an option:
+❯ Use an existing project
+  Create a new project
+  Add Firebase to an existing Google Cloud Platform project
+  Don&#39;t set up a default project
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;ログインしているユーザに紐づく Project の一覧を出してくれるので、選択。上は typo したやつ。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;? Select a default Firebase project for this directory: (Use arrow keys)
+  matomelian (matomelian)
+❯ matomelien (matomelien)
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;言語選び。TypeScript を選択。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;? What language would you like to use to write Cloud Functions?
+  JavaScript
+❯ TypeScript
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;ESLint は私の場合は入れておく。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;? Do you want to use ESLint to catch probable bugs and enforce style? (Y/n)
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;code&gt;npm install&lt;/code&gt; していい？と聞かれるのでまぁそのまま OK。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;✔  Wrote functions/package.json
+✔  Wrote functions/.eslintrc.js
+✔  Wrote functions/tsconfig.json
+✔  Wrote functions/tsconfig.dev.json
+✔  Wrote functions/src/index.ts
+✔  Wrote functions/.gitignore
+? Do you want to install dependencies with npm now? (Y/n)
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;完了すると、雛形を一通り作成してくれる。これで初期化は完了。&lt;/p&gt;
+&lt;h2 id=&#34;http-request-で起動する-hello-world-の-local-実行と-deploy&#34;&gt;Http Request で起動する Hello World! の local 実行と Deploy&lt;/h2&gt;
+&lt;p&gt;functions/src/index.ts で export した function が deploy される。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;functions/src/index.ts&lt;/code&gt; にコメントアウトされた雛形があるので、このコメントアウトを外してみる。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-diff&#34; data-lang=&#34;diff&#34;&gt; import * as functions from &amp;#34;firebase-functions&amp;#34;;
+
+&lt;span style=&#34;color:#f92672&#34;&gt;-// // Start writing Firebase Functions
+&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;-// // https://firebase.google.com/docs/functions/typescript
+&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;-//
+&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;-// export const helloWorld = functions.https.onRequest((request, response) =&amp;gt; {
+&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;-//   functions.logger.info(&amp;#34;Hello logs!&amp;#34;, {structuredData: true});
+&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;-//   response.send(&amp;#34;Hello from Firebase!&amp;#34;);
+&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;-// });
+&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;+// Start writing Firebase Functions
+&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;+// https://firebase.google.com/docs/functions/typescript
+&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;+
+&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;+export const helloWorld = functions.https.onRequest((request, response) =&amp;gt; {
+&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;+  functions.logger.info(&amp;#34;Hello logs!&amp;#34;, {structuredData: true});
+&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;+  response.send(&amp;#34;Hello from Firebase!&amp;#34;);
+&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;+});
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;localhost で実行する前に TypeScript だと build してトランスパイルする必要があるので、行う。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://firebase.google.com/docs/functions/typescript?hl=ja#emulating_typescript_functions&#34;&gt;https://firebase.google.com/docs/functions/typescript?hl=ja#emulating_typescript_functions&lt;/a&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ cd functions
+$ npm run build
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;成功したら、以下のコマンドを使って emulator を起動する。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ firebase emulators:start
+（略）
+✔  functions[helloWorld]: http function initialized (http://localhost:5001/matomelien/us-central1/helloWorld).
+（略）
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;上の表にある URL にアクセスする。&lt;/p&gt;
+&lt;p&gt;&lt;img  src=&#34;https://sat8bit.github.io/images/2021-02-09-22-47-04.png&#34;
+        alt/&gt;&lt;/p&gt;
+&lt;p&gt;動いてることが確認できたので、実際に本番にデプロイする。&lt;br&gt;
+ここでエラーが。有料プランにあげてって言われている。前無料でできたのにな・・・&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ firebase deploy --only functions
+（略）
+Error: Your project matomelien must be on the Blaze (pay-as-you-go) plan to complete this command. Reqthis command. Required API cloudbuild.googleapis.com can&#39;t be enabled until the upgras cograde, visit uired API cloudbuild.googleapis.com cde is complete. To upgrade, visit the following URL:
+
+https://console.firebase.google.com/project/matomelien/usage/details
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;調べたら元々 &lt;code&gt;Node8&lt;/code&gt; のランタイムを無料プランで提供してたけど、それが去年非推奨になって &lt;code&gt;Node10&lt;/code&gt; 以降でしか使えなくなった。&lt;br&gt;
+&lt;code&gt;Node10&lt;/code&gt; 以降は Blaze（従量課金プラン）でしか提供していない模様。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://qiita.com/azukiazusa/items/edd6ca9cba2d48c4c3e2&#34;&gt;https://qiita.com/azukiazusa/items/edd6ca9cba2d48c4c3e2&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Pricing はここ。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://firebase.google.com/pricing&#34;&gt;https://firebase.google.com/pricing&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Daily/2021/02/08</title>
+      <link>https://sat8bit.github.io/logs/daily-2021-02-08/</link>
+      <pubDate>Mon, 08 Feb 2021 22:02:35 +0900</pubDate>
+      
+      <guid>https://sat8bit.github.io/logs/daily-2021-02-08/</guid>
+      <description>&lt;h1 id=&#34;api-作る&#34;&gt;API 作る&lt;/h1&gt;
+&lt;p&gt;全体のアーキテクチャ見直しを案件があるたびにしてきたけど、一段落ついた感じがする。&lt;/p&gt;
+&lt;p&gt;どっかでまとめたい。&lt;/p&gt;
+&lt;p&gt;今日は特につまりどころもなくスムーズに開発が進みました。&lt;/p&gt;
+&lt;h1 id=&#34;その他&#34;&gt;その他&lt;/h1&gt;
+&lt;h2 id=&#34;todo-から-done-を削除する&#34;&gt;Todo から Done を削除する&lt;/h2&gt;
+&lt;p&gt;やろうと思ってたことを書き出すだけでいい気がする。というかほとんど Done を書いてない。&lt;/p&gt;
+&lt;p&gt;そうなってくると、最初に見出しを書けばよいのであって、そもそも Todo という項目がいらない気がしたので、ばっさり削除することにする。&lt;/p&gt;
+&lt;p&gt;最近中途半端な文章が中途半端に残っているだけになってしまっているので、ちゃんと書こう。&lt;/p&gt;
+&lt;p&gt;そして書かないときは書かなくても良いじゃないの。&lt;/p&gt;
+&lt;h2 id=&#34;文章をちゃんと書くために&#34;&gt;文章をちゃんと書くために&lt;/h2&gt;
+&lt;p&gt;記事に画像を差し込む仕組みをちゃんと構築しないといけない。&lt;/p&gt;
+&lt;p&gt;イメージ的には、&lt;code&gt;Cmd + Shift + Ctrl + 4&lt;/code&gt; でクリップボードに切り出したスクリーンショットを、なんらかのショートカットでペーストできれば良い。&lt;/p&gt;
+&lt;p&gt;実はそれ自体はできそうなプラグインを既に VSCode には入れてあるんだけど、設定がちゃんとできていない。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/mushanshitiancai/vscode-paste-image&#34;&gt;https://github.com/mushanshitiancai/vscode-paste-image&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;イメージ的には &lt;code&gt;projectRootDir/static/images/XXXXX.png&lt;/code&gt; にファイルが置かれて、Paste したときの URL が &lt;code&gt;/images/XXXX.png&lt;/code&gt; になって欲しい。&lt;/p&gt;
+&lt;p&gt;結論から言うと、できたのはこれ。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-json&#34; data-lang=&#34;json&#34;&gt;{
+  &lt;span style=&#34;color:#f92672&#34;&gt;&amp;#34;pasteImage.basePath&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;${projectRoot}/static&amp;#34;&lt;/span&gt;,
+  &lt;span style=&#34;color:#f92672&#34;&gt;&amp;#34;pasteImage.prefix&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;/&amp;#34;&lt;/span&gt;,
+  &lt;span style=&#34;color:#f92672&#34;&gt;&amp;#34;pasteImage.path&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;${projectRoot}/static/images&amp;#34;&lt;/span&gt;,
+  &lt;span style=&#34;color:#f92672&#34;&gt;&amp;#34;pasteImage.forceUnixStyleSeparator&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;というか実は何も目新しいことやってなくて、さぁ本気で設定するぞ、と意気込んで、プラグインの README を読んだらやりたいことそのまま書いてあった。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/mushanshitiancai/vscode-paste-image#config-example&#34;&gt;https://github.com/mushanshitiancai/vscode-paste-image#config-example&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;こういうこと多い。&lt;/p&gt;
+&lt;h1 id=&#34;next&#34;&gt;Next&lt;/h1&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Daily/2021/02/06</title>
+      <link>https://sat8bit.github.io/logs/daily-2021-02-06/</link>
+      <pubDate>Sat, 06 Feb 2021 22:14:05 +0900</pubDate>
+      
+      <guid>https://sat8bit.github.io/logs/daily-2021-02-06/</guid>
+      <description>&lt;h1 id=&#34;todo&#34;&gt;Todo&lt;/h1&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Todo&lt;/th&gt;
+&lt;th&gt;Done&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;API 作る&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h1 id=&#34;log&#34;&gt;Log&lt;/h1&gt;
+&lt;h2 id=&#34;api-作る&#34;&gt;API 作る&lt;/h2&gt;
+&lt;p&gt;大体フレームはできてきたがエラーハンドリング周りがうまくいってないので引き続き調べる。&lt;/p&gt;
+&lt;h3 id=&#34;gorm-の-delete&#34;&gt;gorm の Delete&lt;/h3&gt;
+&lt;p&gt;gorm の DELETE 処理を以下のように書いた。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;	if err := conn.Delete(models.GroupMember{}).Where(&amp;quot;group_id = ?&amp;quot;, d.ID()).Error; err != nil {
+		return err
+	}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;発行された SQL がこれ。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;DELETE FROM `group_members`
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;全消ししてますやん。実装間違えてる。。&lt;/p&gt;
+&lt;p&gt;gorm の ドキュメントを改めて読んで見る。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://gorm.io/ja_JP/docs/delete.html#Block-Global-Delete&#34;&gt;https://gorm.io/ja_JP/docs/delete.html#Block-Global-Delete&lt;/a&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;If you perform a batch delete without any conditions, GORM WON’T run it, and will return ErrMissingWhereClause error
+
+You have to use some conditions or use raw SQL or enable AllowGlobalUpdate mode, for example:
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;あれ、なんか AllowGlobalUpdate mode じゃないと動かないって書いてあるけど、、うん？&lt;/p&gt;
+&lt;p&gt;引数がポインタじゃないのが関係するのか？と思ってやってみたけどだめ。バージョンかな。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://gorm.io/docs/v2_release_note.html&#34;&gt;https://gorm.io/docs/v2_release_note.html&lt;/a&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;GORM V2 enabled BlockGlobalUpdate mode by default, to trigger a global update/delete, you have to use some conditions or use raw SQL or enable AllowGlobalUpdate mode, for example:
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;使ってるの 1.9.12 だった。古すぎる・・・&lt;/p&gt;
+&lt;p&gt;最新版入れたらエラーになった箇所を並べていく。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;if gorm.IsRecordNotFoundError(err) {
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;これは、最新版だと errors.Is で比較する。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;errors.Is(err, gorm.ErrRecordNotFound)
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Transaction 周りだと defer で呼んでた Close がなくなってた。不要になったのかしら。&lt;/p&gt;
+&lt;p&gt;と思ったけど Close 消したら Connection が切れないなこれ。&lt;/p&gt;
+&lt;p&gt;一回 DB() で取得した後に Close が必要とのことでした。&lt;/p&gt;
+&lt;p&gt;connection 作るところも変わってた。浦島状態。。。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;	db, err := gorm.Open(&amp;quot;mysql&amp;quot;,
+		fmt.Sprintf(&amp;quot;%s:%s@tcp(%s:%s)/%s?charset=utf8&amp;amp;parseTime=true&amp;amp;loc=Asia%%2FTokyo&amp;quot;,
+			d.user, d.password, d.host, d.port, d.dbname))
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;a href=&#34;https://gorm.io/ja_JP/docs/connecting_to_the_database.html&#34;&gt;https://gorm.io/ja_JP/docs/connecting_to_the_database.html&lt;/a&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;	// &amp;quot;gorm.io/driver/mysql&amp;quot; を import する
+
+	db, err := gorm.Open(mysql.Open(
+		fmt.Sprintf(&amp;quot;%s:%s@tcp(%s:%s)/%s?charset=utf8&amp;amp;parseTime=true&amp;amp;loc=Asia%%2FTokyo&amp;quot;,
+			d.user, d.password, d.host, d.port, d.dbname)))
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Logger 周りだったり諸々修正してとりあえず動くとこまで確認できた。&lt;/p&gt;
+&lt;h2 id=&#34;todo-1&#34;&gt;[Todo]&lt;/h2&gt;
+&lt;h2 id=&#34;その他作業中に発生したこと&#34;&gt;その他作業中に発生したこと&lt;/h2&gt;
+&lt;h2 id=&#34;next&#34;&gt;Next&lt;/h2&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Daily/2021/02/04</title>
+      <link>https://sat8bit.github.io/logs/daily-2021-02-04/</link>
+      <pubDate>Thu, 04 Feb 2021 22:55:49 +0900</pubDate>
+      
+      <guid>https://sat8bit.github.io/logs/daily-2021-02-04/</guid>
+      <description>&lt;h1 id=&#34;todo&#34;&gt;Todo&lt;/h1&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Todo&lt;/th&gt;
+&lt;th&gt;Done&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;API 作る&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h1 id=&#34;log&#34;&gt;Log&lt;/h1&gt;
+&lt;h2 id=&#34;api作る&#34;&gt;API作る&lt;/h2&gt;
+&lt;p&gt;今日はせっせとAPIを作る日。&lt;/p&gt;
+&lt;h2 id=&#34;その他作業中に発生したこと&#34;&gt;その他作業中に発生したこと&lt;/h2&gt;
+&lt;h2 id=&#34;新しい-mac-book-が欲しい&#34;&gt;新しい Mac Book が欲しい！&lt;/h2&gt;
+&lt;p&gt;ことの発端はディスクがフルになったこと。&lt;/p&gt;
+&lt;p&gt;さて困った。&lt;/p&gt;
+&lt;p&gt;リスク背負いつつ20000円かけて1TBに換装するか、36000円の下取りでM1のMBAを買うか。&lt;/p&gt;
+&lt;p&gt;とりあえずファイルを消しながらギリギリこらえてるけどさすがに128GBはもう限界である&lt;/p&gt;
+&lt;h2 id=&#34;next&#34;&gt;Next&lt;/h2&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Daily/2021/01/31</title>
+      <link>https://sat8bit.github.io/logs/daily-2021-01-31/</link>
+      <pubDate>Sun, 31 Jan 2021 03:25:29 +0900</pubDate>
+      
+      <guid>https://sat8bit.github.io/logs/daily-2021-01-31/</guid>
+      <description>&lt;h1 id=&#34;todo&#34;&gt;Todo&lt;/h1&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Todo&lt;/th&gt;
+&lt;th&gt;Done&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;アーキテクチャ見直しの話&lt;/td&gt;
+&lt;td&gt;o&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h1 id=&#34;log&#34;&gt;Log&lt;/h1&gt;
+&lt;h2 id=&#34;アーキテクチャ見直しの話&#34;&gt;アーキテクチャ見直しの話&lt;/h2&gt;
+&lt;h3 id=&#34;frontend--backend-が-1-アプリケーション&#34;&gt;Frontend + Backend が 1 アプリケーション&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;user-service / cms-service / chat-service&lt;/code&gt; みたいな操作する対象っぽいもので区切ってたやつ。&lt;/p&gt;
+&lt;p&gt;外からのリクエストは &lt;code&gt;Ingress&lt;/code&gt; あたりでルーティングするので１ドメインだけど、内部的には入り口から小分けになってる。&lt;/p&gt;
+&lt;p&gt;デメリットは、内部だけで使いたい API みたいなのを作り始めると管理がしんどい&lt;/p&gt;
+&lt;p&gt;例えば &lt;code&gt;chat-service&lt;/code&gt; で内部的にユーザ情報を &lt;code&gt;user-service&lt;/code&gt; から引きたいときに &lt;code&gt;userID&lt;/code&gt; を識別子として渡したいが、そんな API は外向きには開けたくないみたいな感じ。&lt;/p&gt;
+&lt;h3 id=&#34;frontend--backend-が-1-グループで内部で更に分ける&#34;&gt;Frontend + Backend が 1 グループで内部で更に分ける&lt;/h3&gt;
+&lt;p&gt;Frontend + Backend が 1 アプリケーションの、アプリケーションが fe / be とかで別れてるやつ。be は CRUD 操作だけ、それを使って fe でユースケースを作る。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;(user-fe / user-be) / (cms-fe / cms-be) / (chat-fe / chat-be)&lt;/code&gt; みたいな感じ。&lt;/p&gt;
+&lt;p&gt;人数が多いのであればこれでもいいんだと思う。&lt;/p&gt;
+&lt;p&gt;人数が少ない場合、共通化とかし始めてそれの反映とかに追われがち。&lt;/p&gt;
+&lt;h3 id=&#34;frontend-を出面でまとめてbackend-を小分けにする&#34;&gt;Frontend を出面でまとめて、Backend を小分けにする&lt;/h3&gt;
+&lt;p&gt;今までと違って、出面で Frontend をまとめる。&lt;code&gt;Front(web-api, cms-api) / Backend(user-be / cms-be / chat-be)&lt;/code&gt; みたいな感じ。Backend は CRUD 操作だけ。&lt;/p&gt;
+&lt;p&gt;フロントの都合で勝手にユースケースを組めるので、比較的やりやすいかなって思った。&lt;/p&gt;
+&lt;p&gt;ただ実際やってみてわかったのは、ユースケースは大体似通うので、同じようなコードが生まれがち。こぴぺで横から持ってくる。&lt;/p&gt;
+&lt;h3 id=&#34;frontend-を出面でまとめてbackend-は概念的に小分けにする&#34;&gt;Frontend を出面でまとめて、Backend は概念的に小分けにする&lt;/h3&gt;
+&lt;p&gt;Frontend を出面でまとめて、 Backend を小分けにする の Backend が一つのアプリケーションにまとまっているというだけ。&lt;/p&gt;
+&lt;p&gt;Backend レイヤで共通で使いたいロジックとかが結構出てくるので、まとまってるほうが都合が良かった。&lt;/p&gt;
+&lt;h3 id=&#34;認証の-frontend--all-in-one-backend&#34;&gt;認証の Frontend + All in One Backend&lt;/h3&gt;
+&lt;p&gt;Frontend を出面でまとめて、Backend はひとつにまとめる案。 CRUD 操作だけのものを作っても、結局ユースケースによって前提となる処理があるので、それを 各 Frontend に実装するのが億劫になった。&lt;/p&gt;
+&lt;p&gt;ユースケースを全部 Backend で切って、外からのアクセスに対しての認証とか、セッション検証とかだけ Frontend でする。&lt;/p&gt;
+&lt;p&gt;Backend を切り出しておくのは、認証を切り離したレイヤを用意しとくことで、バッチ処理とかでユースケース呼びたいときに使えるようにしておく。&lt;/p&gt;
+&lt;p&gt;ので、Backend では「誰のアクセスか」みたいな部分は検証しない。（必要に応じてロギングする）&lt;/p&gt;
+&lt;h3 id=&#34;どうしてこうなった&#34;&gt;どうしてこうなった&lt;/h3&gt;
+&lt;p&gt;アプリケーション側のクラス設計がちゃんと作れてなかったときに、モノリシックなアプリケーションを作ったら煩雑なものになった。&lt;/p&gt;
+&lt;p&gt;内部でぐちゃぐちゃしてシンプルを保てないので、アプリケーションを小分けにすることでシンプルにならないか模索してきた。&lt;/p&gt;
+&lt;p&gt;ただ、実際は人がたくさんいる会社だからできていたのであって、人が少ないところでやるものではないなってのがわかってきた。&lt;/p&gt;
+&lt;p&gt;また、user とかそんな小さい単位で単純に小分けにするのではなく、もうちょっと大きい概念で分けておくのが正しそう。サービス単位とか。&lt;/p&gt;
+&lt;h2 id=&#34;その他作業中に発生したこと&#34;&gt;その他作業中に発生したこと&lt;/h2&gt;
+&lt;h2 id=&#34;next&#34;&gt;Next&lt;/h2&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Daily/2021/01/28</title>
+      <link>https://sat8bit.github.io/logs/daily-2021-01-28/</link>
+      <pubDate>Thu, 28 Jan 2021 00:27:48 +0900</pubDate>
+      
+      <guid>https://sat8bit.github.io/logs/daily-2021-01-28/</guid>
+      <description>&lt;h1 id=&#34;todo&#34;&gt;Todo&lt;/h1&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Todo&lt;/th&gt;
+&lt;th&gt;Done&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;React で text input を扱うときの実装を考える&lt;/td&gt;
+&lt;td&gt;o&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;protoc が何故か go を吐き出さない問題&lt;/td&gt;
+&lt;td&gt;o&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;mustEmbedUnimplemented** について調べる&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h1 id=&#34;log&#34;&gt;Log&lt;/h1&gt;
+&lt;h2 id=&#34;react-で-text-input-を扱うときの実装を考える&#34;&gt;React で text input を扱うときの実装を考える&lt;/h2&gt;
+&lt;p&gt;input の Component を作ろうとしたときにどう作ればいいんだ問題。&lt;/p&gt;
+&lt;p&gt;イメージ的には、外から使う分にはこんな感じにするのが良いかなって。CreateUserForm が form の中の入力内容を state で持つ感じ。
+Submit したときの動作を上から渡す。API 叩くのか、上流で値を受け取るのかなど。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;CreateUserForm onSubmit={(values: FormComponentValues) =&amp;gt; result} /&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;で、CreateUserForm の Component がこう。あくまでイメージ&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;form onSubmit={() =&amp;gt; props.onSubmit(formState)}&amp;gt;
+  &amp;lt;CustomInput /&amp;gt;
+  &amp;lt;CustomInput /&amp;gt;
+  &amp;lt;CustomInput /&amp;gt;
+  &amp;lt;Submit /&amp;gt;
+&amp;lt;/form&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;ただこれだと入力したイベントとかは外から渡せないが・・・Form の値を管理する責務を Form で Wrap するならこうなのかしら。。&lt;/p&gt;
+&lt;p&gt;まず React の form に関する記載はここ。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://ja.reactjs.org/docs/forms.html&#34;&gt;https://ja.reactjs.org/docs/forms.html&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;onChange を渡しておいて、 event.target.value を取れば良いみたい。&lt;/p&gt;
+&lt;p&gt;change event はここ。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://developer.mozilla.org/ja/docs/Web/API/HTMLElement/change_event&#34;&gt;https://developer.mozilla.org/ja/docs/Web/API/HTMLElement/change_event&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;ここだけ気になる。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;!-- raw HTML omitted --&gt; など一部の要素では、コントロールがフォーカスを失うまで change イベントが発生しません。以下のフィールドに何かを入力してから、他の部分をクリックするとイベントが発生します。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;フォーカスを失うまで change イベントが発生しないなら、なんで onChange で &lt;code&gt;value={props.value}&lt;/code&gt; が機能するんだろうか。&lt;/p&gt;
+&lt;p&gt;React の form のページにはこう。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;handleChange はキーストロークごとに実行されて React の state を更新するので、表示される値はユーザがタイプするたびに更新されます。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;試しに実装したところ、キーストローク毎に実行された。React で扱う input は HTML としての input と少し挙動が違うっぽい。&lt;/p&gt;
+&lt;p&gt;textarea とかもちょっと違う旨が書いてある。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;React では、&lt;!-- raw HTML omitted --&gt; は代わりに value 属性を使用します。こうすることで、&lt;!-- raw HTML omitted --&gt; を使用するフォームは単一行の入力フォームと非常に似た書き方ができるようになります&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;使いやすいようになってるみたい。&lt;/p&gt;
+&lt;h2 id=&#34;protoc-が何故か-go-を吐き出さない問題&#34;&gt;protoc が何故か go を吐き出さない問題&lt;/h2&gt;
+&lt;p&gt;吐き出されないと当然開発に入れないので困っている&lt;/p&gt;
+&lt;p&gt;以前書いた &lt;a href=&#34;https://sat8bit.github.io/posts/import-of-protocol-buffer/&#34;&gt;ProtocolBuffer の import の記事&lt;/a&gt;
+ で動作を確認しようと思ったら、よく見たらなんかおかしい。&lt;/p&gt;
+&lt;p&gt;protoc コマンドのオプション &lt;code&gt;--go_out=plugins=grpc:./go&lt;/code&gt; が記載してる &lt;code&gt;protoc&lt;/code&gt; のバージョン（&lt;code&gt;3.6.0&lt;/code&gt;）と一致してない・・・・&lt;/p&gt;
+&lt;p&gt;たぶん別のバージョンの protoc で動かしたんだと思うので、再度上から実行して書き直した。&lt;/p&gt;
+&lt;p&gt;すると、&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;protoc -I . -I ~/src --go-grpc_out ./go models/user.proto
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;ここでやっぱり user_grpc.pb.go が生成されない。もしかして service がないと生成されなくなってる？&lt;/p&gt;
+&lt;p&gt;試しに service を追加したら生成された。&lt;/p&gt;
+&lt;p&gt;というかよく生成されるコード読んでみたら、message に対応する type が生成されてないぞなんだこれ。&lt;/p&gt;
+&lt;p&gt;で、解決。そもそも、protoc のバージョンを変えたら以下のエラーが出るようになってた。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;--go_out: protoc-gen-go: plugins are not supported; use &#39;protoc --go-grpc_out=...&#39; to generate gRPC
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;ので、&lt;code&gt;--go_out=plugins=grpc:./go&lt;/code&gt; をとりあえず以下のようなオプションにした。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;--go-grpc_out &amp;lt;dir&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;この書き方をすると &lt;code&gt;protoc-gen-go-grpc&lt;/code&gt; が動いているという認識がそもそも足りなかったのだけど、 &lt;code&gt;protoc-gen-go-grpc&lt;/code&gt; は &lt;code&gt;message&lt;/code&gt; に対応する &lt;code&gt;struct&lt;/code&gt; を生成しない。&lt;/p&gt;
+&lt;p&gt;その struct の定義自体は grpc じゃないもんね。確かに。&lt;/p&gt;
+&lt;p&gt;今までもたぶん &lt;code&gt;message&lt;/code&gt; に対応する &lt;code&gt;struct&lt;/code&gt; を生成してくれていたのは &lt;code&gt;protoc-gen-go&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;なので、正しくアウトプットするためには、&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;--go_out &amp;lt;dir&amp;gt; --go-grpc_out &amp;lt;dir&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;というオプションが必要だった。勉強になった。&lt;/p&gt;
+&lt;h3 id=&#34;mustembedunimplemented&#34;&gt;mustEmbedUnimplemented&lt;/h3&gt;
+&lt;p&gt;昨日始めた時間がもう今日だったので、続きに書く。&lt;/p&gt;
+&lt;p&gt;無事 protoc がバージョンできてよかった、と思ったのもつかの間、 &lt;code&gt;mustEmbedUnimplementedXXXXXServer&lt;/code&gt; というメソッドの実装がないよ、というエラーが出た。&lt;/p&gt;
+&lt;p&gt;調べたところ、同じような issue がこれ。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/grpc/grpc-go/issues/3794&#34;&gt;https://github.com/grpc/grpc-go/issues/3794&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;そのなかに出てくる長い長い議論がこれ。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/grpc/grpc-go/issues/3669&#34;&gt;https://github.com/grpc/grpc-go/issues/3669&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;ちょっと読めないので、ソースコードなどをかいつまんで見てみると、UnimplementedServer を embeded すれば良いみたい。&lt;/p&gt;
+&lt;p&gt;以前書いた &lt;a href=&#34;https://sat8bit.github.io/posts/import-of-protocol-buffer/&#34;&gt;ProtocolBuffer の import の記事&lt;/a&gt;
+ で生成した Server を例にすると、&lt;/p&gt;
+&lt;p&gt;まず、こういう interface が生成される。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// UserServiceServer is the server API for UserService service.
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// All implementations must embed UnimplementedUserServiceServer
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// for forward compatibility
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;type&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;UserServiceServer&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;interface&lt;/span&gt; {
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;GetUser&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;context&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;Context&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;GetUserMessage&lt;/span&gt;) (&lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;GetUserResponse&lt;/span&gt;, &lt;span style=&#34;color:#66d9ef&#34;&gt;error&lt;/span&gt;)
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;mustEmbedUnimplementedUserServiceServer&lt;/span&gt;()
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;問題になっているのは &lt;code&gt;mustEmbedUnimplementedUserServiceServer&lt;/code&gt; で、どうやら &lt;code&gt;UnimplementedUserServiceServer&lt;/code&gt; を Embed させるための func っぽい？&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;UnimplementedUserServiceServer&lt;/code&gt; を見てみる。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// UnimplementedUserServiceServer must be embedded to have forward compatible implementations.
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;type&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;UnimplementedUserServiceServer&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; {
+}
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;func&lt;/span&gt; (&lt;span style=&#34;color:#a6e22e&#34;&gt;UnimplementedUserServiceServer&lt;/span&gt;) &lt;span style=&#34;color:#a6e22e&#34;&gt;GetUser&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;context&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;Context&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;GetUserMessage&lt;/span&gt;) (&lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;GetUserResponse&lt;/span&gt;, &lt;span style=&#34;color:#66d9ef&#34;&gt;error&lt;/span&gt;) {
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;nil&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;status&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;Errorf&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;codes&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;Unimplemented&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;method GetUser not implemented&amp;#34;&lt;/span&gt;)
+}
+&lt;span style=&#34;color:#66d9ef&#34;&gt;func&lt;/span&gt; (&lt;span style=&#34;color:#a6e22e&#34;&gt;UnimplementedUserServiceServer&lt;/span&gt;) &lt;span style=&#34;color:#a6e22e&#34;&gt;mustEmbedUnimplementedUserServiceServer&lt;/span&gt;() {}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;何もしない func が入っている。
+コメントにもある通り、上位互換性を保つために実装に Embed しないといけないらしい。&lt;/p&gt;
+&lt;p&gt;つまり、&lt;code&gt;protobuf&lt;/code&gt; 側に新しい &lt;code&gt;rpc&lt;/code&gt; が生えたときに、&lt;code&gt;UnimplementedUserServiceServer&lt;/code&gt; を Embed しておくと、実装をしなくても、自動で &lt;code&gt;codes.Unimplemented&lt;/code&gt; を返却するメソッドを生やすよ、ということではないかと思う。&lt;/p&gt;
+&lt;p&gt;ちなみに Embed する実装はこう。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;type&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;server&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; {
+    &lt;span style=&#34;color:#a6e22e&#34;&gt;pb&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;UnimplementedUserServiceServer&lt;/span&gt;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;そもそもこの func いらないよ！ってときは、go-grpc の option でなくせるらしい。やってない。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;--go-grpc_opt=require_unimplemented_servers=false
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;上のキーワードで調べたらめっちゃわかりやすい note あった。ありがとうございます。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://note.com/dd_techblog/n/nb8b925d21118&#34;&gt;https://note.com/dd_techblog/n/nb8b925d21118&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;その他作業中に発生したこと&#34;&gt;その他作業中に発生したこと&lt;/h2&gt;
+&lt;h3 id=&#34;protoc-の-plugin-についての記事&#34;&gt;protoc の plugin についての記事&lt;/h3&gt;
+&lt;p&gt;どっかで読んで作ってみたい&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://qiita.com/yugui/items/87d00d77dee159e74886&#34;&gt;https://qiita.com/yugui/items/87d00d77dee159e74886&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id=&#34;新しいバージョンの-protoc-で生成した-protobuf-を元々あったアプリに読み込ませたらエラー&#34;&gt;新しいバージョンの protoc で生成した protobuf を元々あったアプリに読み込ませたらエラー&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;mustEmbedUnimplemented***&lt;/code&gt; という func がないエラーがドバーッと。&lt;/p&gt;
+&lt;p&gt;なんぞこれ？という同じ疑問の issue があがってたので、明日以降調べる。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/grpc/grpc-go/issues/3794&#34;&gt;https://github.com/grpc/grpc-go/issues/3794&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;next&#34;&gt;Next&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;
+&lt;/code&gt;&lt;/pre&gt;</description>
+    </item>
+    
+    <item>
+      <title>Daily/2021/01/24</title>
+      <link>https://sat8bit.github.io/logs/daily-2021-01-24/</link>
+      <pubDate>Sun, 24 Jan 2021 14:04:59 +0900</pubDate>
+      
+      <guid>https://sat8bit.github.io/logs/daily-2021-01-24/</guid>
+      <description>&lt;h1 id=&#34;todo&#34;&gt;Todo&lt;/h1&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Todo&lt;/th&gt;
+&lt;th&gt;Done&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;protoc を更新する&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h1 id=&#34;log&#34;&gt;Log&lt;/h1&gt;
+&lt;h2 id=&#34;protoc-を更新する&#34;&gt;protoc を更新する&lt;/h2&gt;
+&lt;p&gt;前回&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;protoc-gen-openapiv2 の annotation を使ってたんだけど、この行で import が protoc-gen-openapiv2 から指定になってる。
+
+https://github.com/grpc-ecosystem/grpc-gateway/blob/master/protoc-gen-openapiv2/options/annotations.proto#L8
+
+この場合は、上の googleapis と同様コピーするか、`github.com/grpc-ecosystem/grpc-gateway` をインクルードパスに追加するしかないことになる。
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;openapiv2 を吐き出すために openapiv2 を include path に追加すること自体は違和感がないので追加する。&lt;/p&gt;
+&lt;p&gt;（models 配下の proto が go を吐き出さないところで寝落ちした）&lt;/p&gt;
+&lt;h2 id=&#34;todo-1&#34;&gt;[Todo]&lt;/h2&gt;
+&lt;h2 id=&#34;その他作業中に発生したこと&#34;&gt;その他作業中に発生したこと&lt;/h2&gt;
+&lt;h2 id=&#34;next&#34;&gt;Next&lt;/h2&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Daily/2021/01/20</title>
+      <link>https://sat8bit.github.io/logs/daily-2021-01-20/</link>
+      <pubDate>Wed, 20 Jan 2021 22:44:56 +0900</pubDate>
+      
+      <guid>https://sat8bit.github.io/logs/daily-2021-01-20/</guid>
+      <description>&lt;h1 id=&#34;todo&#34;&gt;Todo&lt;/h1&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Todo&lt;/th&gt;
+&lt;th&gt;Done&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;protobuf で go mod vendor 使えばいいんじゃないか？を見てみる&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h1 id=&#34;log&#34;&gt;Log&lt;/h1&gt;
+&lt;h2 id=&#34;protobuf-で-go-mod-vendor-使えばいいんじゃないかを見てみる&#34;&gt;protobuf で go mod vendor 使えばいいんじゃないか？を見てみる&lt;/h2&gt;
+&lt;p&gt;何も考えずに &lt;code&gt;$GOROOT/src&lt;/code&gt; をインクルードパスに指定してたけど、どのバージョンに依存してるかよくわからない状態だったので &lt;code&gt;Go Module&lt;/code&gt; 使って管理したほうが良さそう。&lt;/p&gt;
+&lt;p&gt;そして &lt;code&gt;go mod vendor&lt;/code&gt; を使えば、インクルードパスも &lt;code&gt;vendor&lt;/code&gt; にできるんじゃないか、ということでやってみる。&lt;/p&gt;
+&lt;p&gt;まず import を github.com から書くのをやめる。
+外部の import が github.com から指定だったから揃えてみたけど結果的に全然良くなかった。&lt;/p&gt;
+&lt;p&gt;ここみるのが良さそう。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/grpc-ecosystem/grpc-gateway&#34;&gt;https://github.com/grpc-ecosystem/grpc-gateway&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;protoc のプラグインを &lt;code&gt;go.mod&lt;/code&gt; に追加するために &lt;code&gt;tools/dependencies.go&lt;/code&gt; を作る。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;package&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;main&lt;/span&gt;
+
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; (
+        &lt;span style=&#34;color:#a6e22e&#34;&gt;_&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway&amp;#34;&lt;/span&gt;
+        &lt;span style=&#34;color:#a6e22e&#34;&gt;_&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2&amp;#34;&lt;/span&gt;
+        &lt;span style=&#34;color:#a6e22e&#34;&gt;_&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;github.com/mwitkow/go-proto-validators&amp;#34;&lt;/span&gt;
+        &lt;span style=&#34;color:#a6e22e&#34;&gt;_&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;google.golang.org/grpc/cmd/protoc-gen-go-grpc&amp;#34;&lt;/span&gt;
+        &lt;span style=&#34;color:#a6e22e&#34;&gt;_&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;google.golang.org/protobuf/cmd/protoc-gen-go&amp;#34;&lt;/span&gt;
+)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;code&gt;go mod init &amp;amp;&amp;amp; go mod tidy&lt;/code&gt; をすると、&lt;code&gt;go.mod&lt;/code&gt; &lt;code&gt;go.sum&lt;/code&gt; ができる。&lt;/p&gt;
+&lt;p&gt;そして &lt;code&gt;go mod vendor&lt;/code&gt; を実行すると、必要なファイルが vendor 配下に落ちてくる。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;grpc-gateway&lt;/code&gt; の README によると、以下の import を proto ファイルに追加するらしいが&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import &amp;quot;google/api/annotations.proto&amp;quot;;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;何度やってもこうなる。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Import &amp;quot;googleapis/google/api/annotations.proto&amp;quot; was not found or had errors.
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;インクルードパスにないからね、そりゃそうだよねって思ってたら、ちゃんと書いてあった。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;You will need to provide the required third party protobuf files to the protoc compiler. They are included in this repo under the third_party/googleapis folder, and we recommend copying them into your protoc generation file structure. If you&amp;rsquo;ve structured your proto files according to something like the Buf style guide, you could copy the files into a top-level ./google folder.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;英語パッと読めないから気づくまで時間かかってしまったよ。。&lt;/p&gt;
+&lt;p&gt;現在 protobuf リポジトリは以下のような構造になっているので、&lt;code&gt;proto&lt;/code&gt; 配下にコピーする。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;repo
+├── proto
+│   ├── google &amp;lt;- ここに置く
+│   ├── pkgA
+│   │   ├── a_service1.proto
+│   │   └── a_service2.proto
+│   ├── pkgB
+│   │   ├── b_service1.proto
+│   │   └── b_service2.proto
+│   └── pkgC
+│       ├── c_service1.proto
+│       └── c_service2.proto
+└── go/
+    └── &amp;lt;生成されるファイル&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;ので vendorからコピーしようとしたら vendor 配下の grpc-gateway に third_party ディレクトリがない・・・&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/golang/go/issues/26366&#34;&gt;https://github.com/golang/go/issues/26366&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;vendor では全てのファイルをとってくるわけではないそう。&lt;/p&gt;
+&lt;p&gt;上記Issueもまだ結論出ておらず、とりあえず全コピーするコマンド vend を作ってくれたそうなのでこれを使う。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/nomad-software/vend&#34;&gt;https://github.com/nomad-software/vend&lt;/a&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;vend
+cp -R vendor/github.com/grpc-ecosystem/grpc-gateway/v2/third_party/googleapis/google proto
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;これで一旦通せるようになったので、vendor を構築するコマンド達を Makefile にまとめておく。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;prepare::
+    go get github.com/nomad-software/vend
+    vend
+    cp -R vendor/github.com/grpc-ecosystem/grpc-gateway/v2/third_party/googleapis/google proto
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;が、openapiv2 を吐き出してるところでエラー。&lt;/p&gt;
+&lt;p&gt;protoc-gen-openapiv2 の annotation を使ってたんだけど、この行で import が protoc-gen-openapiv2 から指定になってる。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/grpc-ecosystem/grpc-gateway/blob/master/protoc-gen-openapiv2/options/annotations.proto#L8&#34;&gt;https://github.com/grpc-ecosystem/grpc-gateway/blob/master/protoc-gen-openapiv2/options/annotations.proto#L8&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;この場合は、上の googleapis と同様コピーするか、&lt;code&gt;github.com/grpc-ecosystem/grpc-gateway&lt;/code&gt; をインクルードパスに追加するしかないことになる。&lt;/p&gt;
+&lt;p&gt;そろそろ眠いのでここは一旦要検討。&lt;/p&gt;
+&lt;h2 id=&#34;その他作業中に発生したこと&#34;&gt;その他作業中に発生したこと&lt;/h2&gt;
+&lt;h2 id=&#34;next&#34;&gt;Next&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;openapiv2 の問題解決&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Protocol Buffer の import におけるファイルの取扱いについて</title>
+      <link>https://sat8bit.github.io/posts/import-of-protocol-buffer/</link>
+      <pubDate>Wed, 20 Jan 2021 00:25:28 +0900</pubDate>
+      
+      <guid>https://sat8bit.github.io/posts/import-of-protocol-buffer/</guid>
+      <description>&lt;h1 id=&#34;protocol-buffer-の-import-について&#34;&gt;Protocol Buffer の import について&lt;/h1&gt;
+&lt;p&gt;import 周りで躓いたので、検証結果をまとめておく。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ protoc --version
+libprotoc 3.6.0
+$ protoc-gen-go --version
+protoc-gen-go v1.25.0
+$ protoc-gen-go-grpc --version
+protoc-gen-go-grpc 1.1.0
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;import-時の同一ファイル判定について&#34;&gt;import 時の同一ファイル判定について&lt;/h2&gt;
+&lt;p&gt;サンプルのディレクトリ構成は以下とする。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;~/
+└── src/
+    └── github.com
+        └── sat8bit
+            └── protobuf
+                ├── models
+                │   └── user.proto
+                └── service.proto
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;この後の &lt;code&gt;protoc&lt;/code&gt; コマンドは全て &lt;code&gt;src/github.com/sat8bit/protobuf&lt;/code&gt; ディレクトリ配下で実行する。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;service.proto&lt;/code&gt; の内容は次の通り。&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-proto3&#34; data-lang=&#34;proto3&#34;&gt;syntax = &amp;quot;proto3&amp;quot;;
+
+package io.github.sat8bit;
+
+import &amp;quot;models/user.proto&amp;quot;;
+
+option go_package = &amp;quot;github.com/sat8bit/protobuf&amp;quot;;
+
+service UserService {
+    rpc GetUser(GetUserMessage) returns (GetUserResponse) {}
+}
+
+message GetUserMessage {
+    string id = 1;
+}
+
+message GetUserResponse {
+    models.User user = 1;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;code&gt;user.proto&lt;/code&gt; の内容は次の通り。&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-proto3&#34; data-lang=&#34;proto3&#34;&gt;syntax = &amp;quot;proto3&amp;quot;;
+
+package io.github.sat8bit.models;
+
+option go_package = &amp;quot;github.com/sat8bit/protobuf/models&amp;quot;;
+
+message User {
+    string id = 1;
+    string name = 2;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;この状態で go-grpc_out で grpc を吐き出すと、以下の構造になる。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ protoc --go_out ./go --go-grpc_out ./go service.proto
+$ tree go
+go
+└── github.com
+    └── sat8bit
+        └── protobuf
+            ├── service.pb.go
+            └── service_grpc.pb.go
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;ただ、実際は &lt;code&gt;grpc-gateway&lt;/code&gt; などの &lt;code&gt;grpc-ecosystem&lt;/code&gt; や、&lt;code&gt;validator&lt;/code&gt; などを src 配下に展開していたので、それを再現するために &lt;code&gt;-I&lt;/code&gt; を追加する。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ protoc -I . -I ~/src --go_out ./go --go-grpc_out ./go service.proto
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;この状態では、models/user.proto を import するパスは２種類ある。&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-proto3&#34; data-lang=&#34;proto3&#34;&gt;// . から見た相対パス
+import &amp;quot;models/user.proto&amp;quot;;
+// ~/src から見た相対パス
+import &amp;quot;github.com/sat8bit/protobuf/models/user.proto&amp;quot;;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;試しに import を２種類書いてみる。（実際はこんなことしないが）&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-proto3&#34; data-lang=&#34;proto3&#34;&gt;syntax = &amp;quot;proto3&amp;quot;;
+
+package io.github.sat8bit;
+
+import &amp;quot;models/user.proto&amp;quot;;
+import &amp;quot;github.com/sat8bit/protobuf/models/user.proto&amp;quot;;
+
+option go_package = &amp;quot;github.com/sat8bit/protobuf&amp;quot;;
+
+service UserService {
+    rpc GetUser(GetUserMessage) returns (GetUserResponse) {}
+}
+
+message GetUserMessage {
+    string id = 1;
+}
+
+message GetUserResponse {
+    models.User user = 1;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;すると、以下のエラーになる。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;github.com/sat8bit/protobuf/models/user.proto:8:12: &amp;quot;io.github.sat8bit.models.User.id&amp;quot; is already defined in file &amp;quot;models/user.proto&amp;quot;.
+github.com/sat8bit/protobuf/models/user.proto:9:12: &amp;quot;io.github.sat8bit.models.User.name&amp;quot; is already defined in file &amp;quot;models/user.proto&amp;quot;.
+github.com/sat8bit/protobuf/models/user.proto:7:9: &amp;quot;io.github.sat8bit.models.User&amp;quot; is already defined in file &amp;quot;models/user.proto&amp;quot;.
+service.proto: Import &amp;quot;github.com/sat8bit/protobuf/models/user.proto&amp;quot; was not found or had errors.
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;既に定義済みエラーである。一方、&lt;code&gt;import &amp;quot;models/user.proto&amp;quot;;&lt;/code&gt; を 2 個書いた場合はこんなエラーになる。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;service.proto: Import &amp;quot;models/user.proto&amp;quot; was listed twice.
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;import を ２回しているエラーである。&lt;/p&gt;
+&lt;p&gt;以上から、&lt;strong&gt;protoc では、相対パスの完全一致によって、同一ファイルかどうかを判断することがわかる。&lt;/strong&gt;&lt;/p&gt;
+&lt;h2 id=&#34;別のファイルを経由した-import-の場合&#34;&gt;別のファイルを経由した import の場合&lt;/h2&gt;
+&lt;p&gt;enum 定義のあるファイルを追加で作成する。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;~/
+└── src/
+    └── github.com
+        └── sat8bit
+            └── protoc
+                ├── models
+                │   ├── user.proto
+                │   └── role.proto
+                └── service.proto
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;code&gt;models/role.proto&lt;/code&gt; の内容は次の通り。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;syntax = &amp;quot;proto3&amp;quot;;
+
+package io.github.sat8bit.models;
+
+option go_package = &amp;quot;github.com/sat8bit/protobuf/models&amp;quot;;
+
+enum Role {
+  UNKNOWN = 0;
+  ADMIN = 1;
+  READ = 2;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;code&gt;models/user.proto&lt;/code&gt; からこれを import する。&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-proto3&#34; data-lang=&#34;proto3&#34;&gt;syntax = &amp;quot;proto3&amp;quot;;
+
+package io.github.sat8bit.models;
+
+option go_package = &amp;quot;github.com/sat8bit/protobuf/models&amp;quot;;
+
+import &amp;quot;models/role.proto&amp;quot;;
+
+message User {
+    string id = 1;
+    string name = 2;
+    Role role = 3;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;このとき、import で指定するファイルパスは インクルードパスからの相対パスになる。&lt;code&gt;models/user.proto&lt;/code&gt; から見た相対パスではない。&lt;/p&gt;
+&lt;p&gt;この状態で、&lt;code&gt;model/user.proto&lt;/code&gt; を protoc してみる。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ protoc -I . -I ~/src --go_out ./go --go-grpc_out ./go models/user.proto models/role.proto
+$ tree go
+go
+└── github.com
+    └── sat8bit
+        └── protobuf
+            ├── models
+            │   ├── role.pb.go
+            │   └── user.pb.go
+            ├── service.pb.go
+            └── service_grpc.pb.go
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;更に、&lt;code&gt;service.proto&lt;/code&gt; でも role が必要になったので import する。&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-proto3&#34; data-lang=&#34;proto3&#34;&gt;syntax = &amp;quot;proto3&amp;quot;;
+
+package io.github.sat8bit;
+
+import &amp;quot;models/user.proto&amp;quot;;
+import &amp;quot;models/role.proto&amp;quot;;
+
+option go_package = &amp;quot;github.com/sat8bit/protobuf&amp;quot;;
+
+service UserService {
+    rpc GetUser(GetUserMessage) returns (GetUserResponse) {}
+}
+
+message GetUserMessage {
+    string id = 1;
+    models.Role role = 2;
+}
+
+message GetUserResponse {
+    models.User user = 1;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;このときの依存関係は、以下の通り。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;service.proto -------&amp;gt; models/user.proto
+     |                         |
+     |                         V
+     `---------------&amp;gt; models/role.proto
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;code&gt;service.proto&lt;/code&gt; から見ると、&lt;code&gt;models/role.proto&lt;/code&gt; は 2 系統から import されてることになる。&lt;/p&gt;
+&lt;p&gt;この状態で、&lt;code&gt;service.proto&lt;/code&gt; を protoc してみる。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;protoc -I . -I ~/src --go_out ./go --go-grpc_out ./go service.proto
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;エラーにはならない。&lt;/p&gt;
+&lt;p&gt;以上のことから、&lt;strong&gt;違うファイル経由で同じファイルを import した場合、&lt;code&gt;Import &amp;quot;XXXXX&amp;quot; was listed twice.&lt;/code&gt; のエラーにはならずに正常に処理されるということがわかる。&lt;/strong&gt;&lt;/p&gt;
+&lt;h2 id=&#34;別のファイルを経由した-import-の場合別ファイル扱いの場合&#34;&gt;別のファイルを経由した import の場合（別ファイル扱いの場合）&lt;/h2&gt;
+&lt;p&gt;ここで、試しに &lt;code&gt;service.proto&lt;/code&gt; の方だけ &lt;code&gt;~/src&lt;/code&gt; からの相対パス指定に変更してみる。&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-proto3&#34; data-lang=&#34;proto3&#34;&gt;syntax = &amp;quot;proto3&amp;quot;;
+
+package io.github.sat8bit;
+
+import &amp;quot;github.com/sat8bit/protobuf/models/user.proto&amp;quot;;
+import &amp;quot;github.com/sat8bit/protobuf/models/role.proto&amp;quot;;
+
+option go_package = &amp;quot;github.com/sat8bit/protobuf&amp;quot;;
+
+service UserService {
+    rpc GetUser(GetUserMessage) returns (GetUserResponse) {}
+}
+
+message GetUserMessage {
+    string id = 1;
+    models.Role role = 2;
+}
+
+message GetUserResponse {
+    models.User user = 1;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;code&gt;service.proto&lt;/code&gt; を protoc すると、以下のエラーになる。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ protoc -I . -I ~/src --go_out ./go --go-grpc_out ./go service.proto
+github.com/sat8bit/protobuf/models/role.proto:8:3: &amp;quot;io.github.sat8bit.models.UNKNOWN&amp;quot; is already defined in file &amp;quot;models/role.proto&amp;quot;.
+github.com/sat8bit/protobuf/models/role.proto:8:3: Note that enum values use C++ scoping rules, meaning that enum values are siblings of their type, not children of it.  Therefore, &amp;quot;UNKNOWN&amp;quot; must be unique within &amp;quot;io.github.sat8bit.models&amp;quot;, not just within &amp;quot;Role&amp;quot;.
+github.com/sat8bit/protobuf/models/role.proto:9:3: &amp;quot;io.github.sat8bit.models.ADMIN&amp;quot; is already defined in file &amp;quot;models/role.proto&amp;quot;.
+github.com/sat8bit/protobuf/models/role.proto:9:3: Note that enum values use C++ scoping rules, meaning that enum values are siblings of their type, not children of it.  Therefore, &amp;quot;ADMIN&amp;quot; must be unique within &amp;quot;io.github.sat8bit.models&amp;quot;, not just within &amp;quot;Role&amp;quot;.
+github.com/sat8bit/protobuf/models/role.proto:10:3: &amp;quot;io.github.sat8bit.models.READ&amp;quot; is already defined in file &amp;quot;models/role.proto&amp;quot;.
+github.com/sat8bit/protobuf/models/role.proto:10:3: Note that enum values use C++ scoping rules, meaning that enum values are siblings of their type, not children of it.  Therefore, &amp;quot;READ&amp;quot; must be unique within &amp;quot;io.github.sat8bit.models&amp;quot;, not just within &amp;quot;Role&amp;quot;.
+github.com/sat8bit/protobuf/models/role.proto:7:6: &amp;quot;io.github.sat8bit.models.Role&amp;quot; is already defined in file &amp;quot;models/role.proto&amp;quot;.
+service.proto: Import &amp;quot;github.com/sat8bit/protobuf/models/role.proto&amp;quot; was not found or had errors.
+service.proto:16:5: &amp;quot;io.github.sat8bit.models.Role&amp;quot; seems to be defined in &amp;quot;models/role.proto&amp;quot;, which is not imported by &amp;quot;service.proto&amp;quot;.  To use it here, please add the necessary import.
+service.proto:16:5: &amp;quot;models.Role&amp;quot; is resolved to &amp;quot;io.github.sat8bit.models.Role&amp;quot;, which is not defined. The innermost scope is searched first in name resolution. Consider using a leading &#39;.&#39;(i.e., &amp;quot;.models.Role&amp;quot;) to start from the outermost scope.
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;既に定義済みエラーとなった。&lt;/p&gt;
+&lt;p&gt;これは、&lt;strong&gt;&lt;code&gt;service.proto&lt;/code&gt; から見てる &lt;code&gt;role.proto&lt;/code&gt; と、 &lt;code&gt;user.proto&lt;/code&gt; から見てる &lt;code&gt;role.proto&lt;/code&gt; が違うファイルと認識されたためである。&lt;/strong&gt;&lt;/p&gt;
+&lt;h2 id=&#34;パス指定で発生する差分についてgo_out--grpc-に限る&#34;&gt;パス指定で発生する差分について（go_out / grpc に限る）&lt;/h2&gt;
+&lt;p&gt;ここまでの検証で &lt;code&gt;models/user.proto&lt;/code&gt; と &lt;code&gt;service.proto&lt;/code&gt; の import が揃っていればよいことがわかったが、何に揃えればいいのかを考える。&lt;/p&gt;
+&lt;p&gt;ここで、enum が含まれるファイルを import した場合の生成されるファイルの差分を見てみる。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ diff user.pb.go._models_role.proto user.pb.go.github.com_sat8bit_protobuf_models_role.proto
+91,103c91,101
+(rawDesc の差分は省略)
+137c135
+&amp;lt;       file_github_com_sat8bit_protobuf_models_role_proto_init()
+---
+&amp;gt;       file_models_role_proto_init()
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;enum を含むファイルを import した場合は、対象の enum を含むファイルの init function が呼び出されるが、その呼び出すメソッド名が違うことがわかる。&lt;/p&gt;
+&lt;p&gt;ちなみに、このままの流れで以下のコマンドで role.proto を protoc すると、生成される init は &lt;code&gt;file_models_role_proto_init&lt;/code&gt; になる。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ protoc -I . -I ~/src --go_out ./go --go-grpc_out ./go models/role.proto
+$ grep init go/github.com/sat8bit/protobuf/models/role.pb.go
+func init() { file_models_role_proto_init() }
+func file_models_role_proto_init() {
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;ちなみに &lt;code&gt;file_github_com_sat8bit_protobuf_models_role_proto_init&lt;/code&gt; を生成したい場合は、もう一方のインクルードパスからのパスを指定してあげれば良い。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ protoc -I . -I ~/src --go_out ./go --go-grpc_out ./go ~/src/github.com/sat8bit/protobuf/models/role.proto
+$ grep init go/github.com/sat8bit/protobuf/models/role.pb.go
+func init() { file_github_com_sat8bit_protobuf_models_role_proto_init() }
+func file_github_com_sat8bit_protobuf_models_role_proto_init() {
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;以上のことから、 &lt;strong&gt;protoc を実行したときのパスの指定/インクルードパスの指定で、成果物が変わることがわかる。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;import で指定するパスと、protoc のコマンド実行時のファイルを指定するパスを同じにしておけば良い話だけど、ちょっとわかりづらい。&lt;/p&gt;
+&lt;p&gt;個人的には &lt;code&gt;find . -name *.proto | protoc -I XXXX&lt;/code&gt; でドバーッと 1 ファイルずつ protoc したいので、前者のほうが都合が良いことが多い気がした。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Daily/2021/01/19</title>
+      <link>https://sat8bit.github.io/logs/daily-2021-01-19/</link>
+      <pubDate>Tue, 19 Jan 2021 22:53:01 +0900</pubDate>
+      
+      <guid>https://sat8bit.github.io/logs/daily-2021-01-19/</guid>
+      <description>&lt;h1 id=&#34;todo&#34;&gt;Todo&lt;/h1&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Todo&lt;/th&gt;
+&lt;th&gt;Done&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;protoc の壊れを治す&lt;/td&gt;
+&lt;td&gt;o&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h1 id=&#34;logs&#34;&gt;Logs&lt;/h1&gt;
+&lt;h2 id=&#34;protoc-の壊れを治す&#34;&gt;protoc の壊れを治す&lt;/h2&gt;
+&lt;p&gt;真面目に検証したら結構大きくなっちゃったので posts に切り出す。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://sat8bit.github.io/posts/import-of-protocol-buffer/&#34;&gt;Protocol Buffer の import におけるファイルの取扱いについて&lt;/a&gt;
+&lt;/p&gt;
+&lt;h1 id=&#34;その他作業中に発生したこと&#34;&gt;その他作業中に発生したこと&lt;/h1&gt;
+&lt;h2 id=&#34;ハーゲンダッツ食べる&#34;&gt;ハーゲンダッツ食べる&lt;/h2&gt;
+&lt;p&gt;遠い昔誰かが「ハーゲンダッツは結局ラムレーズン」みたいなこと言ってた。&lt;/p&gt;
+&lt;p&gt;誰だか思い出せないけど。&lt;/p&gt;
+&lt;p&gt;その後暫くは気にしてなかったけど、ここ２年位ラムレーズンばっか食べてる。&lt;/p&gt;
+&lt;p&gt;ラムレーズンほんとおいしい。ただよく見たら酒が入ってた。&lt;/p&gt;
+&lt;h2 id=&#34;xargs-で実行したコマンドを出力したい&#34;&gt;xargs で実行したコマンドを出力したい&lt;/h2&gt;
+&lt;p&gt;以下のようなコマンド形式で実行してるコマンドでエラーが出たが、どのファイルかわからない。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;find . -name XXXX | xargs command
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;実行したコマンドを出力するオプションを調べた。&lt;/p&gt;
+&lt;p&gt;Linux 版のオプションは以下のサイトで確認。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.atmarkit.co.jp/ait/articles/1801/19/news014.html&#34;&gt;https://www.atmarkit.co.jp/ait/articles/1801/19/news014.html&lt;/a&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;xargs [-t|--verbose]
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;macOS で &lt;code&gt;--verbose&lt;/code&gt; を実行したところ、オプション無いエラーだったので man を確認。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;     -t      Echo the command to be executed to standard error immediately before it is executed.
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;macOS(BSD 版)では、ロングのほうがないよう。&lt;/p&gt;
+&lt;h2 id=&#34;next&#34;&gt;Next&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;protobuf の見直し&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+  </channel>
 </rss>
