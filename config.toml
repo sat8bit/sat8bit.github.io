@@ -25,3 +25,10 @@ googleAnalytics = "G-62G1T8FBSZ"
 [params.nav]
 showCategories = true       # /categories/
 showTags = true             # /tags/
+
+[params.profile]
+  enable = true
+  name = "Satoshi Koizumi"
+  twitter = "sat8bit" 
+  github = "sat8bit"
+  email = "sat8bit@mail.com"
