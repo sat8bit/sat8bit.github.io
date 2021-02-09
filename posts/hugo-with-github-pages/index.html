@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ja"><meta charset="utf-8"><meta name="generator" content="Hugo 0.79.1" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="supported-color-schemes" content="light dark"><title>Hugo と Github Pages でブログを作る&nbsp;&ndash;&nbsp;三日坊主。</title><link rel="stylesheet" href="/css/core.min.f50770753e7b4a1cf823b8241022bf5a6908ecbc3cfcba59bfb76af28f94cceda372fd3dad1f0b6fb6592fd79f9fc1f3.css" integrity="sha384-9QdwdT57Shz4I7gkECK/WmkI7Lw8/LpZv7dq8o&#43;UzO2jcv09rR8Lb7ZZL9efn8Hz"><meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Hugo と Github Pages でブログを作る" /><body><section id="header">
+    <div class="header wrap"><span class="header left-side"><a class="site home" href="/"><span class="site name">三日坊主。</span></a></span>
+        <span class="header right-side"><div class="nav wrap"><nav class="nav"><a class="nav item" href="/categories/">カテゴリー</a><a class="nav item" href="/tags/">タグ</a></nav></div></span></div></section><section id="content"><div class="article-container"><section class="article header">
+    <h1 class="article title">Hugo と Github Pages でブログを作る</h1><p class="article date">2021-02-09</p></section><article class="article markdown-body"><h1 id="概要">概要</h1>
+<p>Hugo と Github Pages、及び Github Actions を使ってブログを作る。</p>
+<h1 id="各仕組みの説明">各仕組みの説明</h1>
+<h2 id="hugo-について">Hugo について</h2>
+<p><a href="https://gohugo.io/">https://gohugo.io/</a></p>
+<blockquote>
+<p>The world’s fastest framework for building websites</p>
+</blockquote>
+<p>大雑把に言うと、静的コンテンツを生成する仕組み。ブログ形式以外にも色々できる。</p>
+<p>今回はこれを使って Markdown のテキストファイルからブログを作る。</p>
+<h2 id="github-pages-について">Github Pages について</h2>
+<p><a href="https://docs.github.com/ja/github/working-with-github-pages/about-github-pages">https://docs.github.com/ja/github/working-with-github-pages/about-github-pages</a></p>
+<blockquote>
+<p>GitHub Pages を使って、あなたやあなたの Organization、またはあなたのプロジェクトについてのウェブサイトを、GitHub リポジトリから直接ホストできます。</p>
+</blockquote>
+<p>大雑把に言うと、Github に push した静的なウェブコンテンツ（html, js, css, img, &hellip;）を、ホストする仕組み。</p>
+<p>ホスティングのされ方は <code>https://&lt;account&gt;.github.io</code> か、 <code>https://&lt;account&gt;.github.io/&lt;repository&gt;/</code>。<br>
+また、独自ドメインも設定できる。</p>
+<p><code>https://&lt;account&gt;.github.io</code> を使うためには、<code>&lt;account&gt;.github.io</code> というリポジトリを作成して、Pages の設定を行えば良い。<br>
+上記の名前以外のリポジトリは <code>https://&lt;account&gt;.github.io/&lt;repository&gt;</code> にホスティングされる。</p>
+<p>今回は前者の <code>https://&lt;account&gt;.github.io</code> で構築する。</p>
+<h2 id="github-actions-について">Github Actions について</h2>
+<p><a href="https://github.co.jp/features/actions">https://github.co.jp/features/actions</a></p>
+<blockquote>
+<p>GitHub Actions を使用すると、ワールドクラスの CI / CD ですべてのソフトウェアワークフローを簡単に自動化できます。 GitHub から直接コードをビルド、テスト、デプロイでき、コードレビュー、ブランチ管理、問題のトリアージを希望どおりに機能させます。</p>
+</blockquote>
+<p>大雑把に言うと、Github への push や merge、レビューなどのイベントに対してなにか処理（ワークフロー）を実行する仕組み。</p>
+<p>今回は、Markdown ファイルを push したら Hugo で静的コンテンツを生成して push するところまで、ワークフローで行う。<br>
+既に先駆者の方がそれ用の Action を作成してくださっていて、使うだけなので難しいことはない。</p>
+<h1 id="localhost-で-hugo-">localhost で Hugo !</h1>
+<h2 id="セットアップ">セットアップ</h2>
+<p>まずは、<a href="https://gohugo.io/getting-started/quick-start/"target="_blank" rel="noopener noreferrer">Quick start</a>
+ に沿ってインストールを行う。</p>
+<pre><code>$ brew install hugo
+</code></pre><p>さっそくサイトを構築する。<br>
+今回ホスティングの関係で、サイト名は各人で固定になるはず。</p>
+<pre><code>$ hugo new site sat8bit.github.io
+$ cd sat8bit.github.io
+$ git init .
+</code></pre><p>hugo はデフォルトで theme が入っていないので、このままだと動かない。以下のサイトからテンプレートを選ぶ。</p>
+<p><a href="https://themes.gohugo.io/">https://themes.gohugo.io/</a></p>
+<p>今回は Quick start に沿って <a href="https://themes.gohugo.io/gohugo-theme-ananke/"target="_blank" rel="noopener noreferrer">Ananke theme</a>
+ を利用する。</p>
+<pre><code>$ git submodule add https://github.com/budparr/gohugo-theme-ananke.git themes/ananke
+</code></pre><p>theme を反映するためには config.toml に記述する必要があるので、以下を追加する。<br>
+名称は <code>themes</code> 配下のディレクトリ名。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-diff" data-lang="diff"><span style="color:#a6e22e">+theme = &#34;ananke&#34;
+</span><span style="color:#a6e22e"></span> baseURL = &#34;http://example.org/&#34;
+ languageCode = &#34;en-us&#34;
+ title = &#34;My New Hugo Site&#34;
+</code></pre></div><p>ここまで終わったら、local で起動してみる。</p>
+<pre><code>$ hugo serve
+</code></pre><p>上記コマンドで出力された URL にアクセスすると、以下の画面が表示される。</p>
+<p><img  src="/images/2021-02-09-23-44-24.png"
+        alt/></p>
+<h2 id="ブログを追加する">ブログを追加する</h2>
+<p>Hugo は <code>hugo new &lt;category&gt;/&lt;filename&gt;.&lt;filetype&gt;</code> というコマンドでコンテンツを生成できる。<br>
+またデフォルトでは <code>posts</code> カテゴリがトップページにリスティングされる。</p>
+<p>なので、例えば hello-world という記事を書くときはこんなコマンドになる。</p>
+<pre><code>$ hugo new posts/hello-world.md
+</code></pre><p>こんなファイルが生成される。</p>
+<pre><code>$ cat content/posts/hello-world.md
+---
+title: &quot;Hello World&quot;
+date: 2021-02-09T23:50:59+09:00
+draft: true
+---
+</code></pre><p><code>---</code> で挟まれた部分はメタ情報になるので、その下に記事を書いていく。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-diff" data-lang="diff"> draft: true
+ ---
+
+<span style="color:#a6e22e">+# Hello! World.
+</span><span style="color:#a6e22e">+
+</span><span style="color:#a6e22e">+こんにちは、世界。
+</span></code></pre></div><p>この状態で <code>hugo serve</code> を実行しても、記事は表示されない。メタ情報の <code>draft</code> が <code>true</code> になっていて、下書き扱いになっているからである。</p>
+<p>下書きを確認するために以下のコマンドで hugo を起動する。</p>
+<pre><code>hugo serve -D
+</code></pre><p><img  src="/images/2021-02-09-23-56-41.png"
+        alt/></p>
+<p>表示される。</p>
+<p>つまり、記事を書いて、ローカルでの確認が終わったらファイル側のメタ情報の <code>draft</code> を削除するか、<code>false</code> にすれば公開、というサイクルになる。</p>
+<h2 id="静的コンテンツの生成">静的コンテンツの生成</h2>
+<p>今回は Github Actions でやるので、手でやることはないが一応触っておいたほうが良いと思う。</p>
+<p>以下のコマンドを実行すると、 <code>public</code> 配下に静的コンテンツが生成される。</p>
+<pre><code>$ hugo
+</code></pre><p>確認。</p>
+<pre><code>public
+├── 404.html
+├── ananke
+│   └── dist
+│       └── main.css_5c99d70a7725bacd4c701e995b969fea.css
+├── categories
+│   ├── index.html
+│   └── index.xml
+├── images
+│   └── gohugo-default-sample-hero-image.jpg
+├── index.html
+├── index.xml
+├── sitemap.xml
+└── tags
+    ├── index.html
+    └── index.xml
+</code></pre><p>このディレクトリをホスティングすることで、ブログを公開する。</p>
+<p>なお、今回はお試しなので生成されたファイルは削除する。</p>
+<pre><code>$ rm -rf public
+</code></pre><h1 id="github-actions-で-静的コンテンツを生成して-push-する">Github Actions で 静的コンテンツを生成して Push する</h1>
+<p>TBD</p>
+<h1 id="github-pages-を設定して公開する">Github Pages を設定して公開する</h1>
+<p>TBD</p>
+</article>
+</div>
+<div class="article bottom"><section class="article navigation"><p><a class="link" href="/posts/firebase-tutorial/"><span class="iconfont icon-article"></span>Firebase Tutorial</a></p></section></div></section><section id="footer"><div class="footer-wrap">
+    <p class="copyright">三日坊主。</p>
+    <p class="powerby"><span>Powered&nbsp;by&nbsp;</span><a href="https://gohugo.io" 
+        target="_blank" rel="noopener noreferrer">Hugo</a><span>&nbsp;&amp;&nbsp;</span><a href="https://themes.gohugo.io/hugo-notepadium/" 
+        target="_blank" rel="noopener noreferrer">Notepadium</a></p></div>
+</section>
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'G-62G1T8FBSZ', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+</body>
+
+</html>

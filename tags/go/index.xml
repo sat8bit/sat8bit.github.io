@@ -11,6 +11,124 @@
     
     
     <item>
+      <title>Hugo と Github Pages でブログを作る</title>
+      <link>https://sat8bit.github.io/posts/hugo-with-github-pages/</link>
+      <pubDate>Tue, 09 Feb 2021 23:23:16 +0900</pubDate>
+      
+      <guid>https://sat8bit.github.io/posts/hugo-with-github-pages/</guid>
+      <description>&lt;h1 id=&#34;概要&#34;&gt;概要&lt;/h1&gt;
+&lt;p&gt;Hugo と Github Pages、及び Github Actions を使ってブログを作る。&lt;/p&gt;
+&lt;h1 id=&#34;各仕組みの説明&#34;&gt;各仕組みの説明&lt;/h1&gt;
+&lt;h2 id=&#34;hugo-について&#34;&gt;Hugo について&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&#34;https://gohugo.io/&#34;&gt;https://gohugo.io/&lt;/a&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;The world’s fastest framework for building websites&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;大雑把に言うと、静的コンテンツを生成する仕組み。ブログ形式以外にも色々できる。&lt;/p&gt;
+&lt;p&gt;今回はこれを使って Markdown のテキストファイルからブログを作る。&lt;/p&gt;
+&lt;h2 id=&#34;github-pages-について&#34;&gt;Github Pages について&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&#34;https://docs.github.com/ja/github/working-with-github-pages/about-github-pages&#34;&gt;https://docs.github.com/ja/github/working-with-github-pages/about-github-pages&lt;/a&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;GitHub Pages を使って、あなたやあなたの Organization、またはあなたのプロジェクトについてのウェブサイトを、GitHub リポジトリから直接ホストできます。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;大雑把に言うと、Github に push した静的なウェブコンテンツ（html, js, css, img, &amp;hellip;）を、ホストする仕組み。&lt;/p&gt;
+&lt;p&gt;ホスティングのされ方は &lt;code&gt;https://&amp;lt;account&amp;gt;.github.io&lt;/code&gt; か、 &lt;code&gt;https://&amp;lt;account&amp;gt;.github.io/&amp;lt;repository&amp;gt;/&lt;/code&gt;。&lt;br&gt;
+また、独自ドメインも設定できる。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;https://&amp;lt;account&amp;gt;.github.io&lt;/code&gt; を使うためには、&lt;code&gt;&amp;lt;account&amp;gt;.github.io&lt;/code&gt; というリポジトリを作成して、Pages の設定を行えば良い。&lt;br&gt;
+上記の名前以外のリポジトリは &lt;code&gt;https://&amp;lt;account&amp;gt;.github.io/&amp;lt;repository&amp;gt;&lt;/code&gt; にホスティングされる。&lt;/p&gt;
+&lt;p&gt;今回は前者の &lt;code&gt;https://&amp;lt;account&amp;gt;.github.io&lt;/code&gt; で構築する。&lt;/p&gt;
+&lt;h2 id=&#34;github-actions-について&#34;&gt;Github Actions について&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.co.jp/features/actions&#34;&gt;https://github.co.jp/features/actions&lt;/a&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;GitHub Actions を使用すると、ワールドクラスの CI / CD ですべてのソフトウェアワークフローを簡単に自動化できます。 GitHub から直接コードをビルド、テスト、デプロイでき、コードレビュー、ブランチ管理、問題のトリアージを希望どおりに機能させます。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;大雑把に言うと、Github への push や merge、レビューなどのイベントに対してなにか処理（ワークフロー）を実行する仕組み。&lt;/p&gt;
+&lt;p&gt;今回は、Markdown ファイルを push したら Hugo で静的コンテンツを生成して push するところまで、ワークフローで行う。&lt;br&gt;
+既に先駆者の方がそれ用の Action を作成してくださっていて、使うだけなので難しいことはない。&lt;/p&gt;
+&lt;h1 id=&#34;localhost-で-hugo-&#34;&gt;localhost で Hugo !&lt;/h1&gt;
+&lt;h2 id=&#34;セットアップ&#34;&gt;セットアップ&lt;/h2&gt;
+&lt;p&gt;まずは、&lt;a href=&#34;https://gohugo.io/getting-started/quick-start/&#34;target=&#34;_blank&#34; rel=&#34;noopener noreferrer&#34;&gt;Quick start&lt;/a&gt;
+ に沿ってインストールを行う。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ brew install hugo
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;さっそくサイトを構築する。&lt;br&gt;
+今回ホスティングの関係で、サイト名は各人で固定になるはず。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ hugo new site sat8bit.github.io
+$ cd sat8bit.github.io
+$ git init .
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;hugo はデフォルトで theme が入っていないので、このままだと動かない。以下のサイトからテンプレートを選ぶ。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://themes.gohugo.io/&#34;&gt;https://themes.gohugo.io/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;今回は Quick start に沿って &lt;a href=&#34;https://themes.gohugo.io/gohugo-theme-ananke/&#34;target=&#34;_blank&#34; rel=&#34;noopener noreferrer&#34;&gt;Ananke theme&lt;/a&gt;
+ を利用する。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ git submodule add https://github.com/budparr/gohugo-theme-ananke.git themes/ananke
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;theme を反映するためには config.toml に記述する必要があるので、以下を追加する。&lt;br&gt;
+名称は &lt;code&gt;themes&lt;/code&gt; 配下のディレクトリ名。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-diff&#34; data-lang=&#34;diff&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;+theme = &amp;#34;ananke&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;&lt;/span&gt; baseURL = &amp;#34;http://example.org/&amp;#34;
+ languageCode = &amp;#34;en-us&amp;#34;
+ title = &amp;#34;My New Hugo Site&amp;#34;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;ここまで終わったら、local で起動してみる。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ hugo serve
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;上記コマンドで出力された URL にアクセスすると、以下の画面が表示される。&lt;/p&gt;
+&lt;p&gt;&lt;img  src=&#34;https://sat8bit.github.io/images/2021-02-09-23-44-24.png&#34;
+        alt/&gt;&lt;/p&gt;
+&lt;h2 id=&#34;ブログを追加する&#34;&gt;ブログを追加する&lt;/h2&gt;
+&lt;p&gt;Hugo は &lt;code&gt;hugo new &amp;lt;category&amp;gt;/&amp;lt;filename&amp;gt;.&amp;lt;filetype&amp;gt;&lt;/code&gt; というコマンドでコンテンツを生成できる。&lt;br&gt;
+またデフォルトでは &lt;code&gt;posts&lt;/code&gt; カテゴリがトップページにリスティングされる。&lt;/p&gt;
+&lt;p&gt;なので、例えば hello-world という記事を書くときはこんなコマンドになる。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ hugo new posts/hello-world.md
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;こんなファイルが生成される。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ cat content/posts/hello-world.md
+---
+title: &amp;quot;Hello World&amp;quot;
+date: 2021-02-09T23:50:59+09:00
+draft: true
+---
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;code&gt;---&lt;/code&gt; で挟まれた部分はメタ情報になるので、その下に記事を書いていく。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-diff&#34; data-lang=&#34;diff&#34;&gt; draft: true
+ ---
+
+&lt;span style=&#34;color:#a6e22e&#34;&gt;+# Hello! World.
+&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;+
+&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;+こんにちは、世界。
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;この状態で &lt;code&gt;hugo serve&lt;/code&gt; を実行しても、記事は表示されない。メタ情報の &lt;code&gt;draft&lt;/code&gt; が &lt;code&gt;true&lt;/code&gt; になっていて、下書き扱いになっているからである。&lt;/p&gt;
+&lt;p&gt;下書きを確認するために以下のコマンドで hugo を起動する。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;hugo serve -D
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img  src=&#34;https://sat8bit.github.io/images/2021-02-09-23-56-41.png&#34;
+        alt/&gt;&lt;/p&gt;
+&lt;p&gt;表示される。&lt;/p&gt;
+&lt;p&gt;つまり、記事を書いて、ローカルでの確認が終わったらファイル側のメタ情報の &lt;code&gt;draft&lt;/code&gt; を削除するか、&lt;code&gt;false&lt;/code&gt; にすれば公開、というサイクルになる。&lt;/p&gt;
+&lt;h2 id=&#34;静的コンテンツの生成&#34;&gt;静的コンテンツの生成&lt;/h2&gt;
+&lt;p&gt;今回は Github Actions でやるので、手でやることはないが一応触っておいたほうが良いと思う。&lt;/p&gt;
+&lt;p&gt;以下のコマンドを実行すると、 &lt;code&gt;public&lt;/code&gt; 配下に静的コンテンツが生成される。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ hugo
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;確認。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public
+├── 404.html
+├── ananke
+│   └── dist
+│       └── main.css_5c99d70a7725bacd4c701e995b969fea.css
+├── categories
+│   ├── index.html
+│   └── index.xml
+├── images
+│   └── gohugo-default-sample-hero-image.jpg
+├── index.html
+├── index.xml
+├── sitemap.xml
+└── tags
+    ├── index.html
+    └── index.xml
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;このディレクトリをホスティングすることで、ブログを公開する。&lt;/p&gt;
+&lt;p&gt;なお、今回はお試しなので生成されたファイルは削除する。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ rm -rf public
+&lt;/code&gt;&lt;/pre&gt;&lt;h1 id=&#34;github-actions-で-静的コンテンツを生成して-push-する&#34;&gt;Github Actions で 静的コンテンツを生成して Push する&lt;/h1&gt;
+&lt;p&gt;TBD&lt;/p&gt;
+&lt;h1 id=&#34;github-pages-を設定して公開する&#34;&gt;Github Pages を設定して公開する&lt;/h1&gt;
+&lt;p&gt;TBD&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Firebase Tutorial</title>
       <link>https://sat8bit.github.io/posts/firebase-tutorial/</link>
       <pubDate>Tue, 09 Feb 2021 22:07:53 +0900</pubDate>
@@ -828,55 +946,6 @@ func file_github_com_sat8bit_protobuf_models_role_proto_init() {
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;以上のことから、 &lt;strong&gt;protoc を実行したときのパスの指定/インクルードパスの指定で、成果物が変わることがわかる。&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;import で指定するパスと、protoc のコマンド実行時のファイルを指定するパスを同じにしておけば良い話だけど、ちょっとわかりづらい。&lt;/p&gt;
 &lt;p&gt;個人的には &lt;code&gt;find . -name *.proto | protoc -I XXXX&lt;/code&gt; でドバーッと 1 ファイルずつ protoc したいので、前者のほうが都合が良いことが多い気がした。&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Daily/2021/01/19</title>
-      <link>https://sat8bit.github.io/logs/daily-2021-01-19/</link>
-      <pubDate>Tue, 19 Jan 2021 22:53:01 +0900</pubDate>
-      
-      <guid>https://sat8bit.github.io/logs/daily-2021-01-19/</guid>
-      <description>&lt;h1 id=&#34;todo&#34;&gt;Todo&lt;/h1&gt;
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th&gt;Todo&lt;/th&gt;
-&lt;th&gt;Done&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td&gt;protoc の壊れを治す&lt;/td&gt;
-&lt;td&gt;o&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;h1 id=&#34;logs&#34;&gt;Logs&lt;/h1&gt;
-&lt;h2 id=&#34;protoc-の壊れを治す&#34;&gt;protoc の壊れを治す&lt;/h2&gt;
-&lt;p&gt;真面目に検証したら結構大きくなっちゃったので posts に切り出す。&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://sat8bit.github.io/posts/import-of-protocol-buffer/&#34;&gt;Protocol Buffer の import におけるファイルの取扱いについて&lt;/a&gt;
-&lt;/p&gt;
-&lt;h1 id=&#34;その他作業中に発生したこと&#34;&gt;その他作業中に発生したこと&lt;/h1&gt;
-&lt;h2 id=&#34;ハーゲンダッツ食べる&#34;&gt;ハーゲンダッツ食べる&lt;/h2&gt;
-&lt;p&gt;遠い昔誰かが「ハーゲンダッツは結局ラムレーズン」みたいなこと言ってた。&lt;/p&gt;
-&lt;p&gt;誰だか思い出せないけど。&lt;/p&gt;
-&lt;p&gt;その後暫くは気にしてなかったけど、ここ２年位ラムレーズンばっか食べてる。&lt;/p&gt;
-&lt;p&gt;ラムレーズンほんとおいしい。ただよく見たら酒が入ってた。&lt;/p&gt;
-&lt;h2 id=&#34;xargs-で実行したコマンドを出力したい&#34;&gt;xargs で実行したコマンドを出力したい&lt;/h2&gt;
-&lt;p&gt;以下のようなコマンド形式で実行してるコマンドでエラーが出たが、どのファイルかわからない。&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;find . -name XXXX | xargs command
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;実行したコマンドを出力するオプションを調べた。&lt;/p&gt;
-&lt;p&gt;Linux 版のオプションは以下のサイトで確認。&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://www.atmarkit.co.jp/ait/articles/1801/19/news014.html&#34;&gt;https://www.atmarkit.co.jp/ait/articles/1801/19/news014.html&lt;/a&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;xargs [-t|--verbose]
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;macOS で &lt;code&gt;--verbose&lt;/code&gt; を実行したところ、オプション無いエラーだったので man を確認。&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;     -t      Echo the command to be executed to standard error immediately before it is executed.
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;macOS(BSD 版)では、ロングのほうがないよう。&lt;/p&gt;
-&lt;h2 id=&#34;next&#34;&gt;Next&lt;/h2&gt;
-&lt;ul&gt;
-&lt;li&gt;protobuf の見直し&lt;/li&gt;
-&lt;/ul&gt;
 </description>
     </item>
     
