@@ -122,9 +122,58 @@ draft: true
 &lt;p&gt;なお、今回はお試しなので生成されたファイルは削除する。&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;$ rm -rf public
 &lt;/code&gt;&lt;/pre&gt;&lt;h1 id=&#34;github-actions-で-静的コンテンツを生成して-push-する&#34;&gt;Github Actions で 静的コンテンツを生成して Push する&lt;/h1&gt;
-&lt;p&gt;TBD&lt;/p&gt;
+&lt;p&gt;既に Actions があるので、これを使って設定を行っていく。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/peaceiris/actions-hugo&#34;&gt;https://github.com/peaceiris/actions-hugo&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;と言っても、上の README を参考に設定していけば動く。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;name&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;github pages&lt;/span&gt;
+
+&lt;span style=&#34;color:#f92672&#34;&gt;on&lt;/span&gt;:
+  &lt;span style=&#34;color:#f92672&#34;&gt;push&lt;/span&gt;:
+    &lt;span style=&#34;color:#f92672&#34;&gt;branches&lt;/span&gt;:
+      - &lt;span style=&#34;color:#ae81ff&#34;&gt;master&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;# Set a branch to deploy&lt;/span&gt;
+
+&lt;span style=&#34;color:#f92672&#34;&gt;jobs&lt;/span&gt;:
+  &lt;span style=&#34;color:#f92672&#34;&gt;deploy&lt;/span&gt;:
+    &lt;span style=&#34;color:#f92672&#34;&gt;runs-on&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;ubuntu-18.04&lt;/span&gt;
+    &lt;span style=&#34;color:#f92672&#34;&gt;steps&lt;/span&gt;:
+      - &lt;span style=&#34;color:#f92672&#34;&gt;uses&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;actions/checkout@v2&lt;/span&gt;
+        &lt;span style=&#34;color:#f92672&#34;&gt;with&lt;/span&gt;:
+          &lt;span style=&#34;color:#f92672&#34;&gt;submodules&lt;/span&gt;: &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;# Fetch Hugo themes (true OR recursive)&lt;/span&gt;
+          &lt;span style=&#34;color:#f92672&#34;&gt;fetch-depth&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;# Fetch all history for .GitInfo and .Lastmod&lt;/span&gt;
+
+      - &lt;span style=&#34;color:#f92672&#34;&gt;name&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;Setup Hugo&lt;/span&gt;
+        &lt;span style=&#34;color:#f92672&#34;&gt;uses&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;peaceiris/actions-hugo@v2&lt;/span&gt;
+        &lt;span style=&#34;color:#f92672&#34;&gt;with&lt;/span&gt;:
+          &lt;span style=&#34;color:#f92672&#34;&gt;hugo-version&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;0.79.1&amp;#34;&lt;/span&gt;
+          &lt;span style=&#34;color:#75715e&#34;&gt;# extended: true&lt;/span&gt;
+
+      - &lt;span style=&#34;color:#f92672&#34;&gt;name&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;Build&lt;/span&gt;
+        &lt;span style=&#34;color:#f92672&#34;&gt;run&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;hugo&lt;/span&gt;
+
+      - &lt;span style=&#34;color:#f92672&#34;&gt;name&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;Deploy&lt;/span&gt;
+        &lt;span style=&#34;color:#f92672&#34;&gt;uses&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;peaceiris/actions-gh-pages@v3&lt;/span&gt;
+        &lt;span style=&#34;color:#f92672&#34;&gt;with&lt;/span&gt;:
+          &lt;span style=&#34;color:#f92672&#34;&gt;github_token&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;${{ secrets.GITHUB_TOKEN }}&lt;/span&gt;
+          &lt;span style=&#34;color:#f92672&#34;&gt;publish_dir&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;./public&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上記のファイルを &lt;code&gt;.github/workflows/gh-pages.yml&lt;/code&gt; とかの名前で保存しておしまい。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;gh-pages.yml&lt;/code&gt; のファイル名は変更してよいが、&lt;code&gt;.github/workflows&lt;/code&gt; は Actions のファイルの置き場所なので変更しない。&lt;/p&gt;
+&lt;p&gt;Github に push したら、Github 上の Actions タブで実際に動作したか確認する。&lt;/p&gt;
+&lt;p&gt;&lt;img  src=&#34;https://sat8bit.github.io/images/2021-02-15-01-05-39.png&#34;
+        alt/&gt;&lt;/p&gt;
+&lt;p&gt;こんな感じで緑のチェックになってれば OK。&lt;/p&gt;
+&lt;p&gt;gh-pages というブランチに push されているので、確認する。&lt;/p&gt;
+&lt;p&gt;&lt;img  src=&#34;https://sat8bit.github.io/images/2021-02-15-01-06-23.png&#34;
+        alt/&gt;&lt;/p&gt;
 &lt;h1 id=&#34;github-pages-を設定して公開する&#34;&gt;Github Pages を設定して公開する&lt;/h1&gt;
-&lt;p&gt;TBD&lt;/p&gt;
+&lt;p&gt;最後に公開する設定を行う。&lt;/p&gt;
+&lt;p&gt;Settings タブを開くと Options が選択された状態で開くので、下部の &lt;code&gt;GitHub Pages&lt;/code&gt; で Source を &lt;code&gt;gh-pages&lt;/code&gt; に変更する。&lt;/p&gt;
+&lt;p&gt;公開するディレクトリだけを push しているので、 / (root) を選択して &lt;code&gt;Save&lt;/code&gt; する。&lt;/p&gt;
+&lt;p&gt;&lt;img  src=&#34;https://sat8bit.github.io/images/2021-02-15-01-08-54.png&#34;
+        alt/&gt;&lt;/p&gt;
+&lt;p&gt;公開設定をしても、暫くは表示されないのでちょっとまってから以下の URL にアクセスする。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;https://&amp;lt;account名&amp;gt;.github.io
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;設定画面にリンクが表示されるはずなので、そこを押すほうが確実。&lt;/p&gt;
+&lt;p&gt;上記で設定が整ったら、あとは Markdown でメモとか書いて適当に Push すれば良さそうです。&lt;/p&gt;
 </description>
     </item>
     
