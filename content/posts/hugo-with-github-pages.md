@@ -184,8 +184,75 @@ $ rm -rf public
 
 # Github Actions で 静的コンテンツを生成して Push する
 
-TBD
+既に Actions があるので、これを使って設定を行っていく。
+
+https://github.com/peaceiris/actions-hugo
+
+と言っても、上の README を参考に設定していけば動く。
+
+```yaml
+name: github pages
+
+on:
+  push:
+    branches:
+      - master # Set a branch to deploy
+
+jobs:
+  deploy:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true # Fetch Hugo themes (true OR recursive)
+          fetch-depth: 0 # Fetch all history for .GitInfo and .Lastmod
+
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v2
+        with:
+          hugo-version: "0.79.1"
+          # extended: true
+
+      - name: Build
+        run: hugo
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
+```
+
+上記のファイルを `.github/workflows/gh-pages.yml` とかの名前で保存しておしまい。
+
+`gh-pages.yml` のファイル名は変更してよいが、`.github/workflows` は Actions のファイルの置き場所なので変更しない。
+
+Github に push したら、Github 上の Actions タブで実際に動作したか確認する。
+
+![](/images/2021-02-15-01-05-39.png)
+
+こんな感じで緑のチェックになってれば OK。
+
+gh-pages というブランチに push されているので、確認する。
+
+![](/images/2021-02-15-01-06-23.png)
 
 # Github Pages を設定して公開する
 
-TBD
+最後に公開する設定を行う。
+
+Settings タブを開くと Options が選択された状態で開くので、下部の `GitHub Pages` で Source を `gh-pages` に変更する。
+
+公開するディレクトリだけを push しているので、 / (root) を選択して `Save` する。
+
+![](/images/2021-02-15-01-08-54.png)
+
+公開設定をしても、暫くは表示されないのでちょっとまってから以下の URL にアクセスする。
+
+```
+https://<account名>.github.io
+```
+
+設定画面にリンクが表示されるはずなので、そこを押すほうが確実。
+
+上記で設定が整ったら、あとは Markdown でメモとか書いて適当に Push すれば良さそうです。

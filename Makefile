@@ -1,6 +1,3 @@
-edit::
-	vim $$(find content | peco)
-
 l::
 	hugo new logs/daily-$$(date +%Y-%m-%d).md
 
