@@ -5,10 +5,64 @@
     <description>Recent content on 三日坊主。</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja</language>
-    <lastBuildDate>Tue, 09 Feb 2021 23:23:16 +0900</lastBuildDate>
+    <lastBuildDate>Sat, 06 Mar 2021 23:46:18 +0900</lastBuildDate>
     
         <atom:link href="https://sat8bit.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Daily/2021/03/06</title>
+      <link>https://sat8bit.github.io/logs/daily-2021-03-06/</link>
+      <pubDate>Sat, 06 Mar 2021 23:46:18 +0900</pubDate>
+      
+      <guid>https://sat8bit.github.io/logs/daily-2021-03-06/</guid>
+      <description>&lt;h1 id=&#34;mac-book-air-の-m1-が来た&#34;&gt;Mac Book Air の M1 が来た！&lt;/h1&gt;
+&lt;p&gt;現状は特段困ってない。&lt;br&gt;
+M1 の速さを享受するために無理矢理 M1 対応版を使うことはしていない。&lt;/p&gt;
+&lt;p&gt;docker は rosetta2 上で動かないので、それはドキドキしたけど、M1 対応の preview 版があるので一旦大丈夫そう。&lt;br&gt;
+様子見る。&lt;/p&gt;
+&lt;p&gt;Go は 1.16 でネイティブ対応したとのこと。さすが嬉しい。&lt;/p&gt;
+&lt;p&gt;brew で install するとき結構これ求められる。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ brew install protobuf
+Error: Cannot install under Rosetta 2 in ARM default prefix (/opt/homebrew)!
+To rerun under ARM use:
+    arch -arm64 brew install ...
+To install under x86_64, install Homebrew into /usr/local.
+&lt;/code&gt;&lt;/pre&gt;&lt;h1 id=&#34;go-116-から追加された-embed-について&#34;&gt;Go 1.16 から追加された embed について&lt;/h1&gt;
+&lt;p&gt;PC の入れ替えに引きづられて Go を 1.16 にしたので、メールのテンプレートを embed で読み出すようにしてみる。こんな感じ。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; (
+	&lt;span style=&#34;color:#75715e&#34;&gt;// for embed template text
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#a6e22e&#34;&gt;_&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;embed&amp;#34;&lt;/span&gt;
+)
+
+&lt;span style=&#34;color:#75715e&#34;&gt;//go:embed templates/mail.txt
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;mailTemplate&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;embed の import 忘れそう。。と、コメントを差し込まないと go-lint で警告が出る。_ での import は基本的に main か test で、ということらしい。&lt;/p&gt;
+&lt;p&gt;これによって、ビルドのときに成果物に予め含んでおいてくれる。
+存在しないファイルを指定したりするとビルド時に落としてくれる。&lt;/p&gt;
+&lt;p&gt;以前は実行時に読み込むために、Dockerfile でテンプレートファイルを個別に ADD するようにしていたのでだいぶ楽だし、変に壊れる必要もないのが嬉しい。&lt;/p&gt;
+&lt;h1 id=&#34;go-mod-vendor-がすべてのファイルを-vendor-配下においてくれない問題&#34;&gt;go mod vendor がすべてのファイルを vendor 配下においてくれない問題&lt;/h1&gt;
+&lt;p&gt;PC が変わって環境構築してるときに、vend コマンドが見つからなかった。&lt;/p&gt;
+&lt;p&gt;Makefile に突っ込んどいたと思ったんだけど忘れてて、あれどれだっけな、、と思って必死に探した。これ。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;go get github.com/nomad-software/vend
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;と思ったけど、なんか前も書いたなと思って grep したら &lt;a href=&#34;https://sat8bit.github.io/logs/daily-2021-01-20/&#34;target=&#34;_blank&#34; rel=&#34;noopener noreferrer&#34;&gt;2021/01/20&lt;/a&gt;
+ にログに書いてた。書いててよかった。&lt;/p&gt;
+&lt;p&gt;ついでに protoc もなかった。これ。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;http://google.github.io/proto-lens/installing-protoc.html&#34;&gt;http://google.github.io/proto-lens/installing-protoc.html&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;protoc-gen-** もない。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://grpc.io/docs/languages/go/quickstart/&#34;&gt;https://grpc.io/docs/languages/go/quickstart/&lt;/a&gt;&lt;br&gt;
+&lt;a href=&#34;https://github.com/grpc-ecosystem/grpc-gateway&#34;&gt;https://github.com/grpc-ecosystem/grpc-gateway&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;この辺まとめるとこうなる。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ go install \
+    github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway \
+    github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2 \
+    google.golang.org/protobuf/cmd/protoc-gen-go \
+    google.golang.org/grpc/cmd/protoc-gen-go-grpc \
+    github.com/mwitkow/go-proto-validators/protoc-gen-govalidators
+&lt;/code&gt;&lt;/pre&gt;&lt;h1 id=&#34;その他&#34;&gt;その他&lt;/h1&gt;
+&lt;h1 id=&#34;next&#34;&gt;Next&lt;/h1&gt;
+</description>
+    </item>
     
     <item>
       <title>Hugo と Github Pages でブログを作る</title>
@@ -747,254 +801,6 @@ cp -R vendor/github.com/grpc-ecosystem/grpc-gateway/v2/third_party/googleapis/go
 &lt;ul&gt;
 &lt;li&gt;openapiv2 の問題解決&lt;/li&gt;
 &lt;/ul&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Protocol Buffer の import におけるファイルの取扱いについて</title>
-      <link>https://sat8bit.github.io/posts/import-of-protocol-buffer/</link>
-      <pubDate>Wed, 20 Jan 2021 00:25:28 +0900</pubDate>
-      
-      <guid>https://sat8bit.github.io/posts/import-of-protocol-buffer/</guid>
-      <description>&lt;h1 id=&#34;protocol-buffer-の-import-について&#34;&gt;Protocol Buffer の import について&lt;/h1&gt;
-&lt;p&gt;import 周りで躓いたので、検証結果をまとめておく。&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ protoc --version
-libprotoc 3.6.0
-$ protoc-gen-go --version
-protoc-gen-go v1.25.0
-$ protoc-gen-go-grpc --version
-protoc-gen-go-grpc 1.1.0
-&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;import-時の同一ファイル判定について&#34;&gt;import 時の同一ファイル判定について&lt;/h2&gt;
-&lt;p&gt;サンプルのディレクトリ構成は以下とする。&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;~/
-└── src/
-    └── github.com
-        └── sat8bit
-            └── protobuf
-                ├── models
-                │   └── user.proto
-                └── service.proto
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;この後の &lt;code&gt;protoc&lt;/code&gt; コマンドは全て &lt;code&gt;src/github.com/sat8bit/protobuf&lt;/code&gt; ディレクトリ配下で実行する。&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;service.proto&lt;/code&gt; の内容は次の通り。&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&#34;language-proto3&#34; data-lang=&#34;proto3&#34;&gt;syntax = &amp;quot;proto3&amp;quot;;
-
-package io.github.sat8bit;
-
-import &amp;quot;models/user.proto&amp;quot;;
-
-option go_package = &amp;quot;github.com/sat8bit/protobuf&amp;quot;;
-
-service UserService {
-    rpc GetUser(GetUserMessage) returns (GetUserResponse) {}
-}
-
-message GetUserMessage {
-    string id = 1;
-}
-
-message GetUserResponse {
-    models.User user = 1;
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;code&gt;user.proto&lt;/code&gt; の内容は次の通り。&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&#34;language-proto3&#34; data-lang=&#34;proto3&#34;&gt;syntax = &amp;quot;proto3&amp;quot;;
-
-package io.github.sat8bit.models;
-
-option go_package = &amp;quot;github.com/sat8bit/protobuf/models&amp;quot;;
-
-message User {
-    string id = 1;
-    string name = 2;
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;この状態で go-grpc_out で grpc を吐き出すと、以下の構造になる。&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ protoc --go_out ./go --go-grpc_out ./go service.proto
-$ tree go
-go
-└── github.com
-    └── sat8bit
-        └── protobuf
-            ├── service.pb.go
-            └── service_grpc.pb.go
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;ただ、実際は &lt;code&gt;grpc-gateway&lt;/code&gt; などの &lt;code&gt;grpc-ecosystem&lt;/code&gt; や、&lt;code&gt;validator&lt;/code&gt; などを src 配下に展開していたので、それを再現するために &lt;code&gt;-I&lt;/code&gt; を追加する。&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ protoc -I . -I ~/src --go_out ./go --go-grpc_out ./go service.proto
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;この状態では、models/user.proto を import するパスは２種類ある。&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&#34;language-proto3&#34; data-lang=&#34;proto3&#34;&gt;// . から見た相対パス
-import &amp;quot;models/user.proto&amp;quot;;
-// ~/src から見た相対パス
-import &amp;quot;github.com/sat8bit/protobuf/models/user.proto&amp;quot;;
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;試しに import を２種類書いてみる。（実際はこんなことしないが）&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&#34;language-proto3&#34; data-lang=&#34;proto3&#34;&gt;syntax = &amp;quot;proto3&amp;quot;;
-
-package io.github.sat8bit;
-
-import &amp;quot;models/user.proto&amp;quot;;
-import &amp;quot;github.com/sat8bit/protobuf/models/user.proto&amp;quot;;
-
-option go_package = &amp;quot;github.com/sat8bit/protobuf&amp;quot;;
-
-service UserService {
-    rpc GetUser(GetUserMessage) returns (GetUserResponse) {}
-}
-
-message GetUserMessage {
-    string id = 1;
-}
-
-message GetUserResponse {
-    models.User user = 1;
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;すると、以下のエラーになる。&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;github.com/sat8bit/protobuf/models/user.proto:8:12: &amp;quot;io.github.sat8bit.models.User.id&amp;quot; is already defined in file &amp;quot;models/user.proto&amp;quot;.
-github.com/sat8bit/protobuf/models/user.proto:9:12: &amp;quot;io.github.sat8bit.models.User.name&amp;quot; is already defined in file &amp;quot;models/user.proto&amp;quot;.
-github.com/sat8bit/protobuf/models/user.proto:7:9: &amp;quot;io.github.sat8bit.models.User&amp;quot; is already defined in file &amp;quot;models/user.proto&amp;quot;.
-service.proto: Import &amp;quot;github.com/sat8bit/protobuf/models/user.proto&amp;quot; was not found or had errors.
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;既に定義済みエラーである。一方、&lt;code&gt;import &amp;quot;models/user.proto&amp;quot;;&lt;/code&gt; を 2 個書いた場合はこんなエラーになる。&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;service.proto: Import &amp;quot;models/user.proto&amp;quot; was listed twice.
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;import を ２回しているエラーである。&lt;/p&gt;
-&lt;p&gt;以上から、&lt;strong&gt;protoc では、相対パスの完全一致によって、同一ファイルかどうかを判断することがわかる。&lt;/strong&gt;&lt;/p&gt;
-&lt;h2 id=&#34;別のファイルを経由した-import-の場合&#34;&gt;別のファイルを経由した import の場合&lt;/h2&gt;
-&lt;p&gt;enum 定義のあるファイルを追加で作成する。&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;~/
-└── src/
-    └── github.com
-        └── sat8bit
-            └── protoc
-                ├── models
-                │   ├── user.proto
-                │   └── role.proto
-                └── service.proto
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;code&gt;models/role.proto&lt;/code&gt; の内容は次の通り。&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;syntax = &amp;quot;proto3&amp;quot;;
-
-package io.github.sat8bit.models;
-
-option go_package = &amp;quot;github.com/sat8bit/protobuf/models&amp;quot;;
-
-enum Role {
-  UNKNOWN = 0;
-  ADMIN = 1;
-  READ = 2;
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;code&gt;models/user.proto&lt;/code&gt; からこれを import する。&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&#34;language-proto3&#34; data-lang=&#34;proto3&#34;&gt;syntax = &amp;quot;proto3&amp;quot;;
-
-package io.github.sat8bit.models;
-
-option go_package = &amp;quot;github.com/sat8bit/protobuf/models&amp;quot;;
-
-import &amp;quot;models/role.proto&amp;quot;;
-
-message User {
-    string id = 1;
-    string name = 2;
-    Role role = 3;
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;このとき、import で指定するファイルパスは インクルードパスからの相対パスになる。&lt;code&gt;models/user.proto&lt;/code&gt; から見た相対パスではない。&lt;/p&gt;
-&lt;p&gt;この状態で、&lt;code&gt;model/user.proto&lt;/code&gt; を protoc してみる。&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ protoc -I . -I ~/src --go_out ./go --go-grpc_out ./go models/user.proto models/role.proto
-$ tree go
-go
-└── github.com
-    └── sat8bit
-        └── protobuf
-            ├── models
-            │   ├── role.pb.go
-            │   └── user.pb.go
-            ├── service.pb.go
-            └── service_grpc.pb.go
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;更に、&lt;code&gt;service.proto&lt;/code&gt; でも role が必要になったので import する。&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&#34;language-proto3&#34; data-lang=&#34;proto3&#34;&gt;syntax = &amp;quot;proto3&amp;quot;;
-
-package io.github.sat8bit;
-
-import &amp;quot;models/user.proto&amp;quot;;
-import &amp;quot;models/role.proto&amp;quot;;
-
-option go_package = &amp;quot;github.com/sat8bit/protobuf&amp;quot;;
-
-service UserService {
-    rpc GetUser(GetUserMessage) returns (GetUserResponse) {}
-}
-
-message GetUserMessage {
-    string id = 1;
-    models.Role role = 2;
-}
-
-message GetUserResponse {
-    models.User user = 1;
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;このときの依存関係は、以下の通り。&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;service.proto -------&amp;gt; models/user.proto
-     |                         |
-     |                         V
-     `---------------&amp;gt; models/role.proto
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;code&gt;service.proto&lt;/code&gt; から見ると、&lt;code&gt;models/role.proto&lt;/code&gt; は 2 系統から import されてることになる。&lt;/p&gt;
-&lt;p&gt;この状態で、&lt;code&gt;service.proto&lt;/code&gt; を protoc してみる。&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;protoc -I . -I ~/src --go_out ./go --go-grpc_out ./go service.proto
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;エラーにはならない。&lt;/p&gt;
-&lt;p&gt;以上のことから、&lt;strong&gt;違うファイル経由で同じファイルを import した場合、&lt;code&gt;Import &amp;quot;XXXXX&amp;quot; was listed twice.&lt;/code&gt; のエラーにはならずに正常に処理されるということがわかる。&lt;/strong&gt;&lt;/p&gt;
-&lt;h2 id=&#34;別のファイルを経由した-import-の場合別ファイル扱いの場合&#34;&gt;別のファイルを経由した import の場合（別ファイル扱いの場合）&lt;/h2&gt;
-&lt;p&gt;ここで、試しに &lt;code&gt;service.proto&lt;/code&gt; の方だけ &lt;code&gt;~/src&lt;/code&gt; からの相対パス指定に変更してみる。&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&#34;language-proto3&#34; data-lang=&#34;proto3&#34;&gt;syntax = &amp;quot;proto3&amp;quot;;
-
-package io.github.sat8bit;
-
-import &amp;quot;github.com/sat8bit/protobuf/models/user.proto&amp;quot;;
-import &amp;quot;github.com/sat8bit/protobuf/models/role.proto&amp;quot;;
-
-option go_package = &amp;quot;github.com/sat8bit/protobuf&amp;quot;;
-
-service UserService {
-    rpc GetUser(GetUserMessage) returns (GetUserResponse) {}
-}
-
-message GetUserMessage {
-    string id = 1;
-    models.Role role = 2;
-}
-
-message GetUserResponse {
-    models.User user = 1;
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;code&gt;service.proto&lt;/code&gt; を protoc すると、以下のエラーになる。&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ protoc -I . -I ~/src --go_out ./go --go-grpc_out ./go service.proto
-github.com/sat8bit/protobuf/models/role.proto:8:3: &amp;quot;io.github.sat8bit.models.UNKNOWN&amp;quot; is already defined in file &amp;quot;models/role.proto&amp;quot;.
-github.com/sat8bit/protobuf/models/role.proto:8:3: Note that enum values use C++ scoping rules, meaning that enum values are siblings of their type, not children of it.  Therefore, &amp;quot;UNKNOWN&amp;quot; must be unique within &amp;quot;io.github.sat8bit.models&amp;quot;, not just within &amp;quot;Role&amp;quot;.
-github.com/sat8bit/protobuf/models/role.proto:9:3: &amp;quot;io.github.sat8bit.models.ADMIN&amp;quot; is already defined in file &amp;quot;models/role.proto&amp;quot;.
-github.com/sat8bit/protobuf/models/role.proto:9:3: Note that enum values use C++ scoping rules, meaning that enum values are siblings of their type, not children of it.  Therefore, &amp;quot;ADMIN&amp;quot; must be unique within &amp;quot;io.github.sat8bit.models&amp;quot;, not just within &amp;quot;Role&amp;quot;.
-github.com/sat8bit/protobuf/models/role.proto:10:3: &amp;quot;io.github.sat8bit.models.READ&amp;quot; is already defined in file &amp;quot;models/role.proto&amp;quot;.
-github.com/sat8bit/protobuf/models/role.proto:10:3: Note that enum values use C++ scoping rules, meaning that enum values are siblings of their type, not children of it.  Therefore, &amp;quot;READ&amp;quot; must be unique within &amp;quot;io.github.sat8bit.models&amp;quot;, not just within &amp;quot;Role&amp;quot;.
-github.com/sat8bit/protobuf/models/role.proto:7:6: &amp;quot;io.github.sat8bit.models.Role&amp;quot; is already defined in file &amp;quot;models/role.proto&amp;quot;.
-service.proto: Import &amp;quot;github.com/sat8bit/protobuf/models/role.proto&amp;quot; was not found or had errors.
-service.proto:16:5: &amp;quot;io.github.sat8bit.models.Role&amp;quot; seems to be defined in &amp;quot;models/role.proto&amp;quot;, which is not imported by &amp;quot;service.proto&amp;quot;.  To use it here, please add the necessary import.
-service.proto:16:5: &amp;quot;models.Role&amp;quot; is resolved to &amp;quot;io.github.sat8bit.models.Role&amp;quot;, which is not defined. The innermost scope is searched first in name resolution. Consider using a leading &#39;.&#39;(i.e., &amp;quot;.models.Role&amp;quot;) to start from the outermost scope.
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;既に定義済みエラーとなった。&lt;/p&gt;
-&lt;p&gt;これは、&lt;strong&gt;&lt;code&gt;service.proto&lt;/code&gt; から見てる &lt;code&gt;role.proto&lt;/code&gt; と、 &lt;code&gt;user.proto&lt;/code&gt; から見てる &lt;code&gt;role.proto&lt;/code&gt; が違うファイルと認識されたためである。&lt;/strong&gt;&lt;/p&gt;
-&lt;h2 id=&#34;パス指定で発生する差分についてgo_out--grpc-に限る&#34;&gt;パス指定で発生する差分について（go_out / grpc に限る）&lt;/h2&gt;
-&lt;p&gt;ここまでの検証で &lt;code&gt;models/user.proto&lt;/code&gt; と &lt;code&gt;service.proto&lt;/code&gt; の import が揃っていればよいことがわかったが、何に揃えればいいのかを考える。&lt;/p&gt;
-&lt;p&gt;ここで、enum が含まれるファイルを import した場合の生成されるファイルの差分を見てみる。&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ diff user.pb.go._models_role.proto user.pb.go.github.com_sat8bit_protobuf_models_role.proto
-91,103c91,101
-(rawDesc の差分は省略)
-137c135
-&amp;lt;       file_github_com_sat8bit_protobuf_models_role_proto_init()
----
-&amp;gt;       file_models_role_proto_init()
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;enum を含むファイルを import した場合は、対象の enum を含むファイルの init function が呼び出されるが、その呼び出すメソッド名が違うことがわかる。&lt;/p&gt;
-&lt;p&gt;ちなみに、このままの流れで以下のコマンドで role.proto を protoc すると、生成される init は &lt;code&gt;file_models_role_proto_init&lt;/code&gt; になる。&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ protoc -I . -I ~/src --go_out ./go --go-grpc_out ./go models/role.proto
-$ grep init go/github.com/sat8bit/protobuf/models/role.pb.go
-func init() { file_models_role_proto_init() }
-func file_models_role_proto_init() {
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;ちなみに &lt;code&gt;file_github_com_sat8bit_protobuf_models_role_proto_init&lt;/code&gt; を生成したい場合は、もう一方のインクルードパスからのパスを指定してあげれば良い。&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ protoc -I . -I ~/src --go_out ./go --go-grpc_out ./go ~/src/github.com/sat8bit/protobuf/models/role.proto
-$ grep init go/github.com/sat8bit/protobuf/models/role.pb.go
-func init() { file_github_com_sat8bit_protobuf_models_role_proto_init() }
-func file_github_com_sat8bit_protobuf_models_role_proto_init() {
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;以上のことから、 &lt;strong&gt;protoc を実行したときのパスの指定/インクルードパスの指定で、成果物が変わることがわかる。&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;import で指定するパスと、protoc のコマンド実行時のファイルを指定するパスを同じにしておけば良い話だけど、ちょっとわかりづらい。&lt;/p&gt;
-&lt;p&gt;個人的には &lt;code&gt;find . -name *.proto | protoc -I XXXX&lt;/code&gt; でドバーッと 1 ファイルずつ protoc したいので、前者のほうが都合が良いことが多い気がした。&lt;/p&gt;
 </description>
     </item>
     
