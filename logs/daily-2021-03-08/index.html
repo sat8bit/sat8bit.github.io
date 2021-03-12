@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja"><meta charset="utf-8"><meta name="generator" content="Hugo 0.79.1" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="supported-color-schemes" content="light dark"><title>Daily/2021/03/08&nbsp;&ndash;&nbsp;三日坊主。</title><link rel="stylesheet" href="/css/core.min.f50770753e7b4a1cf823b8241022bf5a6908ecbc3cfcba59bfb76af28f94cceda372fd3dad1f0b6fb6592fd79f9fc1f3.css" integrity="sha384-9QdwdT57Shz4I7gkECK/WmkI7Lw8/LpZv7dq8o&#43;UzO2jcv09rR8Lb7ZZL9efn8Hz"><meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Daily/2021/03/08" /><body><section id="header">
+    <div class="header wrap"><span class="header left-side"><a class="site home" href="/"><span class="site name">三日坊主。</span></a></span>
+        <span class="header right-side"><div class="nav wrap"><nav class="nav"><a class="nav item" href="/categories/">カテゴリー</a><a class="nav item" href="/tags/">タグ</a></nav></div></span></div></section><section id="content"><div class="article-container"><section class="article header">
+    <h1 class="article title">Daily/2021/03/08</h1><p class="article date">2021-03-08</p></section><article class="article markdown-body"><h1 id="homebrew-で入れた-mysql-client-が-path-の通るところにおかれない">homebrew で入れた mysql-client が path の通るところにおかれない</h1>
+<p>この辺にある。リンクするコマンドとかありそうだが・・・？</p>
+<pre><code>$ find /opt/homebrew -name mysql                           
+/opt/homebrew/Cellar/mysql-client/8.0.23/bin/mysql
+/opt/homebrew/Cellar/mysql-client/8.0.23/include/mysql
+/opt/homebrew/Cellar/mysql-client/8.0.23/include/mysql/mysql
+/opt/homebrew/Cellar/mysql-client/8.0.23/share/mysql
+</code></pre><p>link コマンドがあるらしいので実行してみたが駄目。</p>
+<pre><code>$ brew link mysql-client
+Warning: mysql-client is keg-only and must be linked with `--force`.
+
+If you need to have this software first in your PATH instead consider running:
+  echo 'export PATH=&quot;/opt/homebrew/opt/mysql-client/bin:$PATH&quot;' &gt;&gt; ~/.zshrc
+</code></pre><p>keg-only は、Homebrew の用語でインストールしてもパスを通さないフォーミュラだそう。<br>
+<a href="https://blog.wtsnjp.com/2019/09/20/brew-list2/">https://blog.wtsnjp.com/2019/09/20/brew-list2/</a></p>
+<p>force って言われるとウッ・・って感じだけどリンクがあるほうが俄然便利なので <code>--force</code> してしまう。</p>
+<pre><code>$ brew link mysql-client --force
+Linking /opt/homebrew/Cellar/mysql-client/8.0.23... 63 symlinks created.
+
+If you need to have this software first in your PATH instead consider running:
+  echo 'export PATH=&quot;/opt/homebrew/opt/mysql-client/bin:$PATH&quot;' &gt;&gt; ~/.zshrc
+</code></pre><p>パスが通った。</p>
+<h1 id="todo">[Todo]</h1>
+<h1 id="その他">その他</h1>
+<h1 id="next">Next</h1>
+</article><section class="article labels"><a class="tag" href=/tags/logs/>logs</a></section><section class="article author"><p class="name">Satoshi Koizumi</p><div class="details"><a class="item" href="https://github.com/sat8bit" target="_blank" rel="noopener noreferrer"><span class="iconfont icon-github"></span>&nbsp;sat8bit</a><a class="item" href="https://twitter.com/sat8bit" target="_blank" rel="noopener noreferrer"><span class="iconfont icon-twitter"></span>&nbsp;@sat8bit</a><a class="item" href="mailto:sat8bit@mail.com" target="_blank" rel="noopener noreferrer"><span class="iconfont icon-email"></span>&nbsp;sat8bit@mail.com</a></div>
+</section>
+</div>
+<div class="article bottom"><section class="article navigation"><p><a class="link" href="/logs/daily-2021-03-07/"><span class="iconfont icon-article"></span>Daily/2021/03/07</a></p></section></div></section><section id="footer"><div class="footer-wrap">
+    <p class="copyright">三日坊主。</p>
+    <p class="powerby"><span>Powered&nbsp;by&nbsp;</span><a href="https://gohugo.io" 
+        target="_blank" rel="noopener noreferrer">Hugo</a><span>&nbsp;&amp;&nbsp;</span><a href="https://themes.gohugo.io/hugo-notepadium/" 
+        target="_blank" rel="noopener noreferrer">Notepadium</a></p></div>
+</section>
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'G-62G1T8FBSZ', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+</body>
+
+</html>

@@ -5,10 +5,74 @@
     <description>Recent content in Tags on 三日坊主。</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja</language>
-    <lastBuildDate>Sat, 06 Mar 2021 23:46:18 +0900</lastBuildDate>
+    <lastBuildDate>Mon, 08 Mar 2021 22:14:09 +0900</lastBuildDate>
     
         <atom:link href="https://sat8bit.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Daily/2021/03/08</title>
+      <link>https://sat8bit.github.io/logs/daily-2021-03-08/</link>
+      <pubDate>Mon, 08 Mar 2021 22:14:09 +0900</pubDate>
+      
+      <guid>https://sat8bit.github.io/logs/daily-2021-03-08/</guid>
+      <description>&lt;h1 id=&#34;homebrew-で入れた-mysql-client-が-path-の通るところにおかれない&#34;&gt;homebrew で入れた mysql-client が path の通るところにおかれない&lt;/h1&gt;
+&lt;p&gt;この辺にある。リンクするコマンドとかありそうだが・・・？&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ find /opt/homebrew -name mysql                           
+/opt/homebrew/Cellar/mysql-client/8.0.23/bin/mysql
+/opt/homebrew/Cellar/mysql-client/8.0.23/include/mysql
+/opt/homebrew/Cellar/mysql-client/8.0.23/include/mysql/mysql
+/opt/homebrew/Cellar/mysql-client/8.0.23/share/mysql
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;link コマンドがあるらしいので実行してみたが駄目。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ brew link mysql-client
+Warning: mysql-client is keg-only and must be linked with `--force`.
+
+If you need to have this software first in your PATH instead consider running:
+  echo &#39;export PATH=&amp;quot;/opt/homebrew/opt/mysql-client/bin:$PATH&amp;quot;&#39; &amp;gt;&amp;gt; ~/.zshrc
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;keg-only は、Homebrew の用語でインストールしてもパスを通さないフォーミュラだそう。&lt;br&gt;
+&lt;a href=&#34;https://blog.wtsnjp.com/2019/09/20/brew-list2/&#34;&gt;https://blog.wtsnjp.com/2019/09/20/brew-list2/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;force って言われるとウッ・・って感じだけどリンクがあるほうが俄然便利なので &lt;code&gt;--force&lt;/code&gt; してしまう。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ brew link mysql-client --force
+Linking /opt/homebrew/Cellar/mysql-client/8.0.23... 63 symlinks created.
+
+If you need to have this software first in your PATH instead consider running:
+  echo &#39;export PATH=&amp;quot;/opt/homebrew/opt/mysql-client/bin:$PATH&amp;quot;&#39; &amp;gt;&amp;gt; ~/.zshrc
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;パスが通った。&lt;/p&gt;
+&lt;h1 id=&#34;todo&#34;&gt;[Todo]&lt;/h1&gt;
+&lt;h1 id=&#34;その他&#34;&gt;その他&lt;/h1&gt;
+&lt;h1 id=&#34;next&#34;&gt;Next&lt;/h1&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Daily/2021/03/07</title>
+      <link>https://sat8bit.github.io/logs/daily-2021-03-07/</link>
+      <pubDate>Sun, 07 Mar 2021 22:30:59 +0900</pubDate>
+      
+      <guid>https://sat8bit.github.io/logs/daily-2021-03-07/</guid>
+      <description>&lt;h1 id=&#34;private-repository-の-go-get-ができない&#34;&gt;Private Repository の go get ができない&lt;/h1&gt;
+&lt;p&gt;go get でこんなエラーが出た。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;        fatal: &#39;origin&#39; does not appear to be a git repository
+        fatal: Could not read from remote repository.
+
+        Please make sure you have the correct access rights
+        and the repository exists.
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;同じ org の別リポジトリを go get してもエラーにならないのになんで・・・？&lt;br&gt;
+検索したら、それっぽいのあった。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://qiita.com/yagrush/items/ddcbc718d1c6f60c0aac&#34;&gt;https://qiita.com/yagrush/items/ddcbc718d1c6f60c0aac&lt;/a&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;一部モジュールのチェックサムがおかしくなってしまったようです…&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;そういえばなんとなく依存解決してくれてるけど、 go mod がどんなディレクトリを掘ってどこに認証情報を持ってるとか、その辺考えてなかったな、、&lt;br&gt;
+というか、認証情報とかがキャッシュされてるの気づかなかった。毎回とってるもんかと。どこかで時間とれれば勉強したい・・・&lt;/p&gt;
+&lt;p&gt;ということで、&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ go clean -modcache
+$ go get -u
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;をやったら治りました。超助かりました。&lt;/p&gt;
+&lt;h1 id=&#34;その他&#34;&gt;その他&lt;/h1&gt;
+&lt;h1 id=&#34;next&#34;&gt;Next&lt;/h1&gt;
+</description>
+    </item>
     
     <item>
       <title>Daily/2021/03/06</title>
@@ -675,133 +739,6 @@ Submit したときの動作を上から渡す。API 叩くのか、上流で値
 &lt;h2 id=&#34;next&#34;&gt;Next&lt;/h2&gt;
 &lt;pre&gt;&lt;code&gt;
 &lt;/code&gt;&lt;/pre&gt;</description>
-    </item>
-    
-    <item>
-      <title>Daily/2021/01/24</title>
-      <link>https://sat8bit.github.io/logs/daily-2021-01-24/</link>
-      <pubDate>Sun, 24 Jan 2021 14:04:59 +0900</pubDate>
-      
-      <guid>https://sat8bit.github.io/logs/daily-2021-01-24/</guid>
-      <description>&lt;h1 id=&#34;todo&#34;&gt;Todo&lt;/h1&gt;
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th&gt;Todo&lt;/th&gt;
-&lt;th&gt;Done&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td&gt;protoc を更新する&lt;/td&gt;
-&lt;td&gt;&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;h1 id=&#34;log&#34;&gt;Log&lt;/h1&gt;
-&lt;h2 id=&#34;protoc-を更新する&#34;&gt;protoc を更新する&lt;/h2&gt;
-&lt;p&gt;前回&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;protoc-gen-openapiv2 の annotation を使ってたんだけど、この行で import が protoc-gen-openapiv2 から指定になってる。
-
-https://github.com/grpc-ecosystem/grpc-gateway/blob/master/protoc-gen-openapiv2/options/annotations.proto#L8
-
-この場合は、上の googleapis と同様コピーするか、`github.com/grpc-ecosystem/grpc-gateway` をインクルードパスに追加するしかないことになる。
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;openapiv2 を吐き出すために openapiv2 を include path に追加すること自体は違和感がないので追加する。&lt;/p&gt;
-&lt;p&gt;（models 配下の proto が go を吐き出さないところで寝落ちした）&lt;/p&gt;
-&lt;h2 id=&#34;todo-1&#34;&gt;[Todo]&lt;/h2&gt;
-&lt;h2 id=&#34;その他作業中に発生したこと&#34;&gt;その他作業中に発生したこと&lt;/h2&gt;
-&lt;h2 id=&#34;next&#34;&gt;Next&lt;/h2&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Daily/2021/01/20</title>
-      <link>https://sat8bit.github.io/logs/daily-2021-01-20/</link>
-      <pubDate>Wed, 20 Jan 2021 22:44:56 +0900</pubDate>
-      
-      <guid>https://sat8bit.github.io/logs/daily-2021-01-20/</guid>
-      <description>&lt;h1 id=&#34;todo&#34;&gt;Todo&lt;/h1&gt;
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th&gt;Todo&lt;/th&gt;
-&lt;th&gt;Done&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td&gt;protobuf で go mod vendor 使えばいいんじゃないか？を見てみる&lt;/td&gt;
-&lt;td&gt;&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;h1 id=&#34;log&#34;&gt;Log&lt;/h1&gt;
-&lt;h2 id=&#34;protobuf-で-go-mod-vendor-使えばいいんじゃないかを見てみる&#34;&gt;protobuf で go mod vendor 使えばいいんじゃないか？を見てみる&lt;/h2&gt;
-&lt;p&gt;何も考えずに &lt;code&gt;$GOROOT/src&lt;/code&gt; をインクルードパスに指定してたけど、どのバージョンに依存してるかよくわからない状態だったので &lt;code&gt;Go Module&lt;/code&gt; 使って管理したほうが良さそう。&lt;/p&gt;
-&lt;p&gt;そして &lt;code&gt;go mod vendor&lt;/code&gt; を使えば、インクルードパスも &lt;code&gt;vendor&lt;/code&gt; にできるんじゃないか、ということでやってみる。&lt;/p&gt;
-&lt;p&gt;まず import を github.com から書くのをやめる。
-外部の import が github.com から指定だったから揃えてみたけど結果的に全然良くなかった。&lt;/p&gt;
-&lt;p&gt;ここみるのが良さそう。&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://github.com/grpc-ecosystem/grpc-gateway&#34;&gt;https://github.com/grpc-ecosystem/grpc-gateway&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;protoc のプラグインを &lt;code&gt;go.mod&lt;/code&gt; に追加するために &lt;code&gt;tools/dependencies.go&lt;/code&gt; を作る。&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;package&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;main&lt;/span&gt;
-
-&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; (
-        &lt;span style=&#34;color:#a6e22e&#34;&gt;_&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway&amp;#34;&lt;/span&gt;
-        &lt;span style=&#34;color:#a6e22e&#34;&gt;_&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2&amp;#34;&lt;/span&gt;
-        &lt;span style=&#34;color:#a6e22e&#34;&gt;_&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;github.com/mwitkow/go-proto-validators&amp;#34;&lt;/span&gt;
-        &lt;span style=&#34;color:#a6e22e&#34;&gt;_&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;google.golang.org/grpc/cmd/protoc-gen-go-grpc&amp;#34;&lt;/span&gt;
-        &lt;span style=&#34;color:#a6e22e&#34;&gt;_&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;google.golang.org/protobuf/cmd/protoc-gen-go&amp;#34;&lt;/span&gt;
-)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;code&gt;go mod init &amp;amp;&amp;amp; go mod tidy&lt;/code&gt; をすると、&lt;code&gt;go.mod&lt;/code&gt; &lt;code&gt;go.sum&lt;/code&gt; ができる。&lt;/p&gt;
-&lt;p&gt;そして &lt;code&gt;go mod vendor&lt;/code&gt; を実行すると、必要なファイルが vendor 配下に落ちてくる。&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;grpc-gateway&lt;/code&gt; の README によると、以下の import を proto ファイルに追加するらしいが&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;import &amp;quot;google/api/annotations.proto&amp;quot;;
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;何度やってもこうなる。&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;Import &amp;quot;googleapis/google/api/annotations.proto&amp;quot; was not found or had errors.
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;インクルードパスにないからね、そりゃそうだよねって思ってたら、ちゃんと書いてあった。&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;You will need to provide the required third party protobuf files to the protoc compiler. They are included in this repo under the third_party/googleapis folder, and we recommend copying them into your protoc generation file structure. If you&amp;rsquo;ve structured your proto files according to something like the Buf style guide, you could copy the files into a top-level ./google folder.&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;英語パッと読めないから気づくまで時間かかってしまったよ。。&lt;/p&gt;
-&lt;p&gt;現在 protobuf リポジトリは以下のような構造になっているので、&lt;code&gt;proto&lt;/code&gt; 配下にコピーする。&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;repo
-├── proto
-│   ├── google &amp;lt;- ここに置く
-│   ├── pkgA
-│   │   ├── a_service1.proto
-│   │   └── a_service2.proto
-│   ├── pkgB
-│   │   ├── b_service1.proto
-│   │   └── b_service2.proto
-│   └── pkgC
-│       ├── c_service1.proto
-│       └── c_service2.proto
-└── go/
-    └── &amp;lt;生成されるファイル&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;ので vendorからコピーしようとしたら vendor 配下の grpc-gateway に third_party ディレクトリがない・・・&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://github.com/golang/go/issues/26366&#34;&gt;https://github.com/golang/go/issues/26366&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;vendor では全てのファイルをとってくるわけではないそう。&lt;/p&gt;
-&lt;p&gt;上記Issueもまだ結論出ておらず、とりあえず全コピーするコマンド vend を作ってくれたそうなのでこれを使う。&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://github.com/nomad-software/vend&#34;&gt;https://github.com/nomad-software/vend&lt;/a&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;vend
-cp -R vendor/github.com/grpc-ecosystem/grpc-gateway/v2/third_party/googleapis/google proto
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;これで一旦通せるようになったので、vendor を構築するコマンド達を Makefile にまとめておく。&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;prepare::
-    go get github.com/nomad-software/vend
-    vend
-    cp -R vendor/github.com/grpc-ecosystem/grpc-gateway/v2/third_party/googleapis/google proto
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;が、openapiv2 を吐き出してるところでエラー。&lt;/p&gt;
-&lt;p&gt;protoc-gen-openapiv2 の annotation を使ってたんだけど、この行で import が protoc-gen-openapiv2 から指定になってる。&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://github.com/grpc-ecosystem/grpc-gateway/blob/master/protoc-gen-openapiv2/options/annotations.proto#L8&#34;&gt;https://github.com/grpc-ecosystem/grpc-gateway/blob/master/protoc-gen-openapiv2/options/annotations.proto#L8&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;この場合は、上の googleapis と同様コピーするか、&lt;code&gt;github.com/grpc-ecosystem/grpc-gateway&lt;/code&gt; をインクルードパスに追加するしかないことになる。&lt;/p&gt;
-&lt;p&gt;そろそろ眠いのでここは一旦要検討。&lt;/p&gt;
-&lt;h2 id=&#34;その他作業中に発生したこと&#34;&gt;その他作業中に発生したこと&lt;/h2&gt;
-&lt;h2 id=&#34;next&#34;&gt;Next&lt;/h2&gt;
-&lt;ul&gt;
-&lt;li&gt;openapiv2 の問題解決&lt;/li&gt;
-&lt;/ul&gt;
-</description>
     </item>
     
   </channel>
