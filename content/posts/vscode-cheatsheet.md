@@ -66,6 +66,16 @@ Project Root/
 | Prettier - Code formatter | いくつかの言語に対応している Prettier.                                                                            |
 | vscode-proto3             | Protocol Buffer のプラグイン。色々な機能があるけど単純に Formatter として使っている。                             |
 
+## 関連する話
+
+### clang-format
+
+Protocol Buffer のファイルを vscode-proto3 で formatter するためには clang-format が必要。
+
+```
+brew install clang-format
+```
+
 ## settings.json
 
 ```
