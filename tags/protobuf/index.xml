@@ -11,6 +11,53 @@
     
     
     <item>
+      <title>Daily/2021/04/01</title>
+      <link>https://sat8bit.github.io/logs/daily-2021-04-01/</link>
+      <pubDate>Thu, 01 Apr 2021 00:22:11 +0900</pubDate>
+      
+      <guid>https://sat8bit.github.io/logs/daily-2021-04-01/</guid>
+      <description>&lt;h1 id=&#34;4-月になってしまいました&#34;&gt;4 月になってしまいました&lt;/h1&gt;
+&lt;p&gt;早いもので４月１日ですね。エイプリルフールですね。特に嘘はありません。&lt;/p&gt;
+&lt;h1 id=&#34;olivereelastic-v7-のエラー&#34;&gt;olivere/elastic v7 のエラー&lt;/h1&gt;
+&lt;p&gt;この elastic のクライアントを使っている。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/olivere/elastic&#34;&gt;https://github.com/olivere/elastic&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;もともと、Client を DI のタイミングで作って渡して使いまわしてたんだけど、ClientFactory を作ってそれを Repository に DI し、処理の中で Client を作ることにした。&lt;/p&gt;
+&lt;p&gt;理由として、&lt;code&gt;elastic.NewClient&lt;/code&gt; のタイミングで elastic への接続に失敗すると &lt;code&gt;nil&lt;/code&gt; を返却するので、接続成功するまでループ処理を書いていたんだけど、これが煩雑だった。&lt;/p&gt;
+&lt;p&gt;が、暫くすると以下のエラーが出続けた。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;no active connection found: no Elasticsearch node available
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;code&gt;elastic cloud&lt;/code&gt; を使っていて落ちることはほぼないので、なんでだろ、と思ってとりあえずバージョンを切り戻したら復旧した。&lt;br&gt;
+で、原因調査。&lt;/p&gt;
+&lt;p&gt;Google さんで検索すると、一番上に来るこの issue で Sniffing に関連して出ることがわかった。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/olivere/elastic/issues/817&#34;&gt;https://github.com/olivere/elastic/issues/817&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;ところが、&lt;code&gt;elastic.SetSniff(false)&lt;/code&gt; は渡していた。なんぞ。&lt;/p&gt;
+&lt;p&gt;で、この issue でわかったっぽい。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/olivere/elastic/issues/699&#34;&gt;https://github.com/olivere/elastic/issues/699&lt;/a&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;You should only create one client for your application. A Client is thread-safe and can be used by multiple goroutines concurrently. Every Client starts goroutines to watch the cluster and monitor the connections, so it&amp;rsquo;s rather expensive to create. You need to stop a Client if it&amp;rsquo;s no longer used.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;要約すると、Client はアプリケーションで一個しか作らないでね、とのこと。
+Client を起動すると、内部で goroutine が起動してクラスタやコネクションを監視するそうです。&lt;/p&gt;
+&lt;p&gt;なるほど、内部でめっちゃ goroutine 立ててたっぽい。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;If you want a simple throwaway client, use NewSimpleClient.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;単純な使い捨てクライアントが必要な場合は、NewSimpleClient を使用してください。&lt;/p&gt;
+&lt;h1 id=&#34;error-creating-overlay-mount-to&#34;&gt;error creating overlay mount to&lt;/h1&gt;
+&lt;p&gt;&lt;code&gt;docker-compose pull&lt;/code&gt; してたらこんなエラーが出た。
+M1 起因かと思ったらそうでもないらしい。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://teratail.com/questions/122370&#34;&gt;https://teratail.com/questions/122370&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;でも &lt;code&gt;docker info&lt;/code&gt; したら 4 以降だったから別問題かな。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Kernel Version: 4.19.121-linuxkit
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;話題にあがりそうなストレージ周りはこんな感じ。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt; Storage Driver: overlay2
+  Backing Filesystem: extfs
+  Supports d_type: true
+  Native Overlay Diff: true
+&lt;/code&gt;&lt;/pre&gt;&lt;h1 id=&#34;next&#34;&gt;Next&lt;/h1&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Daily/2021/03/08</title>
       <link>https://sat8bit.github.io/logs/daily-2021-03-08/</link>
       <pubDate>Mon, 08 Mar 2021 22:14:09 +0900</pubDate>
@@ -603,142 +650,6 @@ You have to use some conditions or use raw SQL or enable AllowGlobalUpdate mode,
 &lt;h2 id=&#34;その他作業中に発生したこと&#34;&gt;その他作業中に発生したこと&lt;/h2&gt;
 &lt;h2 id=&#34;next&#34;&gt;Next&lt;/h2&gt;
 </description>
-    </item>
-    
-    <item>
-      <title>Daily/2021/01/28</title>
-      <link>https://sat8bit.github.io/logs/daily-2021-01-28/</link>
-      <pubDate>Thu, 28 Jan 2021 00:27:48 +0900</pubDate>
-      
-      <guid>https://sat8bit.github.io/logs/daily-2021-01-28/</guid>
-      <description>&lt;h1 id=&#34;todo&#34;&gt;Todo&lt;/h1&gt;
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th&gt;Todo&lt;/th&gt;
-&lt;th&gt;Done&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td&gt;React で text input を扱うときの実装を考える&lt;/td&gt;
-&lt;td&gt;o&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;protoc が何故か go を吐き出さない問題&lt;/td&gt;
-&lt;td&gt;o&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;mustEmbedUnimplemented** について調べる&lt;/td&gt;
-&lt;td&gt;&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;h1 id=&#34;log&#34;&gt;Log&lt;/h1&gt;
-&lt;h2 id=&#34;react-で-text-input-を扱うときの実装を考える&#34;&gt;React で text input を扱うときの実装を考える&lt;/h2&gt;
-&lt;p&gt;input の Component を作ろうとしたときにどう作ればいいんだ問題。&lt;/p&gt;
-&lt;p&gt;イメージ的には、外から使う分にはこんな感じにするのが良いかなって。CreateUserForm が form の中の入力内容を state で持つ感じ。
-Submit したときの動作を上から渡す。API 叩くのか、上流で値を受け取るのかなど。&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;&amp;lt;CreateUserForm onSubmit={(values: FormComponentValues) =&amp;gt; result} /&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;で、CreateUserForm の Component がこう。あくまでイメージ&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;&amp;lt;form onSubmit={() =&amp;gt; props.onSubmit(formState)}&amp;gt;
-  &amp;lt;CustomInput /&amp;gt;
-  &amp;lt;CustomInput /&amp;gt;
-  &amp;lt;CustomInput /&amp;gt;
-  &amp;lt;Submit /&amp;gt;
-&amp;lt;/form&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;ただこれだと入力したイベントとかは外から渡せないが・・・Form の値を管理する責務を Form で Wrap するならこうなのかしら。。&lt;/p&gt;
-&lt;p&gt;まず React の form に関する記載はここ。&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://ja.reactjs.org/docs/forms.html&#34;&gt;https://ja.reactjs.org/docs/forms.html&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;onChange を渡しておいて、 event.target.value を取れば良いみたい。&lt;/p&gt;
-&lt;p&gt;change event はここ。&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://developer.mozilla.org/ja/docs/Web/API/HTMLElement/change_event&#34;&gt;https://developer.mozilla.org/ja/docs/Web/API/HTMLElement/change_event&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;ここだけ気になる。&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;&lt;!-- raw HTML omitted --&gt; など一部の要素では、コントロールがフォーカスを失うまで change イベントが発生しません。以下のフィールドに何かを入力してから、他の部分をクリックするとイベントが発生します。&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;フォーカスを失うまで change イベントが発生しないなら、なんで onChange で &lt;code&gt;value={props.value}&lt;/code&gt; が機能するんだろうか。&lt;/p&gt;
-&lt;p&gt;React の form のページにはこう。&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;handleChange はキーストロークごとに実行されて React の state を更新するので、表示される値はユーザがタイプするたびに更新されます。&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;試しに実装したところ、キーストローク毎に実行された。React で扱う input は HTML としての input と少し挙動が違うっぽい。&lt;/p&gt;
-&lt;p&gt;textarea とかもちょっと違う旨が書いてある。&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;React では、&lt;!-- raw HTML omitted --&gt; は代わりに value 属性を使用します。こうすることで、&lt;!-- raw HTML omitted --&gt; を使用するフォームは単一行の入力フォームと非常に似た書き方ができるようになります&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;使いやすいようになってるみたい。&lt;/p&gt;
-&lt;h2 id=&#34;protoc-が何故か-go-を吐き出さない問題&#34;&gt;protoc が何故か go を吐き出さない問題&lt;/h2&gt;
-&lt;p&gt;吐き出されないと当然開発に入れないので困っている&lt;/p&gt;
-&lt;p&gt;以前書いた &lt;a href=&#34;https://sat8bit.github.io/posts/import-of-protocol-buffer/&#34;&gt;ProtocolBuffer の import の記事&lt;/a&gt;
- で動作を確認しようと思ったら、よく見たらなんかおかしい。&lt;/p&gt;
-&lt;p&gt;protoc コマンドのオプション &lt;code&gt;--go_out=plugins=grpc:./go&lt;/code&gt; が記載してる &lt;code&gt;protoc&lt;/code&gt; のバージョン（&lt;code&gt;3.6.0&lt;/code&gt;）と一致してない・・・・&lt;/p&gt;
-&lt;p&gt;たぶん別のバージョンの protoc で動かしたんだと思うので、再度上から実行して書き直した。&lt;/p&gt;
-&lt;p&gt;すると、&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;protoc -I . -I ~/src --go-grpc_out ./go models/user.proto
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;ここでやっぱり user_grpc.pb.go が生成されない。もしかして service がないと生成されなくなってる？&lt;/p&gt;
-&lt;p&gt;試しに service を追加したら生成された。&lt;/p&gt;
-&lt;p&gt;というかよく生成されるコード読んでみたら、message に対応する type が生成されてないぞなんだこれ。&lt;/p&gt;
-&lt;p&gt;で、解決。そもそも、protoc のバージョンを変えたら以下のエラーが出るようになってた。&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;--go_out: protoc-gen-go: plugins are not supported; use &#39;protoc --go-grpc_out=...&#39; to generate gRPC
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;ので、&lt;code&gt;--go_out=plugins=grpc:./go&lt;/code&gt; をとりあえず以下のようなオプションにした。&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;--go-grpc_out &amp;lt;dir&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;この書き方をすると &lt;code&gt;protoc-gen-go-grpc&lt;/code&gt; が動いているという認識がそもそも足りなかったのだけど、 &lt;code&gt;protoc-gen-go-grpc&lt;/code&gt; は &lt;code&gt;message&lt;/code&gt; に対応する &lt;code&gt;struct&lt;/code&gt; を生成しない。&lt;/p&gt;
-&lt;p&gt;その struct の定義自体は grpc じゃないもんね。確かに。&lt;/p&gt;
-&lt;p&gt;今までもたぶん &lt;code&gt;message&lt;/code&gt; に対応する &lt;code&gt;struct&lt;/code&gt; を生成してくれていたのは &lt;code&gt;protoc-gen-go&lt;/code&gt; 。&lt;/p&gt;
-&lt;p&gt;なので、正しくアウトプットするためには、&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;--go_out &amp;lt;dir&amp;gt; --go-grpc_out &amp;lt;dir&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;というオプションが必要だった。勉強になった。&lt;/p&gt;
-&lt;h3 id=&#34;mustembedunimplemented&#34;&gt;mustEmbedUnimplemented&lt;/h3&gt;
-&lt;p&gt;昨日始めた時間がもう今日だったので、続きに書く。&lt;/p&gt;
-&lt;p&gt;無事 protoc がバージョンできてよかった、と思ったのもつかの間、 &lt;code&gt;mustEmbedUnimplementedXXXXXServer&lt;/code&gt; というメソッドの実装がないよ、というエラーが出た。&lt;/p&gt;
-&lt;p&gt;調べたところ、同じような issue がこれ。&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://github.com/grpc/grpc-go/issues/3794&#34;&gt;https://github.com/grpc/grpc-go/issues/3794&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;そのなかに出てくる長い長い議論がこれ。&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://github.com/grpc/grpc-go/issues/3669&#34;&gt;https://github.com/grpc/grpc-go/issues/3669&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;ちょっと読めないので、ソースコードなどをかいつまんで見てみると、UnimplementedServer を embeded すれば良いみたい。&lt;/p&gt;
-&lt;p&gt;以前書いた &lt;a href=&#34;https://sat8bit.github.io/posts/import-of-protocol-buffer/&#34;&gt;ProtocolBuffer の import の記事&lt;/a&gt;
- で生成した Server を例にすると、&lt;/p&gt;
-&lt;p&gt;まず、こういう interface が生成される。&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// UserServiceServer is the server API for UserService service.
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// All implementations must embed UnimplementedUserServiceServer
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// for forward compatibility
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;type&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;UserServiceServer&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;interface&lt;/span&gt; {
-  &lt;span style=&#34;color:#a6e22e&#34;&gt;GetUser&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;context&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;Context&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;GetUserMessage&lt;/span&gt;) (&lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;GetUserResponse&lt;/span&gt;, &lt;span style=&#34;color:#66d9ef&#34;&gt;error&lt;/span&gt;)
-  &lt;span style=&#34;color:#a6e22e&#34;&gt;mustEmbedUnimplementedUserServiceServer&lt;/span&gt;()
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;問題になっているのは &lt;code&gt;mustEmbedUnimplementedUserServiceServer&lt;/code&gt; で、どうやら &lt;code&gt;UnimplementedUserServiceServer&lt;/code&gt; を Embed させるための func っぽい？&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;UnimplementedUserServiceServer&lt;/code&gt; を見てみる。&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// UnimplementedUserServiceServer must be embedded to have forward compatible implementations.
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;type&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;UnimplementedUserServiceServer&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; {
-}
-
-&lt;span style=&#34;color:#66d9ef&#34;&gt;func&lt;/span&gt; (&lt;span style=&#34;color:#a6e22e&#34;&gt;UnimplementedUserServiceServer&lt;/span&gt;) &lt;span style=&#34;color:#a6e22e&#34;&gt;GetUser&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;context&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;Context&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;GetUserMessage&lt;/span&gt;) (&lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;GetUserResponse&lt;/span&gt;, &lt;span style=&#34;color:#66d9ef&#34;&gt;error&lt;/span&gt;) {
-  &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;nil&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;status&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;Errorf&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;codes&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;Unimplemented&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;method GetUser not implemented&amp;#34;&lt;/span&gt;)
-}
-&lt;span style=&#34;color:#66d9ef&#34;&gt;func&lt;/span&gt; (&lt;span style=&#34;color:#a6e22e&#34;&gt;UnimplementedUserServiceServer&lt;/span&gt;) &lt;span style=&#34;color:#a6e22e&#34;&gt;mustEmbedUnimplementedUserServiceServer&lt;/span&gt;() {}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;何もしない func が入っている。
-コメントにもある通り、上位互換性を保つために実装に Embed しないといけないらしい。&lt;/p&gt;
-&lt;p&gt;つまり、&lt;code&gt;protobuf&lt;/code&gt; 側に新しい &lt;code&gt;rpc&lt;/code&gt; が生えたときに、&lt;code&gt;UnimplementedUserServiceServer&lt;/code&gt; を Embed しておくと、実装をしなくても、自動で &lt;code&gt;codes.Unimplemented&lt;/code&gt; を返却するメソッドを生やすよ、ということではないかと思う。&lt;/p&gt;
-&lt;p&gt;ちなみに Embed する実装はこう。&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;type&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;server&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; {
-    &lt;span style=&#34;color:#a6e22e&#34;&gt;pb&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;UnimplementedUserServiceServer&lt;/span&gt;
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;そもそもこの func いらないよ！ってときは、go-grpc の option でなくせるらしい。やってない。&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;--go-grpc_opt=require_unimplemented_servers=false
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;上のキーワードで調べたらめっちゃわかりやすい note あった。ありがとうございます。&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://note.com/dd_techblog/n/nb8b925d21118&#34;&gt;https://note.com/dd_techblog/n/nb8b925d21118&lt;/a&gt;&lt;/p&gt;
-&lt;h2 id=&#34;その他作業中に発生したこと&#34;&gt;その他作業中に発生したこと&lt;/h2&gt;
-&lt;h3 id=&#34;protoc-の-plugin-についての記事&#34;&gt;protoc の plugin についての記事&lt;/h3&gt;
-&lt;p&gt;どっかで読んで作ってみたい&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://qiita.com/yugui/items/87d00d77dee159e74886&#34;&gt;https://qiita.com/yugui/items/87d00d77dee159e74886&lt;/a&gt;&lt;/p&gt;
-&lt;h3 id=&#34;新しいバージョンの-protoc-で生成した-protobuf-を元々あったアプリに読み込ませたらエラー&#34;&gt;新しいバージョンの protoc で生成した protobuf を元々あったアプリに読み込ませたらエラー&lt;/h3&gt;
-&lt;p&gt;&lt;code&gt;mustEmbedUnimplemented***&lt;/code&gt; という func がないエラーがドバーッと。&lt;/p&gt;
-&lt;p&gt;なんぞこれ？という同じ疑問の issue があがってたので、明日以降調べる。&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://github.com/grpc/grpc-go/issues/3794&#34;&gt;https://github.com/grpc/grpc-go/issues/3794&lt;/a&gt;&lt;/p&gt;
-&lt;h2 id=&#34;next&#34;&gt;Next&lt;/h2&gt;
-&lt;pre&gt;&lt;code&gt;
-&lt;/code&gt;&lt;/pre&gt;</description>
     </item>
     
   </channel>
