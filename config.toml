@@ -1,7 +1,6 @@
 theme = "hugo-notepadium"
 baseurl = "https://sat8bit.github.io/"
 title = "三日坊主。"
-paginate = 10
 languageCode = "ja"
 DefaultContentLanguage = "ja"
 enableInlineShortcodes = true
@@ -32,3 +31,6 @@ showTags = true             # /tags/
   twitter = "sat8bit" 
   github = "sat8bit"
   email = "sat8bit@gmail.com"
+
+[pagination]
+  pagerSize = 10
