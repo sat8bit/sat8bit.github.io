@@ -6,8 +6,6 @@ tags: ["logs"]
 
 # [Todo]
 
-# [Todo]
-
 # その他
 
 # Next
